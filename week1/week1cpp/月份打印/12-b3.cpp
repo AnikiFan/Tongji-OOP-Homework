@@ -3,7 +3,13 @@
 using namespace std;
 int main()
 {
-	cout << "" << endl;
-	cin >> ;
+	const char* monthname[] = { "","January","February","March","April","May","June","July","August","September","October","November","December" };
+	cout << "ÇëÊäÈëÔÂ·Ý(1-12)" << endl;
+	int month;
+	cin >> month;
+	if (month <= 0 || month >= 13 || cin.rdstate())
+		cout << "Invalid" << endl;
+	else
+		cout << monthname[month] << endl;
 	return 0;
 }
