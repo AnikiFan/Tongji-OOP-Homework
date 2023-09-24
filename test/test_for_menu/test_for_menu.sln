@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33717.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_for_menu", "test_for_menu\test_for_menu.vcxproj", "{44A05E90-7CA0-4F43-B884-19FD0BA173FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44A05E90-7CA0-4F43-B884-19FD0BA173FA}.Debug|x86.ActiveCfg = Debug|Win32
+		{44A05E90-7CA0-4F43-B884-19FD0BA173FA}.Debug|x86.Build.0 = Debug|Win32
+		{44A05E90-7CA0-4F43-B884-19FD0BA173FA}.Release|x86.ActiveCfg = Release|Win32
+		{44A05E90-7CA0-4F43-B884-19FD0BA173FA}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9AD7CDFF-D04F-4B33-A249-A6B058AF9CF4}
+	EndGlobalSection
+EndGlobal
