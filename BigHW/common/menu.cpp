@@ -1,7 +1,6 @@
 #include<iostream>
 #include "../include/cmd_console_tools.h"
-#define TEXTLENGTH 50 
-#define horizontal_line  "--------------------------------------------" 
+#include"../include/menu.h"
 using namespace std;
 //=====================================================
 //函 数 名:between
@@ -57,7 +56,7 @@ int case_insensitive_char_compare(char x, char y)
 int begin_with(const char* x, const char* y, int case_sensitive = 0)
 {
 	while (*x && *y) {
-		if ((*x != *y) && case_sensitive || case_insensitive_char_compare(*x, *y) && !case_sensitive)
+		if ((*x != *y) && case_sensitive || !case_insensitive_char_compare(*x, *y) && !case_sensitive)
 			return 0;
 		x++;
 		y++;
@@ -80,19 +79,29 @@ void erase_prompt(int dx, int dy, int bg_color = COLOR_BLACK, int fg_color = COL
 	return;
 }
 //=====================================================
+//函 数 名:query_with_test
+//功能描述:接受用户的输入,并判断是否符合要求
+//输入参数:接受输入的变量,判断是否符合要求的函数
+//返 回 值:1为正确,0为错误.
+//说    明:用指针将输入的值传出函数
+// TODO:用利用重载函数编写多个接受不同类型的变量的函数,并用其来重构menu函数
+//=====================================================
+//=====================================================
 //函 数 名:menu
 //功能描述:展示菜单,并返回用户的选择
 //输入参数:包含菜单的字符指针数组及其长度,退出键及其长度,菜单编号样式,大小写是否敏感以及提示语句
 //返 回 值:返回正整数代表所选的菜单项,返回0代表退出
 //说    明:含有错误处理,退出键若以数字开头,至多只有一位数
 //=====================================================
-int menu(const char* menu_list[], int menu_length, const char* quit_key, bool alpha = false,
-	bool case_sensitive = false, const char* prompt = "请重新输入",
-	const char * header=horizontal_line,const char * bottom = horizontal_line)
+int menu(const char* menu_list[], int menu_length, const char* quit_key, bool alpha ,	bool case_sensitive , const char* prompt,
+	const char * header,const char * bottom )
 {
 	cout << header << endl;
 	for (int i = 0; i < menu_length; i++)
-		cout << (alpha ? (char)(1 + 'A') : i + 1) << "." << menu_list[i] << endl;
+		if (alpha)
+		cout <<  (char)(i + 'A')  << "." << menu_list[i] << endl;
+		else 
+		cout <<   i + 1 << "." << menu_list[i] << endl;
 	cout << quit_key << "." << "退出" << endl;
 	cout << bottom << endl;
 	cout << "[请选择:]" << endl;
@@ -135,11 +144,12 @@ int menu(const char* menu_list[], int menu_length, const char* quit_key, bool al
 				erase_prompt(0, 0);
 				return 0;
 			}
-			else if (case_sensitive && between(*input_text, 'A', 'A' + menu_length) ||
-				!case_sensitive && (between(*input_text, 'A', 'A' + menu_length) || between(*input_text, 'a', 'a' + menu_length))) {
+			else if (case_sensitive && between(*input_text, 'A', 'A' + menu_length-1) ||
+				!case_sensitive && (between(*input_text, 'A', 'A' + menu_length-1) || between(*input_text, 'a', 'a' + menu_length-1))) {
 				erase_prompt(0, 0);
-				return between(*input_text, 'A', 'A' + menu_length) ? *input_text - 'A' + 1 : *input_text - 'a' + 1;
+				return between(*input_text, 'A', 'A' + menu_length-1) ? *input_text - 'A' + 1 : *input_text - 'a' + 1;
 			}
+			clear_and_prompt(x, y, 0, 1, prompt);
 		}
 	}
 }

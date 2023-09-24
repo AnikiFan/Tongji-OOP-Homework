@@ -1,5 +1,5 @@
-/* 2254298 信11 范潇 */
-#include"popstar.h"
+/* 2254298 大数据 范潇 */
+#include"90-01-b2.h" 
 void blockGenrator(int x, int y, int colorCode)
 {//xy是星星的坐标
 	int color[10][2] = colorBoard, i, j;

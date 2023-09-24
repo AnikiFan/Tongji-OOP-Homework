@@ -1,5 +1,5 @@
-/* 2254298 信11 范潇 */
-#include"popstar.h"
+/* 2254298 大数据 范潇 */
+#include"90-01-b2.h"
 void matrixGenerator(int matrix[][10], int rowInterval, int colInterval, int rowMax, int colMax, int srcxcoo, int srcycoo, bool zeroHighlight)//起始坐标为(1,1)元位置,元素左侧有空格
 {
 	int i, j, x, y;
