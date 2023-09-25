@@ -12,6 +12,7 @@ void enter_to_continue(int x, int y, const int bg_color=COLOR_BLACK, int fg_colo
 //数值运算类函数
 int between(double num, double x, double y);
 int case_insensitive_char_compare(char x, char y);
+int get_next_num(int n, const bool new_seed = false, const unsigned int seed = 0);
 //打印类函数
 void clear_and_prompt(int x, int y, int dx, int dy, const char* prompt, int whitespace_length = TEXTLENGTH);
 void erase_prompt(int dx, int dy, int bg_color = COLOR_BLACK, int fg_color = COLOR_WHITE, int erase_length = TEXTLENGTH);

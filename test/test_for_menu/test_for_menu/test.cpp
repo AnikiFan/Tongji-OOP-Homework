@@ -7,7 +7,12 @@ int main()
 	//make_colorblock(3, 3, 10, 10);
 	//make_lattice(3, 3, 3, 3, 10, 10, '*');
 	//make_frame(3, 3, 10, 10);
-	make_board(3, 3, 4, 3, 3, 3, true);
-	cct_gotoxy(40, 40);
+	//make_board(3, 3, 4, 3, 3, 3, true);
+	//cct_gotoxy(40, 40);
+	struct num {
+		int a;
+		int b;
+	};
+	struct	num test[2] = { {1,2},{1,2} };
 	return 0;
 }

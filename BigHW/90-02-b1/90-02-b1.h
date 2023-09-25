@@ -1,26 +1,16 @@
 #pragma once
 #include"../include/cmd_console_tools.h"
-//坐标
-////GAMEBOARD
-#define GAMEBOARD_X 3
-#define GAMEBOARD_Y 1
-////SCOREBOARD
-#define SCOREBOARD_X (GAMEBOARD_X+GAMEBOARD_WIDTH+10)
-#define SCOREBOARD_Y GAMEBOARD_Y
-#define SCOREBOARD_INFO_X (SCOREBOARD_X+SCOREBOARD_SIDE_WIDTH)
-#define SCOREBOARD_INFO_Y (SCOREBOARD_Y+2)
-////PROMPT
-#define PROMPT_X 0
-#define PROMPT_Y (CONSOLE_HEIGHT-4)
-
-
-
 //大小
+////BLOCK
+#define HORIZONTAL_BLOCK_NUM 26
+#define VERTICAL_BLOCK_NUM 21
+#define BLOCK_WIDTH 6
+#define BLOCK_HEIGHT 3
 ////GAMEBOARD
-#define GAMEBOARD_WIDTH (26*BLOCK_WIDTH+2*GAMEBOARD_SIDE_WIDTH)
-#define GAMEBOARD_HEIGHT (21*BLOCK_HEIGHT+2)
-#define GAMEBOARD_SHADOW_WIDTH 1
 #define GAMEBOARD_SIDE_WIDTH 2
+#define GAMEBOARD_WIDTH (HORIZONTAL_BLOCK_NUM*BLOCK_WIDTH+2*GAMEBOARD_SIDE_WIDTH)
+#define GAMEBOARD_HEIGHT (VERTICAL_BLOCK_NUM*BLOCK_HEIGHT+2)
+#define GAMEBOARD_SHADOW_WIDTH 1
 ////SCOREBOARD
 #define SCOREBOARD_WIDTH 24
 #define SCOREBOARD_HEIGHT 9
@@ -34,11 +24,30 @@
 #define CONSOLE_BUFFER_WIDTH CONSOLE_WIDTH
 #define CONSOLE_BUFFER_HEIGHT CONSOLE_HEIGHT
 #define CONSOLE_FONT_SIZE 18
-////BLOCK
-#define BLOCK_WIDTH 6
-#define BLOCK_HEIGHT 3
 ////MENU
 #define MENU_LIST_LENGTH 6
+////BOARD
+#define BOARD_SIDE_WIDTH 2
+#define BOARD_TOP_WIDTH 5
+#define BOARD_HEIGHT (HORIZONTAL_BLOCK_NUM+BOARD_TOP_WIDTH+BOARD_SIDE_WIDTH)
+#define BOARD_WIDTH (VERTICAL_BLOCK_NUM+2*BOARD_SIDE_WIDTH)
+////其他
+#define NUM_BOUND 10
+
+
+//坐标
+////GAMEBOARD
+#define GAMEBOARD_X 3
+#define GAMEBOARD_Y 1
+////SCOREBOARD
+#define SCOREBOARD_X (GAMEBOARD_X+GAMEBOARD_WIDTH+10)
+#define SCOREBOARD_Y GAMEBOARD_Y
+#define SCOREBOARD_INFO_X (SCOREBOARD_X+SCOREBOARD_SIDE_WIDTH)
+#define SCOREBOARD_INFO_Y (SCOREBOARD_Y+2)
+////PROMPT
+#define PROMPT_X 0
+#define PROMPT_Y (CONSOLE_HEIGHT-4)
+
 
 //颜色
 ////GAMEBOARD
@@ -56,3 +65,46 @@
 #define MENU_LIST {"打印边框和得分板","单个数字下落","单个数字下落时可平移和加速下落","单个数字下落时可进行所有操作","两个数字下落,可叠加","完整版"}
 #define QUIT_KEY "Q"
 #define SCOREBOARD_INFO_LIST {"下一个数字:","当前得分:","当前速度:","已消除行数:"}
+
+//数字俄罗斯方块
+////指标
+//统一以abs_index为原点,右下角rel_index为正
+struct Index{
+	int x;
+	int y;
+};
+#define ZERO_INDEX_NUM 12
+#define ONE_INDEEX_NUM 5
+#define TWO_INDEX_NUM 11
+#define THREE_INDEX_NUM 11
+#define FOUR_INDEX_NUM 9
+#define FIVE_INDEX_NUM 11
+#define SIX_INDEX_NUM 12
+#define SEVEN_INDEX_NUM 7
+#define EIGHT_INDEX_NUM 13
+#define NINE_INDEX_NUM 12
+#define INDEX_NUM_LIST {ZERO_INDEX_NUM,ONE_INDEEX_NUM,TWO_INDEX_NUM,THREE_INDEX_NUM,FOUR_INDEX_NUM,FIVE_INDEX_NUM,SIX_INDEX_NUM,SEVEN_INDEX_NUM,EIGHT_INDEX_NUM,NINE_INDEX_NUM}
+#define ZERO_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{1,0},{-1,-1},{1,-1},{-1,2},{0,2},{1,2}}
+#define ONE_REL_INDEX {{0,-2},{0,-1},{0,0},{0,1},{0,2}}
+#define TWO_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{0,0},{-1,0},{-1,1},{-1,2},{0,2},{1,2}}
+#define THREE_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{0,0},{1,0},{1,1},{-1,2},{0,2},{1,2}}
+#define FOUR_REL_INDEX {{-1,-2},{-1,-1},{-1,0},{0,0},{1,0},{1,-2},{1,-1},{1,1},{1,2}}
+#define FIVE_REL_INDEX {{1,-2},{0,-2},{-1,-2},{-1,-1},{-1,0},{0,0},{1,0},{1,1},{1,2},{-1,2},{0,2}}
+#define SIX_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{-1,0},{0,0},{1,0},{-1,1},{-1,2},{0,2},{1,2},{1,1}}
+#define SEVEN_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{1,1},{1,2}}
+#define EIGHT_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{1,0},{-1,1},{1,1},{-1,2},{0,2},{1,2},{0,0}}
+#define NINE_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{0,0},{1,0},{1,1},{1,2},{0,2},{-1,2}}
+////方块
+struct Block {
+	Index abs_index;
+	int index_num;
+	Index* rel_index;
+};
+
+//操控
+int(*make_board(void))[BOARD_WIDTH];
+struct Block fall(int num, int(*board)[BOARD_WIDTH]);
+int game_continue(int(*board)[BOARD_WIDTH]);
+void merge(struct Block block,int(*board)[BOARD_WIDTH]);
+int pop(int(*board)[BOARD_WIDTH]);
+void update_info(int erase_sum, int next_num);

@@ -4,6 +4,7 @@
 #include "../include/cmd_console_tools.h"
 #include"../include/menu.h"
 using namespace std;
+//TODO:有些变量可以设为const,如X,Y
 //=====================================================
 //函 数 名:between
 //功能描述:判断第一个参数是否在第二三个参数中间(包括)
@@ -394,5 +395,18 @@ void make_list(int x,int y,const char* list[],int list_length,int dy,int bg_colo
 	cct_setcolor();
 	cct_gotoxy(X, Y);
 	return;
+}
+//=====================================================
+//函 数 名:make_random_num
+//功能描述:
+//输入参数:范围,是否使用新的种子,种子
+//返 回 值:默认输出0到n-1的随机数
+//说    明:
+//=====================================================
+int get_next_num(int n,const bool new_seed , const unsigned int seed)
+{
+	if (new_seed)
+		srand(seed);
+	return rand() % n;
 }
 
