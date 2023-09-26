@@ -22,7 +22,7 @@ int main()
 	cout << "请输入cosxdx的下限、上限及区间划分数量" << endl;
 	cin >> low >> high >> n;
 	cout << "cosxdx[" << low << "~" << high << "/n=" << n << "] : " << definite_integration(cos, low, high, n)<<endl;
-	cout << "请输入sinxdx的下限、上限及区间划分数量" << endl;
+	cout << "请输入e^xdx的下限、上限及区间划分数量" << endl;
 	cin >> low >> high >> n;
 	cout << "e^xdx[" << low << "~" << high << "/n=" << n << "] : " << definite_integration(exp, low, high, n)<<endl;
 	return 0;

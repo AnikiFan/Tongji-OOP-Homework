@@ -374,7 +374,7 @@ void enter_to_continue(int x, int y, const int bg_color, int fg_color, const cha
 		;
 	cct_setcolor();
 	cct_gotoxy(X, Y);
-	return ;
+	return;
 }
 //=====================================================
 //函 数 名:make_list
@@ -383,13 +383,13 @@ void enter_to_continue(int x, int y, const int bg_color, int fg_color, const cha
 //返 回 值:
 //说    明:
 //=====================================================
-void make_list(int x,int y,const char* list[],int list_length,int dy,int bg_color,int fg_color)
+void make_list(int x, int y, const char* list[], int list_length, int dy, int bg_color, int fg_color)
 {
 	int X, Y;
 	cct_getxy(X, Y);
 	cct_setcolor(bg_color, fg_color);
 	for (int i = 0; i < list_length; i++) {
-		cct_gotoxy(x, y + i*dy);
+		cct_gotoxy(x, y + i * dy);
 		cout << list[i];
 	}
 	cct_setcolor();
@@ -403,10 +403,138 @@ void make_list(int x,int y,const char* list[],int list_length,int dy,int bg_colo
 //返 回 值:默认输出0到n-1的随机数
 //说    明:
 //=====================================================
-int get_next_num(int n,const bool new_seed , const unsigned int seed)
+int get_next_num(int n, const bool new_seed, const unsigned int seed)
 {
 	if (new_seed)
 		srand(seed);
 	return rand() % n;
+}
+//=====================================================
+//函 数 名:make_block
+//功能描述:打印一个方块
+//输入参数:构成方块的各行字符串
+//返 回 值:
+//说    明:
+//=====================================================
+void make_block(int x, int y, const char* row[], int row_num, int bg_color, int fg_color)
+{
+	make_list(x, y, row, row_num, 0, bg_color, fg_color);
+	return;
+}
+//=====================================================
+//函 数 名:coordinate_transformation
+//功能描述:坐标之间的变换
+//输入参数:原坐标,变换函数
+//返 回 值:point结构体
+//说    明:坐标均为整数
+//=====================================================
+struct point coordinate_transformation(int x, int y, int (*x_transformation)(int, int), int (*y_transformation)(int, int))
+{
+	struct point point { x_transformation(x, y), y_transformation(x, y) };
+	return point;
+}
+//=====================================================
+//函 数 名:coordinate_transpose
+//功能描述:坐标之间的转置
+//输入参数:原坐标
+//返 回 值:point结构体
+//说    明:
+//=====================================================
+struct point coordinate_transpose(int x, int y)
+{
+	struct point point { y, x };
+	return point;
+}
+//=====================================================
+//函 数 名:clockwise_rotate
+//功能描述:坐标绕给定轴顺时针旋转90度
+//输入参数:旋转坐标,轴坐标
+//返 回 值:point结构体
+//说    明:
+//=====================================================
+struct point clockwise_rotate(int x, int y, int axis_x, int axis_y)
+{
+	struct point point { axis_x+y-axis_y, axis_y-x+axis_x };
+	return point;
+}
+//=====================================================
+//函 数 名:counterclockwise_rotate
+//功能描述:坐标绕给定轴逆时针旋转90度
+//输入参数:旋转坐标,轴坐标
+//返 回 值:point结构体
+//说    明:
+//=====================================================
+struct point counterclockwise_rotate(int x, int y, int axis_x, int axis_y)
+{
+	struct point point { axis_x-y+axis_y, axis_y+x-axis_x };
+	return point;
+}
+//=====================================================
+//函 数 名:central_symmetry
+//功能描述:坐标绕给定轴中心对称
+//输入参数:坐标,轴坐标
+//返 回 值:point结构体
+//说    明:
+//=====================================================
+struct point central_symmetry(int x,int y ,int axis_x,int axis_y)
+{
+	struct point point {2*axis_x -x,2*axis_y-y};
+	return point;
+};
+//=====================================================
+//函 数 名:linear_transformation
+//功能描述:坐标之间的线性变化
+//输入参数:原坐标,作用矩阵的元素
+//返 回 值:point结构体
+//说    明:
+//=====================================================
+struct point linear_transformation(int x, int y, int a11, int a12, int a21, int a22, int d1, int d2)
+{
+	struct point point { a11* x + a12 * y + d1, a21* x + a22 * y + d2 };
+	return point;
+}
+//=====================================================
+//函 数 名:matrix_iteration
+//功能描述:遍历一个int型二维数组,并根据每个元素的值来做相应的操作
+//输入参数:数组开始处的指针,操作函数,数组的行列数
+//返 回 值:
+//说    明:
+//=====================================================
+void matrix_iteration(int* p, int row_num, int col_num, void(*manipulation)(int, int, int))
+{
+	for (int i = 0; i < row_num; i++)
+		for (int j = 0; j < col_num; j++)
+			manipulation(i, j, *(p + i * col_num + j));
+	return;
+}
+//=====================================================
+//函 数 名:list_iteration
+//功能描述:遍历一个int型数组,并根据每个元素的值来做相应的操作
+//输入参数:数组开始处的指针,操作函数,数组的大小
+//返 回 值:
+//说    明:
+//=====================================================
+void list_iteration(int* p, int list_size, void(*manipulation)(int, int))
+{
+	for (int i = 0; i < list_size; i++)
+		manipulation(i, *(p + i));
+	return;
+}
+
+//=====================================================
+//函 数 名:check_element
+//功能描述:遍历一个int型二维数组,并打印行列坐标及其值
+//输入参数:数组开始处的指针,数组的行列数
+//返 回 值:
+//说    明:
+//=====================================================
+void check_element(int* p, int row_num, int col_num)
+{
+	for (int i = 0; i < row_num; i++) {
+		for (int j = 0; j < col_num; j++)
+			cout << "[" << row_num << "]" << "[" << col_num << "]" << *(p + i * col_num + j) << "  ";
+		cout << endl;
+	}
+	return;
 }
 

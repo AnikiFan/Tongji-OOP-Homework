@@ -150,7 +150,7 @@ int main()
 	int(*row)[SCORE_NUM] = a, * elem = *a;
 	cout << "初始信息：" << endl;
 	for (; row < a + STUDENT_NUM; row++) {
-		cout << "No." << row - a + 1 << "的1-" << SCORE_NUM << "门课的成绩：";
+		cout << "No." << row - a + 1 << "的1-" << SCORE_NUM << "门课成绩：";
 		for (; elem < *row + SCORE_NUM; elem++)
 			cout << *elem << " ";
 		cout << endl;

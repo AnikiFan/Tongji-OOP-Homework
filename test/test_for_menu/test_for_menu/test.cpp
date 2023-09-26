@@ -1,6 +1,7 @@
 #include "../../../BigHW/include/cmd_console_tools.h"
 #include"../../../BigHW/include/menu.h"
 #include<iostream>
+#include<windows.h>
 using namespace std;
 int main()
 {
@@ -14,5 +15,10 @@ int main()
 		int b;
 	};
 	struct	num test[2] = { {1,2},{1,2} };
+	cout << GetTickCount() << endl;
+	Sleep(10000);
+	cout << GetTickCount() << endl;
+	cout << GetTickCount() << endl;
+	cout << GetTickCount() << endl;
 	return 0;
 }

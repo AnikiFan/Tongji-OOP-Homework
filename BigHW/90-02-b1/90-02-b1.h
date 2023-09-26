@@ -33,7 +33,8 @@
 #define BOARD_WIDTH (VERTICAL_BLOCK_NUM+2*BOARD_SIDE_WIDTH)
 ////其他
 #define NUM_BOUND 10
-
+#define INITIAL_SPEED 1000
+#define TIME_EPSILON 5
 
 //坐标
 ////GAMEBOARD
@@ -59,12 +60,16 @@
 #define SCOREBOARD_SIDE_COLOR COLOR_WHITE
 #define SCOREBOARD_SHADOW_COLOR COLOR_CYAN
 #define SCOREBOARD_INFO_COLOR COLOR_BLACK
+////BLOCK
+#define BLOCK_COLOR_LIST {COLOR_BLUE,COLOR_GREEN,COLOR_CYAN,COLOR_RED,COLOR_YELLOW,COLOR_PINK,COLOR_HBLACK,COLOR_HBLUE,COLOR_HGREEN,COLOR_HRED}
+#define BLOCK_FRAME_COLOR COLOR_HWHITE
 
 //文字
 #define CONSOLE_FONT_FAMILY "点阵字体"
 #define MENU_LIST {"打印边框和得分板","单个数字下落","单个数字下落时可平移和加速下落","单个数字下落时可进行所有操作","两个数字下落,可叠加","完整版"}
 #define QUIT_KEY "Q"
 #define SCOREBOARD_INFO_LIST {"下一个数字:","当前得分:","当前速度:","已消除行数:"}
+#define BLOCK {"╔═╗", "║★║","╚═╝"  }
 
 //数字俄罗斯方块
 ////指标
@@ -94,16 +99,21 @@ struct Index{
 #define SEVEN_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{1,1},{1,2}}
 #define EIGHT_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{1,0},{-1,1},{1,1},{-1,2},{0,2},{1,2},{0,0}}
 #define NINE_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{0,0},{1,0},{1,1},{1,2},{0,2},{-1,2}}
+#define REL_INDEX_LIST {ZERO_REL_INDEX,ONE_REL_INDEX,TWO_REL_INDEX,THREE_REL_INDEX,FOUR_REL_INDEX,FIVE_REL_INDEX,SIX_REL_INDEX,SEVEN_REL_INDEX,EIGHT_REL_INDEX,NINE_REL_INDEX};
+#define INITIATE_INDEX (BOARD_TOP_WIDTH-2),(BOARD_SIDE_WIDTH+HORIZONTAL_BLOCK_NUM/2)
+#define MAX_REL_INDEX_NUM 15
 ////方块
 struct Block {
 	Index abs_index;
 	int index_num;
 	Index* rel_index;
+	int color;
+	int angle = 0;
 };
 
 //操控
-int(*make_board(void))[BOARD_WIDTH];
-struct Block fall(int num, int(*board)[BOARD_WIDTH]);
+void make_board(int matrix[BOARD_HEIGHT][BOARD_WIDTH]);
+void fall(struct Block* block, int(*board)[BOARD_WIDTH],int speed);
 int game_continue(int(*board)[BOARD_WIDTH]);
 void merge(struct Block block,int(*board)[BOARD_WIDTH]);
 int pop(int(*board)[BOARD_WIDTH]);

@@ -69,7 +69,7 @@ void fail(int(*score)[STUDENT_NUM])
 			}
 		}
 		if (fail) {
-			cout << "No£º" << p - *score<<" ";
+			cout << "No£º" << p - *score+1<<" ";
 			for (row = score; row < score + SCORE_NUM; row++) {
 				sum += *(*row + (p - *score));
 				cout << *(*row + (p - *score)) << " ";
@@ -109,7 +109,7 @@ void good(int(*score)[STUDENT_NUM])
 			sum += *(*row + (p - *score));
 		}
 		if (good) {
-			cout << "No£º" << p - *score<<" ";
+			cout << "No£º" << p - *score+1<<" ";
 			for (row = score; row < score + SCORE_NUM; row++)
 				cout << *(*row + (p - *score)) << " ";
 			if (sum / SCORE_NUM >= 10)
@@ -118,7 +118,7 @@ void good(int(*score)[STUDENT_NUM])
 				cout << "Æ½¾ù£º" << setprecision(3) << sum / SCORE_NUM << endl;
 		}
 		else if (sum / SCORE_NUM >= 90) {
-			cout << "No£º" << p - *score<<" ";
+			cout << "No£º" << p - *score+1<<" ";
 			for (row = score; row < score + SCORE_NUM; row++)
 				cout << *(*row + (p - *score)) << " ";
 			if (sum / SCORE_NUM >= 10)

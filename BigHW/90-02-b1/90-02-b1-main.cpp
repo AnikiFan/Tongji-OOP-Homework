@@ -1,6 +1,5 @@
 /* 2254298 ´óÊý¾Ý ·¶äì */
 #include <iostream>
-#include<Windows.h>
 #include "../include/cmd_console_tools.h"
 #include "../include/menu.h"
 #include"90-02-b1.h"
