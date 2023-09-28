@@ -304,22 +304,47 @@ void merge(struct Block block, int(*board)[MAX_BOARD_WIDTH])
 //返 回 值:消除行数
 //说    明:没有连锁反应,只需每一行检查一边即可
 //=====================================================
-int pop(int(*board)[MAX_BOARD_WIDTH])
+int pop_and_fall(int(*board)[MAX_BOARD_WIDTH])
 {
+	int sum = 0;
 	for (int i = 0; i < MAX_VERTICAL_BLOCK_NUM; i++) {
 		int pop = 1;
 		for (int j = 0; j < MAX_HORIZONTAL_BLOCK_NUM; j++)
 			if (board[i][j] != 1 && board[i][j] != -1)
 				pop = 0;
-		if (pop)
+		if (pop) {
 			for (int j = 0; j < MAX_HORIZONTAL_BLOCK_NUM; j++)
 				if (board[i][j] == 1) {
-					board[i][j] == 0;
+					board[i][j] = 0;
 					struct point point = from_index_to_coordinate(i, j);
 					make_colorblock(point.x, point.y, BLOCK_WIDTH, BLOCK_HEIGHT, GAMEBOARD_COLOR);
 				}
+			sum++;
+		}
 	}
-	return 0;
+	for (int i = MAX_VERTICAL_BLOCK_NUM - 1; i >= 0; i--) {
+		for (int j = i; j < MAX_VERTICAL_BLOCK_NUM - 1; j++) {
+			int this_empty = 1, under_empty = 1;
+			for (int k = 0; k < MAX_HORIZONTAL_BLOCK_NUM; k++) {
+				if (board[j][k] != -1 && board[j][k])
+					this_empty = 0;
+				if (board[j + 1][k] != -1 && board[j + 1][k])
+					under_empty = 0;
+				if (!this_empty && under_empty) {
+					for (int l = 0; l < MAX_HORIZONTAL_BLOCK_NUM; l++)
+						if (board[j][l] != -1 && board[j][l]) {
+							board[j + 1][l] = board[j][l];
+							board[j][l] = 0;
+							struct point point = from_index_to_coordinate(j + 1, l);
+							const char* block[] = BLOCK;
+							make_block(point.x, point.y, block, 3, GAMEBOARD_COLOR, BLOCK_FRAME_COLOR);
+						}
+					break;
+				}
+			}
+		}
+	}
+	return sum;
 }
 //=====================================================
 //函 数 名:update_info

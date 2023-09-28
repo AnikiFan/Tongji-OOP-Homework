@@ -117,7 +117,7 @@ void make_board(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH],const int VERTICAL
 void fall(struct Block* block, int(*board)[MAX_BOARD_WIDTH],const int speed,const int OPTION);
 int game_continue(int(*board)[MAX_BOARD_WIDTH],struct Block block);
 void merge(struct Block block,int(*board)[MAX_BOARD_WIDTH]);
-int pop(int(*board)[MAX_BOARD_WIDTH]);
+int pop_and_fall(int(*board)[MAX_BOARD_WIDTH]);
 void update_info(int erase_sum, int next_num);
 
 //½â´ð
