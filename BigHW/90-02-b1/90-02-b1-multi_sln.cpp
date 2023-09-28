@@ -17,12 +17,13 @@ void game(void)
 		struct Index initiate_index { INITIATE_INDEX }, rel_index_list[NUM_BOUND][MAX_REL_INDEX_NUM] = REL_INDEX_LIST;
 		struct Block block { initiate_index, index_num_list[num], rel_index_list[num],block_color_list[num] };
 		fall(&block, board,speed);
-		if (!game_continue(board))
-			break;
-		merge(block, board);
-		erase_num = pop(board);
-		erase_sum += erase_num;
-		update_info(erase_sum, next_num);
+		system("pause");
+		//if (!game_continue(board))
+			//break;
+		//merge(block, board);
+		//erase_num = pop(board);
+		//erase_sum += erase_num;
+		//update_info(erase_sum, next_num);
 	}
 	return;
 }

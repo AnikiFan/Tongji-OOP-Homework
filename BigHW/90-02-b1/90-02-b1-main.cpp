@@ -25,6 +25,8 @@ int main()
 			enter_to_continue(PROMPT_X, PROMPT_Y);
 			continue;
 		}
+		else
+			game();
 	}
 	return 0;
 }

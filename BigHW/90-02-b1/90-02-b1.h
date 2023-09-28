@@ -2,8 +2,8 @@
 #include"../include/cmd_console_tools.h"
 //大小
 ////BLOCK
-#define HORIZONTAL_BLOCK_NUM 26
-#define VERTICAL_BLOCK_NUM 21
+#define HORIZONTAL_BLOCK_NUM 21
+#define VERTICAL_BLOCK_NUM 26
 #define BLOCK_WIDTH 6
 #define BLOCK_HEIGHT 3
 ////GAMEBOARD
@@ -29,8 +29,8 @@
 ////BOARD
 #define BOARD_SIDE_WIDTH 2
 #define BOARD_TOP_WIDTH 5
-#define BOARD_HEIGHT (HORIZONTAL_BLOCK_NUM+BOARD_TOP_WIDTH+BOARD_SIDE_WIDTH)
-#define BOARD_WIDTH (VERTICAL_BLOCK_NUM+2*BOARD_SIDE_WIDTH)
+#define BOARD_HEIGHT (VERTICAL_BLOCK_NUM+BOARD_TOP_WIDTH+BOARD_SIDE_WIDTH)
+#define BOARD_WIDTH (HORIZONTAL_BLOCK_NUM+2*BOARD_SIDE_WIDTH)
 ////其他
 #define NUM_BOUND 10
 #define INITIAL_SPEED 1000
@@ -118,3 +118,6 @@ int game_continue(int(*board)[BOARD_WIDTH]);
 void merge(struct Block block,int(*board)[BOARD_WIDTH]);
 int pop(int(*board)[BOARD_WIDTH]);
 void update_info(int erase_sum, int next_num);
+
+//解答
+void game(void);
