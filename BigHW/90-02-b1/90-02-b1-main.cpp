@@ -37,7 +37,7 @@ int main()
 			continue;
 		}
 		else
-			game(VERTICAL_BLOCK_NUM,HORIZONTAL_BLOCK_NUM);
+			game(VERTICAL_BLOCK_NUM,HORIZONTAL_BLOCK_NUM,OPTION);
 	}
 	return 0;
 }

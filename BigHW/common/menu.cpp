@@ -101,11 +101,11 @@ void erase_prompt(int dx, int dy, int bg_color, int fg_color, int erase_length)
 //说    明:含有错误处理,退出键若以数字开头,至多只有一位数
 //=====================================================
 int menu(const char* menu_list[], int menu_length, const char* quit_key, bool alpha, int stop,
-	bool case_sensitive,const char* prompt, const char* caution, const char* header, const char* bottom,
-	int menu_screen_width,int menu_screen_height,const char*menu_font_family,int menu_font_size)
+	bool case_sensitive, const char* prompt, const char* caution, const char* header, const char* bottom,
+	int menu_screen_width, int menu_screen_height, const char* menu_font_family, int menu_font_size)
 {
 	cct_cls();
-	if (menu_length+11 > menu_screen_height)
+	if (menu_length + 11 > menu_screen_height)
 		menu_screen_height = menu_length + 11;
 	cct_setconsoleborder(menu_screen_width, menu_screen_height, menu_screen_width, menu_screen_height);
 	cct_setfontsize(menu_font_family, menu_font_size);
@@ -459,7 +459,7 @@ struct point coordinate_transpose(int x, int y)
 //=====================================================
 struct point clockwise_rotate(int x, int y, int axis_x, int axis_y)
 {
-	struct point point { axis_x+y-axis_y, axis_y-x+axis_x };
+	struct point point { axis_x + y - axis_y, axis_y - x + axis_x };
 	return point;
 }
 //=====================================================
@@ -471,7 +471,7 @@ struct point clockwise_rotate(int x, int y, int axis_x, int axis_y)
 //=====================================================
 struct point counterclockwise_rotate(int x, int y, int axis_x, int axis_y)
 {
-	struct point point { axis_x-y+axis_y, axis_y+x-axis_x };
+	struct point point { axis_x - y + axis_y, axis_y + x - axis_x };
 	return point;
 }
 //=====================================================
@@ -481,9 +481,9 @@ struct point counterclockwise_rotate(int x, int y, int axis_x, int axis_y)
 //返 回 值:point结构体
 //说    明:
 //=====================================================
-struct point central_symmetry(int x,int y ,int axis_x,int axis_y)
+struct point central_symmetry(int x, int y, int axis_x, int axis_y)
 {
-	struct point point {2*axis_x -x,2*axis_y-y};
+	struct point point { 2 * axis_x - x, 2 * axis_y - y };
 	return point;
 };
 //=====================================================
@@ -525,7 +525,6 @@ void list_iteration(int* p, int list_size, void(*manipulation)(int, int))
 		manipulation(i, *(p + i));
 	return;
 }
-
 //=====================================================
 //函 数 名:check_element
 //功能描述:遍历一个int型二维数组,并打印行列坐标及其值
@@ -542,4 +541,50 @@ void check_element(int* p, int row_num, int col_num)
 	}
 	return;
 }
+//=====================================================
+//函 数 名:wait_arrow_key
+//功能描述:等待用户输入一个箭头键,并返回,1,2,3,4分别代表上下左右
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+int wait_arrow_key()
+{
+	while (1) {
+		if (_getch() == 224) {
+			int temp = _getch();
+			if (temp == 72)
+				return 1;
+			else if (temp == 80)
+				return 2;
+			else if (temp == 75)
+				return 3;
+			else if (temp == 77)
+				return 4;
+		}
+	}
+}
+//=====================================================
+//函 数 名:get_arrow_key
+//功能描述:读取用户的输入,若是箭头键,并返回,1,2,3,4分别代表上下左右,否则返回0
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+int get_arrow_key()
+{
+	if (_getch() == 224) {
+		int temp = _getch();
+		if (temp == 72)
+			return 1;
+		else if (temp == 80)
+			return 2;
+		else if (temp == 75)
+			return 3;
+		else if (temp == 77)
+			return 4;
+	}
+	return 0;
+}
+
 

@@ -19,7 +19,7 @@
 ////CONSOLE
 #define CONSOLE_WIDTH (GAMEBOARD_WIDTH+SCOREBOARD_WIDTH+23)
 #define CONSOLE_HEIGHT (GAMEBOARD_HEIGHT+GAMEBOARD_Y+8)
-#define CONSOLE_FONT_SIZE 18+5*(1-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM)/(MAX_HORIZONTAL_BLOCK_NUM*MAX_VERTICAL_BLOCK_NUM))
+#define CONSOLE_FONT_SIZE 16-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM>15*20)-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM>18*23)-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM>21*25)
 ////MENU
 #define MENU_LIST_LENGTH 6
 ////BOARD
@@ -47,7 +47,7 @@
 #define SCOREBOARD_INFO_Y (SCOREBOARD_Y+2)
 ////PROMPT
 #define PROMPT_X 0
-#define PROMPT_Y (CONSOLE_HEIGHT-4)
+#define PROMPT_Y (CONSOLE_HEIGHT-5)
 
 
 //颜色
@@ -66,7 +66,7 @@
 
 //文字
 #define CONSOLE_FONT_FAMILY "点阵字体"
-#define MENU_LIST {"打印边框和得分板","单个数字下落","单个数字下落时可平移和加速下落","单个数字下落时可进行所有操作","两个数字下落,可叠加","完整版"}
+#define MENU_LIST {"打印边框和得分板","单个数字下落","多个数字叠加","多个数字可加速下落","多个数字下落时可进行所有操作,但不消除","完整版"}
 #define VERTICAL_BLOCK_NUM_LIST {"18","19","20","21","22","23","24","25","26"}
 #define HORIZONTAL_BLOCK_NUM_LIST {"12","15","18","21"}
 #define QUIT_KEY "Q"
@@ -110,16 +110,15 @@ struct Block {
 	int index_num;
 	Index* rel_index;
 	int color;
-	int angle = 0;
 };
 
 //操控
 void make_board(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH],const int VERTICAL_BLOCK_NUM,int HORIZONTAL_BLOCK_NUM);
-void fall(struct Block* block, int(*board)[MAX_BOARD_WIDTH],int speed);
-int game_continue(int(*board)[MAX_BOARD_WIDTH]);
+void fall(struct Block* block, int(*board)[MAX_BOARD_WIDTH],const int speed,const int OPTION);
+int game_continue(int(*board)[MAX_BOARD_WIDTH],struct Block block);
 void merge(struct Block block,int(*board)[MAX_BOARD_WIDTH]);
 int pop(int(*board)[MAX_BOARD_WIDTH]);
 void update_info(int erase_sum, int next_num);
 
 //解答
-void game(const int VERTICAL_BLOCK_NUM,const int HORIZONTAL_BLOCK_NUM);
+void game(const int VERTICAL_BLOCK_NUM,const int HORIZONTAL_BLOCK_NUM,const int OPTION);

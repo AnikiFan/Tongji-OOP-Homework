@@ -12,6 +12,8 @@ int menu(const char* menu_list[], int menu_length, const char* quit_key, bool al
 	int menu_screen_height=MENU_SCREEN_HEIGHT,const char*menu_font_family= MENU_FONT_FAMILY,int menu_font_size=MENU_FONT_SIZE);
 void to_be_continued(int x, int y, const char* prompt = "按回车键继续", const char* key = "\10", int bg_color = COLOR_BLACK, int fg_color = COLOR_WHITE);
 void enter_to_continue(int x, int y, const int bg_color=COLOR_BLACK, int fg_color=COLOR_WHITE, const char* prompt="按回车键继续", char key='\r');
+int wait_arrow_key();
+int get_arrow_key();
 //数值运算类函数
 struct point {
 	int x;
