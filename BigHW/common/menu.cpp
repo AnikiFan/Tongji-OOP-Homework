@@ -418,7 +418,7 @@ int get_next_num(int n, const bool new_seed, const unsigned int seed)
 //=====================================================
 void make_block(int x, int y, const char* row[], int row_num, int bg_color, int fg_color)
 {
-	make_list(x, y, row, row_num, 0, bg_color, fg_color);
+	make_list(x, y, row, row_num, 1, bg_color, fg_color);
 	return;
 }
 //=====================================================

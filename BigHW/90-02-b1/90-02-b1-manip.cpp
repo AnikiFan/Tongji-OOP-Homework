@@ -29,7 +29,7 @@ void make_board(int matrix[BOARD_HEIGHT][BOARD_WIDTH])
 //=====================================================
 struct point from_index_to_coordinate(int x, int y)
 {
-	return  linear_transformation(x, y, BLOCK_WIDTH, 0, BLOCK_HEIGHT, 0, GAMEBOARD_X + GAMEBOARD_WIDTH, GAMEBOARD_Y + 1);
+	return  linear_transformation(x-BOARD_SIDE_WIDTH, y-BOARD_TOP_WIDTH, BLOCK_WIDTH, 0,0, BLOCK_HEIGHT, GAMEBOARD_X + GAMEBOARD_SIDE_WIDTH, GAMEBOARD_Y + 1);
 }
 //=====================================================
 //函 数 名:print_block
@@ -45,7 +45,7 @@ void print_block(struct Block block)
 		int abs_x = block.abs_index.x, abs_y = block.abs_index.y;
 		int rel_x = block.rel_index[i].x, rel_y = block.rel_index[i].y;
 		int x = abs_x + rel_x, y = abs_y + rel_y;
-		if (y < 0)
+		if (y < BOARD_TOP_WIDTH)
 			continue;
 		struct point point = from_index_to_coordinate(x, y);
 		make_block(point.x, point.y, block_list, 3, block.color, BLOCK_FRAME_COLOR);
@@ -79,7 +79,7 @@ void get_erase_list(struct Block block, int(*abs_erase_list)[2], int down = true
 	if (down) {
 		for (int i = 0; i < block.index_num; i++) {
 			abs_erase_list[i][0] = block.rel_index[i].x + block.abs_index.x;
-			abs_erase_list[i][1] = block.rel_index[i].y + block.abs_index.y+1;
+			abs_erase_list[i][1] = block.rel_index[i].y + block.abs_index.y-1;
 		}
 	}
 	else if (left) {
@@ -102,8 +102,8 @@ void get_erase_list(struct Block block, int(*abs_erase_list)[2], int down = true
 	}
 	for (int i = 0; i < block.index_num; i++) {
 		for (int j = 0; j < block.index_num; j++) {
-			if (abs_erase_list[i][0] == (block.rel_index[i].x + block.abs_index.x) && abs_erase_list[i][1] == (block.rel_index[i].y + block.abs_index.y))
-				abs_erase_list[i][0] = abs_erase_list[i][1] = -1;
+			if (abs_erase_list[j][0] == (block.rel_index[i].x + block.abs_index.x) && abs_erase_list[j][1] == (block.rel_index[i].y + block.abs_index.y))
+				abs_erase_list[j][0] = abs_erase_list[j][1] = -1;
 		}
 	}
 	return;
@@ -113,11 +113,13 @@ void get_erase_list(struct Block block, int(*abs_erase_list)[2], int down = true
 //功能描述:消除方块移动后的残留部分
 //输入参数:残留部分的指标集
 //返 回 值:
-//说    明:指标集为中的元素为-1,-1则说明跳过
+//说    明:指标集为中的元素为-1,-1则说明跳过,同时如果y的范围在顶部,那么也跳过
 //=====================================================
 void erase_remain(int(*abs_erase_list)[2])
 {
 	for (int i = 0; i < MAX_REL_INDEX_NUM; i++) {
+		if (abs_erase_list[i][1] < BOARD_TOP_WIDTH||(abs_erase_list[i][1]==-1&&abs_erase_list[i][0]==-1))
+			continue;
 		struct point point = from_index_to_coordinate(abs_erase_list[i][0], abs_erase_list[i][1]);
 		make_colorblock(point.x, point.y,BLOCK_WIDTH,BLOCK_HEIGHT,GAMEBOARD_COLOR);
 	}
@@ -137,7 +139,8 @@ void fall(struct Block* block, int(*board)[BOARD_WIDTH], int speed)
 		now = GetTickCount64();
 		if (previous +speed - TIME_EPSILON <= now && now <= previous+speed + TIME_EPSILON) {
 			previous = now;
-			block->abs_index.y++;
+		//if(1){
+			//Sleep(1000);
 			if (valid_fall(*block, board)) {
 				block->abs_index.y++;
 				print_block(*block);
@@ -152,6 +155,7 @@ void fall(struct Block* block, int(*board)[BOARD_WIDTH], int speed)
 			//TODO:要编写一个函数来消去之前的部分
 		}
 	}
+	system("pause");
 	return;
 }
 //=====================================================

@@ -89,7 +89,7 @@ struct Index{
 #define EIGHT_INDEX_NUM 13
 #define NINE_INDEX_NUM 12
 #define INDEX_NUM_LIST {ZERO_INDEX_NUM,ONE_INDEEX_NUM,TWO_INDEX_NUM,THREE_INDEX_NUM,FOUR_INDEX_NUM,FIVE_INDEX_NUM,SIX_INDEX_NUM,SEVEN_INDEX_NUM,EIGHT_INDEX_NUM,NINE_INDEX_NUM}
-#define ZERO_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{1,0},{-1,-1},{1,-1},{-1,2},{0,2},{1,2}}
+#define ZERO_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{1,0},{-1,1},{1,1},{-1,2},{0,2},{1,2}}
 #define ONE_REL_INDEX {{0,-2},{0,-1},{0,0},{0,1},{0,2}}
 #define TWO_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{0,0},{-1,0},{-1,1},{-1,2},{0,2},{1,2}}
 #define THREE_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{0,0},{1,0},{1,1},{-1,2},{0,2},{1,2}}
@@ -100,7 +100,7 @@ struct Index{
 #define EIGHT_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{1,0},{-1,1},{1,1},{-1,2},{0,2},{1,2},{0,0}}
 #define NINE_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{0,0},{1,0},{1,1},{1,2},{0,2},{-1,2}}
 #define REL_INDEX_LIST {ZERO_REL_INDEX,ONE_REL_INDEX,TWO_REL_INDEX,THREE_REL_INDEX,FOUR_REL_INDEX,FIVE_REL_INDEX,SIX_REL_INDEX,SEVEN_REL_INDEX,EIGHT_REL_INDEX,NINE_REL_INDEX};
-#define INITIATE_INDEX (BOARD_TOP_WIDTH-2),(BOARD_SIDE_WIDTH+HORIZONTAL_BLOCK_NUM/2)
+#define INITIATE_INDEX (BOARD_SIDE_WIDTH+HORIZONTAL_BLOCK_NUM/2-1),(BOARD_TOP_WIDTH-2-1)
 #define MAX_REL_INDEX_NUM 15
 ////·½¿é
 struct Block {

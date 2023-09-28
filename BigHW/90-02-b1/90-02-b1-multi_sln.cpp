@@ -17,7 +17,7 @@ void game(void)
 		struct Index initiate_index { INITIATE_INDEX }, rel_index_list[NUM_BOUND][MAX_REL_INDEX_NUM] = REL_INDEX_LIST;
 		struct Block block { initiate_index, index_num_list[num], rel_index_list[num],block_color_list[num] };
 		fall(&block, board,speed);
-		system("pause");
+		//system("pause");
 		//if (!game_continue(board))
 			//break;
 		//merge(block, board);
