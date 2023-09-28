@@ -2,11 +2,11 @@
 #include"../include/cmd_console_tools.h"
 #include"../include/menu.h"
 #include"90-02-b1.h"
-void game(void)
+void game(const int VERTICAL_BLOCK_NUM,const int HORIZONTAL_BLOCK_NUM)
 {
 	int erase_num = 0, erase_sum = 0;
-	int board[BOARD_HEIGHT][BOARD_WIDTH];
-	make_board(board);
+	int board[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH];
+	make_board(board,VERTICAL_BLOCK_NUM,HORIZONTAL_BLOCK_NUM);
 	int num, next_num;
 	int speed = INITIAL_SPEED;
 	next_num = get_next_num(NUM_BOUND);

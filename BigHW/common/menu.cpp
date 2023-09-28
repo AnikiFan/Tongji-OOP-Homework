@@ -101,9 +101,14 @@ void erase_prompt(int dx, int dy, int bg_color, int fg_color, int erase_length)
 //说    明:含有错误处理,退出键若以数字开头,至多只有一位数
 //=====================================================
 int menu(const char* menu_list[], int menu_length, const char* quit_key, bool alpha, int stop,
-	bool case_sensitive, const char* prompt, const char* header, const char* bottom)
+	bool case_sensitive,const char* prompt, const char* caution, const char* header, const char* bottom,
+	int menu_screen_width,int menu_screen_height,const char*menu_font_family,int menu_font_size)
 {
 	cct_cls();
+	if (menu_length+11 > menu_screen_height)
+		menu_screen_height = menu_length + 11;
+	cct_setconsoleborder(menu_screen_width, menu_screen_height, menu_screen_width, menu_screen_height);
+	cct_setfontsize(menu_font_family, menu_font_size);
 	cout << header << endl;
 	for (int i = 0; i < menu_length; i++)
 		if (alpha)
@@ -112,7 +117,7 @@ int menu(const char* menu_list[], int menu_length, const char* quit_key, bool al
 			cout << i + 1 << "." << menu_list[i] << endl;
 	cout << quit_key << "." << "退出" << endl;
 	cout << bottom << endl;
-	cout << "[请选择:]" << endl;
+	cout << prompt << endl;
 	int x, y, input_num;
 	char input_text[TEXTLENGTH];
 	cct_getxy(x, y);

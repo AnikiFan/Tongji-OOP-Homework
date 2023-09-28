@@ -10,10 +10,10 @@
 //返 回 值:
 //说    明:
 //=====================================================
-void make_board(int matrix[BOARD_HEIGHT][BOARD_WIDTH])
+void make_board(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH],const int VERTICAL_BLOCK_NUM,const int HORIZONTAL_BLOCK_NUM)
 {
-	for (int i = 0; i < BOARD_HEIGHT; i++)
-		for (int j = 0; j < BOARD_WIDTH; j++)
+	for (int i = 0; i < MAX_BOARD_HEIGHT; i++)
+		for (int j = 0; j < MAX_BOARD_WIDTH; j++)
 			matrix[i][j] = -1;
 	for (int i = 0; i < BOARD_TOP_WIDTH + VERTICAL_BLOCK_NUM; i++)
 		for (int j = BOARD_SIDE_WIDTH; j < BOARD_SIDE_WIDTH + HORIZONTAL_BLOCK_NUM; j++)
@@ -58,7 +58,7 @@ void print_block(struct Block block)
 //返 回 值:1为可以,0为不可以
 //说    明:不检查游戏是否结束,结束下落的原因一定是执行下落的操作,而非平移等操作
 //=====================================================
-int valid_fall(struct Block block, int(*board)[BOARD_WIDTH])
+int valid_fall(struct Block block, int(*board)[MAX_BOARD_WIDTH])
 {
 	int abs_x = block.abs_index.x, abs_y = block.abs_index.y + 1;
 	for (int i = 0; i < block.index_num; i++) {
@@ -132,7 +132,7 @@ void erase_remain(int(*abs_erase_list)[2])
 //返 回 值:
 //说    明:不检查游戏是否结束,结束下落的原因一定是执行下落的操作,而非平移等操作
 //=====================================================
-void fall(struct Block* block, int(*board)[BOARD_WIDTH], int speed)
+void fall(struct Block* block, int(*board)[MAX_BOARD_WIDTH], int speed)
 {
 	long long previous = GetTickCount64(), now;
 	while (1) {
@@ -152,10 +152,8 @@ void fall(struct Block* block, int(*board)[BOARD_WIDTH], int speed)
 			}
 			else
 				return;
-			//TODO:要编写一个函数来消去之前的部分
 		}
 	}
-	system("pause");
 	return;
 }
 //=====================================================
@@ -165,7 +163,7 @@ void fall(struct Block* block, int(*board)[BOARD_WIDTH], int speed)
 //返 回 值:1为游戏继续,0为游戏结束
 //说    明:
 //=====================================================
-int game_continue(int(*board)[BOARD_WIDTH])
+int game_continue(int(*board)[MAX_BOARD_WIDTH])
 {
 	return 0;
 }
@@ -176,7 +174,7 @@ int game_continue(int(*board)[BOARD_WIDTH])
 //返 回 值:
 //说    明:
 //=====================================================
-void merge(struct Block block, int(*board)[BOARD_WIDTH])
+void merge(struct Block block, int(*board)[MAX_BOARD_WIDTH])
 {
 	return;
 }
@@ -187,7 +185,7 @@ void merge(struct Block block, int(*board)[BOARD_WIDTH])
 //返 回 值:消除行数
 //说    明:没有连锁反应,只需每一行检查一边即可
 //=====================================================
-int pop(int(*board)[BOARD_WIDTH])
+int pop(int(*board)[MAX_BOARD_WIDTH])
 {
 	return 0;
 }

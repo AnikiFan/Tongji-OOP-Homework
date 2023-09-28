@@ -2,8 +2,6 @@
 #include"../include/cmd_console_tools.h"
 //大小
 ////BLOCK
-#define HORIZONTAL_BLOCK_NUM 21
-#define VERTICAL_BLOCK_NUM 26
 #define BLOCK_WIDTH 6
 #define BLOCK_HEIGHT 3
 ////GAMEBOARD
@@ -21,16 +19,18 @@
 ////CONSOLE
 #define CONSOLE_WIDTH (GAMEBOARD_WIDTH+SCOREBOARD_WIDTH+23)
 #define CONSOLE_HEIGHT (GAMEBOARD_HEIGHT+GAMEBOARD_Y+8)
-#define CONSOLE_BUFFER_WIDTH CONSOLE_WIDTH
-#define CONSOLE_BUFFER_HEIGHT CONSOLE_HEIGHT
-#define CONSOLE_FONT_SIZE 18
+#define CONSOLE_FONT_SIZE 18+5*(1-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM)/(MAX_HORIZONTAL_BLOCK_NUM*MAX_VERTICAL_BLOCK_NUM))
 ////MENU
 #define MENU_LIST_LENGTH 6
 ////BOARD
 #define BOARD_SIDE_WIDTH 2
 #define BOARD_TOP_WIDTH 5
-#define BOARD_HEIGHT (VERTICAL_BLOCK_NUM+BOARD_TOP_WIDTH+BOARD_SIDE_WIDTH)
-#define BOARD_WIDTH (HORIZONTAL_BLOCK_NUM+2*BOARD_SIDE_WIDTH)
+#define MAX_VERTICAL_BLOCK_NUM 26
+#define MAX_HORIZONTAL_BLOCK_NUM 21
+#define MAX_BOARD_HEIGHT  (MAX_VERTICAL_BLOCK_NUM + BOARD_TOP_WIDTH + BOARD_SIDE_WIDTH)
+#define BOARD_HEIGHT  (VERTICAL_BLOCK_NUM + BOARD_TOP_WIDTH + BOARD_SIDE_WIDTH)
+#define MAX_BOARD_WIDTH ( MAX_HORIZONTAL_BLOCK_NUM + 2 * BOARD_SIDE_WIDTH)
+#define BOARD_WIDTH ( HORIZONTAL_BLOCK_NUM + 2 * BOARD_SIDE_WIDTH)
 ////其他
 #define NUM_BOUND 10
 #define INITIAL_SPEED 1000
@@ -67,6 +67,8 @@
 //文字
 #define CONSOLE_FONT_FAMILY "点阵字体"
 #define MENU_LIST {"打印边框和得分板","单个数字下落","单个数字下落时可平移和加速下落","单个数字下落时可进行所有操作","两个数字下落,可叠加","完整版"}
+#define VERTICAL_BLOCK_NUM_LIST {"18","19","20","21","22","23","24","25","26"}
+#define HORIZONTAL_BLOCK_NUM_LIST {"12","15","18","21"}
 #define QUIT_KEY "Q"
 #define SCOREBOARD_INFO_LIST {"下一个数字:","当前得分:","当前速度:","已消除行数:"}
 #define BLOCK {"╔═╗", "║★║","╚═╝"  }
@@ -112,12 +114,12 @@ struct Block {
 };
 
 //操控
-void make_board(int matrix[BOARD_HEIGHT][BOARD_WIDTH]);
-void fall(struct Block* block, int(*board)[BOARD_WIDTH],int speed);
-int game_continue(int(*board)[BOARD_WIDTH]);
-void merge(struct Block block,int(*board)[BOARD_WIDTH]);
-int pop(int(*board)[BOARD_WIDTH]);
+void make_board(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH],const int VERTICAL_BLOCK_NUM,int HORIZONTAL_BLOCK_NUM);
+void fall(struct Block* block, int(*board)[MAX_BOARD_WIDTH],int speed);
+int game_continue(int(*board)[MAX_BOARD_WIDTH]);
+void merge(struct Block block,int(*board)[MAX_BOARD_WIDTH]);
+int pop(int(*board)[MAX_BOARD_WIDTH]);
 void update_info(int erase_sum, int next_num);
 
 //解答
-void game(void);
+void game(const int VERTICAL_BLOCK_NUM,const int HORIZONTAL_BLOCK_NUM);
