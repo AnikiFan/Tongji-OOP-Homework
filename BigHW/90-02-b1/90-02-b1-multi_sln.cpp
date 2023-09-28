@@ -26,7 +26,7 @@ void game(const int VERTICAL_BLOCK_NUM, const int HORIZONTAL_BLOCK_NUM, const in
 		merge(block, board);
 		if (!game_continue(board, block))
 			break;
-		//erase_num = pop_and_fall(board);
+		erase_num = pop_and_fall(board);
 		//erase_sum += erase_num;
 		//update_info(erase_sum, next_num);
 	}

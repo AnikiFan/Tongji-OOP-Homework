@@ -293,7 +293,7 @@ int game_continue(int(*board)[MAX_BOARD_WIDTH], struct Block block)
 void merge(struct Block block, int(*board)[MAX_BOARD_WIDTH])
 {
 	for (int i = 0; i < block.index_num; i++) {
-		board[block.abs_index.y + block.rel_index[i].y][block.abs_index.x + block.rel_index[i].x] = 1;
+		board[block.abs_index.y + block.rel_index[i].y][block.abs_index.x + block.rel_index[i].x] = block.color;
 	}
 	return;
 }
@@ -307,37 +307,43 @@ void merge(struct Block block, int(*board)[MAX_BOARD_WIDTH])
 int pop_and_fall(int(*board)[MAX_BOARD_WIDTH])
 {
 	int sum = 0;
-	for (int i = 0; i < MAX_VERTICAL_BLOCK_NUM; i++) {
-		int pop = 1;
-		for (int j = 0; j < MAX_HORIZONTAL_BLOCK_NUM; j++)
-			if (board[i][j] != 1 && board[i][j] != -1)
+	for (int i = 0; i < MAX_BOARD_HEIGHT; i++) {
+		int pop = 1,pos =0;
+		for (int j = 0; j < MAX_BOARD_WIDTH; j++) {
+			if (!board[i][j])
 				pop = 0;
-		if (pop) {
-			for (int j = 0; j < MAX_HORIZONTAL_BLOCK_NUM; j++)
-				if (board[i][j] == 1) {
+			if (board[i][j] > 0)
+				pos = 1;
+		}
+		if (pop&&pos) {
+			for (int j = 0; j < MAX_BOARD_HEIGHT; j++)
+				if (board[i][j] >0) {
 					board[i][j] = 0;
-					struct point point = from_index_to_coordinate(i, j);
+					struct point point = from_index_to_coordinate(j,i);
 					make_colorblock(point.x, point.y, BLOCK_WIDTH, BLOCK_HEIGHT, GAMEBOARD_COLOR);
 				}
 			sum++;
 		}
 	}
-	for (int i = MAX_VERTICAL_BLOCK_NUM - 1; i >= 0; i--) {
-		for (int j = i; j < MAX_VERTICAL_BLOCK_NUM - 1; j++) {
+	if (!sum)
+		return 0;
+	for (int i = MAX_BOARD_HEIGHT - 1; i >= 0; i--) {
+		for (int j = i; j <= MAX_BOARD_HEIGHT- 1; j++) {
 			int this_empty = 1, under_empty = 1;
-			for (int k = 0; k < MAX_HORIZONTAL_BLOCK_NUM; k++) {
-				if (board[j][k] != -1 && board[j][k])
+			for (int k = 0; k < MAX_BOARD_WIDTH; k++) {
+				if ( board[j][k]>0)
 					this_empty = 0;
-				if (board[j + 1][k] != -1 && board[j + 1][k])
+				if ( board[j + 1][k]>0)
 					under_empty = 0;
 				if (!this_empty && under_empty) {
-					for (int l = 0; l < MAX_HORIZONTAL_BLOCK_NUM; l++)
+					for (int l = 0; l < MAX_BOARD_WIDTH; l++)
 						if (board[j][l] != -1 && board[j][l]) {
 							board[j + 1][l] = board[j][l];
 							board[j][l] = 0;
-							struct point point = from_index_to_coordinate(j + 1, l);
+							struct point point = from_index_to_coordinate( l,j+1);
 							const char* block[] = BLOCK;
-							make_block(point.x, point.y, block, 3, GAMEBOARD_COLOR, BLOCK_FRAME_COLOR);
+							make_block(point.x, point.y, block, 3, board[j+1][l], BLOCK_FRAME_COLOR);
+							make_colorblock(point.x, point.y - BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT, GAMEBOARD_COLOR);
 						}
 					break;
 				}
