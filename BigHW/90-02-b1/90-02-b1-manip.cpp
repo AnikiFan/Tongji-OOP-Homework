@@ -4,6 +4,7 @@
 #include"../include/cmd_console_tools.h"
 #include"../include/menu.h"
 #include"90-02-b1.h"
+using namespace std;
 //=====================================================
 //函 数 名:make_board
 //功能描述:制作用于模拟游戏的矩阵
@@ -202,15 +203,15 @@ struct Block other_opt(struct Block block, int(*board)[MAX_BOARD_WIDTH], const i
 {
 	if (valid_move(block, board, opt)) {
 		switch (opt) {
-			case 1:
-				rotate_and_print(&block);
-				break;
-			case 3:
-				horizontal_move(&block, -1);
-				break;
-			case 4:
-				horizontal_move(&block, 1);
-				break;
+		case 1:
+			rotate_and_print(&block);
+			break;
+		case 3:
+			horizontal_move(&block, -1);
+			break;
+		case 4:
+			horizontal_move(&block, 1);
+			break;
 		}
 	}
 	return block;
@@ -278,7 +279,7 @@ int game_continue(int(*board)[MAX_BOARD_WIDTH], struct Block block)
 {
 	for (int i = 0; i < BOARD_TOP_WIDTH; i++) {
 		for (int j = BOARD_SIDE_WIDTH; j < MAX_HORIZONTAL_BLOCK_NUM; j++)
-			if (board[i][j] == 1)
+			if (board[i][j] >= 1)
 				return 0;
 	}
 	return 1;
@@ -298,6 +299,49 @@ void merge(struct Block block, int(*board)[MAX_BOARD_WIDTH])
 	return;
 }
 //=====================================================
+//函 数 名:is_ele
+//功能描述:判断该元素为某分块的一部分
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+int is_ele(int num, int index)
+{
+	return num > 0;
+}
+//=====================================================
+//函 数 名:is_null
+//功能描述:判断该元素为空
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+int is_null(int num, int index)
+{
+	return num==0;
+}//=====================================================
+//函 数 名:not_ele
+//功能描述:判断该元素不为任何分块的一部分
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+int not_ele(int num, int index)
+{
+	return num == -1||num==0;
+}
+//=====================================================
+//函 数 名:not_null
+//功能描述:判断该元素非空
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+int not_null(int num, int index)
+{
+	return num != 0;
+}
+//=====================================================
 //函 数 名:pop_and_fall
 //功能描述:进行消除操作,并在图形中显示
 //输入参数:游戏矩阵
@@ -308,18 +352,11 @@ int pop_and_fall(int(*board)[MAX_BOARD_WIDTH])
 {
 	int sum = 0;
 	for (int i = 0; i < MAX_BOARD_HEIGHT; i++) {
-		int pop = 1,pos =0;
-		for (int j = 0; j < MAX_BOARD_WIDTH; j++) {
-			if (!board[i][j])
-				pop = 0;
-			if (board[i][j] > 0)
-				pos = 1;
-		}
-		if (pop&&pos) {
+		if (list_any(board[i],MAX_HORIZONTAL_BLOCK_NUM,is_ele) && list_all(board[i],MAX_HORIZONTAL_BLOCK_NUM,not_null)) {
 			for (int j = 0; j < MAX_BOARD_HEIGHT; j++)
-				if (board[i][j] >0) {
+				if (board[i][j] > 0) {
 					board[i][j] = 0;
-					struct point point = from_index_to_coordinate(j,i);
+					struct point point = from_index_to_coordinate(j, i);
 					make_colorblock(point.x, point.y, BLOCK_WIDTH, BLOCK_HEIGHT, GAMEBOARD_COLOR);
 				}
 			sum++;
@@ -328,25 +365,20 @@ int pop_and_fall(int(*board)[MAX_BOARD_WIDTH])
 	if (!sum)
 		return 0;
 	for (int i = MAX_BOARD_HEIGHT - 1; i >= 0; i--) {
-		for (int j = i; j <= MAX_BOARD_HEIGHT- 1; j++) {
-			int this_empty = 1, under_empty = 1;
-			for (int k = 0; k < MAX_BOARD_WIDTH; k++) {
-				if ( board[j][k]>0)
-					this_empty = 0;
-				if ( board[j + 1][k]>0)
-					under_empty = 0;
-				if (!this_empty && under_empty) {
-					for (int l = 0; l < MAX_BOARD_WIDTH; l++)
-						if (board[j][l] != -1 && board[j][l]) {
-							board[j + 1][l] = board[j][l];
-							board[j][l] = 0;
-							struct point point = from_index_to_coordinate( l,j+1);
-							const char* block[] = BLOCK;
-							make_block(point.x, point.y, block, 3, board[j+1][l], BLOCK_FRAME_COLOR);
-							make_colorblock(point.x, point.y - BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT, GAMEBOARD_COLOR);
-						}
-					break;
-				}
+		for (int j = i; j <= MAX_BOARD_HEIGHT - 1; j++) {
+			if (list_any(board[j],MAX_HORIZONTAL_BLOCK_NUM,is_ele) 
+				&& list_all(board[j+1],MAX_HORIZONTAL_BLOCK_NUM,not_ele)
+				&& list_any(board[j+1],MAX_HORIZONTAL_BLOCK_NUM,is_null)) {
+				for (int l = 0; l < MAX_BOARD_WIDTH; l++)
+					if (board[j][l] != -1 && board[j][l]) {
+						board[j + 1][l] = board[j][l];
+						board[j][l] = 0;
+						struct point point = from_index_to_coordinate(l, j + 1);
+						const char* block[] = BLOCK;
+						make_block(point.x, point.y, block, 3, board[j + 1][l], BLOCK_FRAME_COLOR);
+						make_colorblock(point.x, point.y - BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT, GAMEBOARD_COLOR);
+					}
+				break;
 			}
 		}
 	}
@@ -359,8 +391,22 @@ int pop_and_fall(int(*board)[MAX_BOARD_WIDTH])
 //返 回 值:
 //说    明:
 //=====================================================
-void update_info(int erase_sum, int next_num)
+void update_info(int erase_sum, int next_num,int score,int speed,const int HORIZONTAL_BLOCK_NUM)
 {
+	cct_showint(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12,SCOREBOARD_Y+1+1, next_num,SCOREBOARD_COLOR,SCOREBOARD_INFO_COLOR);
+	cct_showint(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12, SCOREBOARD_Y + 1 + 3, score,SCOREBOARD_COLOR,SCOREBOARD_INFO_COLOR);
+	if (speed == 1000) {
+cct_showint(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12, SCOREBOARD_Y + 1 + 5, 1, SCOREBOARD_COLOR ,SCOREBOARD_INFO_COLOR);
+	cout << ".0s/层";
+	}
+	else {
+		cct_showstr(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12, SCOREBOARD_Y + 1 + 5, "0." ,SCOREBOARD_COLOR, SCOREBOARD_INFO_COLOR);
+		cout << speed/100<<"s/层";
+	}
+	cct_showint(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12, SCOREBOARD_Y + 1 + 7, erase_sum, SCOREBOARD_COLOR ,SCOREBOARD_INFO_COLOR);
+	system("pause");
+	//cct_setcolor();
+	//cct_gotoxy(0, 0);
 	return;
 }
 

@@ -586,5 +586,67 @@ int get_arrow_key()
 	}
 	return 0;
 }
-
+//=====================================================
+//函 数 名:list_any
+//功能描述:判断整型列表中是否有任一元素满足所给函数
+//输入参数:整型列表,列表大小,条件函数,第一个参量为元素,第二个参量为指标
+//返 回 值:1为真,0为假
+//说    明:
+//=====================================================
+int list_any(int* list, int list_size, int(*condition)(int, int))
+{
+	for (int i = 0; i < list_size; i++) {
+		if (condition(list[i], i))
+			return 1;
+	}
+	return 0;
+}
+//=====================================================
+//函 数 名:list_all
+//功能描述:判断整型列表中是否有所有元素满足所给函数
+//输入参数:整型列表,列表大小,条件函数,第一个参量为元素,第二个参量为指标
+//返 回 值:1为真,0为假
+//说    明:
+//=====================================================
+int list_all(int* list, int list_size, int(*condition)(int, int))
+{
+	for (int i = 0; i < list_size; i++) {
+		if (!condition(list[i], i))
+			return 0;
+	}
+	return 1;
+}
+//=====================================================
+//函 数 名:list_valid_num
+//功能描述:判断整型列表中满足所给函数的元素个数
+//输入参数:整型列表,列表大小,条件函数,第一个参量为元素,第二个参量为指标
+//返 回 值:
+//说    明:
+//=====================================================
+int list_valid_num(int* list, int list_size, int(*condition)(int, int))
+{
+	int sum = 0;
+	for (int i = 0; i < list_size; i++) {
+		if (condition(list[i], i))
+			sum++;
+	}
+	return sum;
+}
+//=====================================================
+//函 数 名:list_copy
+//功能描述:将一个整型列表中的元素复制至另一列表,也可以选择为剪切至
+//输入参数:src,dst,选项,0为复制,0为剪切,长度
+//返 回 值:
+//说    明:
+//=====================================================
+void  list_copy(int* dst, int* src, int list_size, const int OPTION)
+{
+	for (int i = 0; i < list_size;i++) {
+		dst[i] = src[i];
+	}
+	if (OPTION)
+		for (int i = 0; i < list_size; i++)
+			src[i] = 0;
+	return;
+}
 

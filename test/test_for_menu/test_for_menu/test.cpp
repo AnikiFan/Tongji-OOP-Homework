@@ -21,8 +21,13 @@ int main()
 	//cout << GetTickCount() << endl;
 	//cout << GetTickCount() << endl;
 	//cout << GetTickCount() << endl;
-	cout << _getch() << endl;
-	cout << _getch() << endl;
-	cout << _getch() << endl;
+	//for (int i = 20; i < 50; i++) {
+		//cct_setfontsize("ĞÂËÎÌå", i);
+		//cout << i*100000 << endl;
+		//Sleep(2000);
+	//}
+	cct_setconsoleborder(100, 100, 100, 100);
+	for (int i = 0; i < 100; i++)
+		cout << i << endl;
 	return 0;
 }

@@ -43,10 +43,10 @@ int main()
 	};
 	int level;
 	/* demo中首先执行此句，将cmd窗口设置为40行x120列（缓冲区宽度120列，行数9000行，即cmd窗口右侧带有垂直滚动杆）*/
-	cct_setconsoleborder(120, 40, 120, 9000);
+
 	while (1) {
 		inputnumber = '0'+menu(menu_list, 9, "0");
-
+	cct_setconsoleborder(120, 40, 120, 9000);
 		//cout <<(int)inputnumber << endl;
 		//return 0;
 

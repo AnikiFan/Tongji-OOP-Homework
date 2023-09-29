@@ -4,7 +4,7 @@
 #define MENU_SCREEN_WIDTH 45
 #define TEXTLENGTH (2*MENU_SCREEN_WIDTH)
 #define MENU_SCREEN_HEIGHT 12
-#define MENU_FONT_FAMILY "宋体"
+#define MENU_FONT_FAMILY "新宋体"
 #define MENU_FONT_SIZE 20
 //交互类函数
 int menu(const char* menu_list[], int menu_length, const char* quit_key, bool alpha = false,int stop = 500,bool case_sensitive = false,const char * prompt ="[请选择:]",
@@ -48,6 +48,10 @@ int begin_with(const char* x, const char* y, int case_sensitive = 0);
 //数组类函数
 void matrix_iteration(int* p, int row_num, int col_num, void(*manipulation)(int, int, int));
 void list_iteration(int* p, int list_size, void(*manipulation)(int, int));
-//调试类函数
+int list_any(int* list, int list_size, int(*condition)(int, int));
+int list_all(int* list, int list_size, int(*condition)(int, int));
+int list_valid_num(int* list, int list_size, int(*condition)(int, int));
+void  list_copy(int* dst, int* src, int list_size, const int OPTION);
+//调试类函数 
 void check_element(int* p, int row_num, int col_num);
 
