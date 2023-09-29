@@ -13,7 +13,7 @@ void game(const int VERTICAL_BLOCK_NUM, const int HORIZONTAL_BLOCK_NUM, const in
 	//speed = 200;
 	num = get_next_num(NUM_BOUND);
 	//≤‚ ‘”√
-	num = 1;
+	//num = 1;
 	//≤‚ ‘”√
 	while (1) {
 		if (score / 15 >= 8)
@@ -58,7 +58,7 @@ void game(const int VERTICAL_BLOCK_NUM, const int HORIZONTAL_BLOCK_NUM, const in
 		}
 		num = next_num;
 		//≤‚ ‘”√
-		num = 1;
+		//num = 1;
 		//≤‚ ‘”√
 	}
 	return;

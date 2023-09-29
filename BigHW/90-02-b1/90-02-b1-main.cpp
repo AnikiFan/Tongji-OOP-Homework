@@ -8,6 +8,7 @@ using namespace std;
 
 int main()
 {
+	cct_setconsoletitle(CONSOLE_TITLE);
 	while (1) {
 		const char* menu_list[] = MENU_LIST, * scoreboard_info_list[] = SCOREBOARD_INFO_LIST;
 		const char* vertical_block_num_list[] = VERTICAL_BLOCK_NUM_LIST;

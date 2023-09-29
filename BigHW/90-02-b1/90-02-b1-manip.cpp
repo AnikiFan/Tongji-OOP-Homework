@@ -352,8 +352,8 @@ int pop_and_fall(int(*board)[MAX_BOARD_WIDTH])
 {
 	int sum = 0;
 	for (int i = 0; i < MAX_BOARD_HEIGHT; i++) {
-		if (list_any(board[i],MAX_HORIZONTAL_BLOCK_NUM,is_ele) && list_all(board[i],MAX_HORIZONTAL_BLOCK_NUM,not_null)) {
-			for (int j = 0; j < MAX_BOARD_HEIGHT; j++)
+		if (list_any(board[i],MAX_BOARD_WIDTH,is_ele) && list_all(board[i], MAX_BOARD_WIDTH,not_null)) {
+			for (int j = 0; j < MAX_BOARD_WIDTH; j++)
 				if (board[i][j] > 0) {
 					board[i][j] = 0;
 					struct point point = from_index_to_coordinate(j, i);
@@ -366,11 +366,11 @@ int pop_and_fall(int(*board)[MAX_BOARD_WIDTH])
 		return 0;
 	for (int i = MAX_BOARD_HEIGHT - 1; i >= 0; i--) {
 		for (int j = i; j <= MAX_BOARD_HEIGHT - 1; j++) {
-			if (list_any(board[j],MAX_HORIZONTAL_BLOCK_NUM,is_ele) 
-				&& list_all(board[j+1],MAX_HORIZONTAL_BLOCK_NUM,not_ele)
-				&& list_any(board[j+1],MAX_HORIZONTAL_BLOCK_NUM,is_null)) {
+			if (list_any(board[j], MAX_BOARD_WIDTH,is_ele)
+				&& list_all(board[j+1], MAX_BOARD_WIDTH,not_ele)
+				&& list_any(board[j+1], MAX_BOARD_WIDTH,is_null)) {
 				for (int l = 0; l < MAX_BOARD_WIDTH; l++)
-					if (board[j][l] != -1 && board[j][l]) {
+					if ( board[j][l]>=1) {
 						board[j + 1][l] = board[j][l];
 						board[j][l] = 0;
 						struct point point = from_index_to_coordinate(l, j + 1);
@@ -404,7 +404,8 @@ cct_showint(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12, SCOREBOARD_Y + 1 + 5, 1, 
 		cout << speed/100<<"s/²ã";
 	}
 	cct_showint(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12, SCOREBOARD_Y + 1 + 7, erase_sum, SCOREBOARD_COLOR ,SCOREBOARD_INFO_COLOR);
-	system("pause");
+	//cct_gotoxy(0, 0);
+	//system("pause");
 	//cct_setcolor();
 	//cct_gotoxy(0, 0);
 	return;
