@@ -21,5 +21,14 @@
     <ClCompile Include="menu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="calc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="list.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="make.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

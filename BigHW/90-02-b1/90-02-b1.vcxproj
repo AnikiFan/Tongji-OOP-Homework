@@ -139,9 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\calc.cpp" />
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
+    <ClCompile Include="..\common\list.cpp" />
+    <ClCompile Include="..\common\make.cpp" />
     <ClCompile Include="..\common\menu.cpp" />
-    <ClCompile Include="90-02-b1-multi_sln.cpp" />
     <ClCompile Include="90-02-b1-manip.cpp" />
     <ClCompile Include="90-02-b1-main.cpp" />
   </ItemGroup>

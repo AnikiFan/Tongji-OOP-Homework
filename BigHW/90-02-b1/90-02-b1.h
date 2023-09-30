@@ -18,7 +18,7 @@
 #define SCOREBOARD_INFO_LENGTH 4
 ////CONSOLE
 #define CONSOLE_WIDTH (GAMEBOARD_WIDTH+SCOREBOARD_WIDTH+23)
-#define CONSOLE_HEIGHT (GAMEBOARD_HEIGHT+GAMEBOARD_Y+10)
+#define CONSOLE_HEIGHT (GAMEBOARD_HEIGHT+GAMEBOARD_Y+9)
 #define CONSOLE_FONT_SIZE 16-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM>15*20)-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM>18*23)-(HORIZONTAL_BLOCK_NUM*VERTICAL_BLOCK_NUM>21*25)
 ////MENU
 #define MENU_LIST_LENGTH 6
@@ -41,14 +41,16 @@
 #define GAMEBOARD_X 3
 #define GAMEBOARD_Y 1
 ////SCOREBOARD
-#define SCOREBOARD_X (GAMEBOARD_X+GAMEBOARD_WIDTH+10)
+#define SCOREBOARD_X (GAMEBOARD_X+GAMEBOARD_WIDTH+8)
 #define SCOREBOARD_Y GAMEBOARD_Y
 #define SCOREBOARD_INFO_X (SCOREBOARD_X+SCOREBOARD_SIDE_WIDTH)
 #define SCOREBOARD_INFO_Y (SCOREBOARD_Y+2)
 ////PROMPT
 #define PROMPT_X 0
 #define PROMPT_Y (CONSOLE_HEIGHT-5)
-
+////SHOWCASE
+#define SHOWCASE_X SCOREBOARD_X+3
+#define SHOWCASE_Y SCOREBOARD_Y+SCOREBOARD_HEIGHT+4
 
 //颜色
 ////GAMEBOARD
@@ -63,6 +65,10 @@
 ////BLOCK
 #define BLOCK_COLOR_LIST {COLOR_BLUE,COLOR_GREEN,COLOR_CYAN,COLOR_RED,COLOR_YELLOW,COLOR_PINK,COLOR_HBLACK,COLOR_HBLUE,COLOR_HGREEN,COLOR_HRED}
 #define BLOCK_FRAME_COLOR COLOR_HWHITE
+////SHOWCASE
+#define SHOWCASE_SIDE_COLOR GAMEBOARD_SIDE_COLOR
+#define SHOWCASE_COLOR GAMEBOARD_COLOR
+#define SHOWCASE_SHADOW_COLOR COLOR_PINK
 
 //文字
 #define CONSOLE_TITLE "数字俄罗斯分块"
@@ -95,7 +101,7 @@ struct Index{
 #define ZERO_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{1,-1},{-1,0},{1,0},{-1,1},{1,1},{-1,2},{0,2},{1,2}}
 #define ONE_REL_INDEX {{0,-2},{0,-1},{0,0},{0,1},{0,2}}
 #define TWO_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{0,0},{-1,0},{-1,1},{-1,2},{0,2},{1,2}}
-#define THREE_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{1,0},{0,0},{1,0},{1,1},{-1,2},{0,2},{1,2}}
+#define THREE_REL_INDEX {{-1,-2},{0,-2},{1,-2},{1,-1},{-1,0},{0,0},{1,0},{1,1},{-1,2},{0,2},{1,2}}
 #define FOUR_REL_INDEX {{-1,-2},{-1,-1},{-1,0},{0,0},{1,0},{1,-2},{1,-1},{1,1},{1,2}}
 #define FIVE_REL_INDEX {{1,-2},{0,-2},{-1,-2},{-1,-1},{-1,0},{0,0},{1,0},{1,1},{1,2},{-1,2},{0,2}}
 #define SIX_REL_INDEX {{-1,-2},{0,-2},{1,-2},{-1,-1},{-1,0},{0,0},{1,0},{-1,1},{-1,2},{0,2},{1,2},{1,1}}
@@ -114,12 +120,11 @@ struct Block {
 };
 
 //操控
-void make_board(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH],const int VERTICAL_BLOCK_NUM,int HORIZONTAL_BLOCK_NUM);
+void make_gameboard(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH],const int VERTICAL_BLOCK_NUM,int HORIZONTAL_BLOCK_NUM);
 void fall(struct Block* block, int(*board)[MAX_BOARD_WIDTH],const int speed,const int OPTION);
 int game_continue(int(*board)[MAX_BOARD_WIDTH],struct Block block);
 void merge(struct Block block,int(*board)[MAX_BOARD_WIDTH]);
 int pop_and_fall(int(*board)[MAX_BOARD_WIDTH]);
 void update_info(int erase_sum, int next_num,int score,int speed,const int HORIZONTAL_BLOCK_NUM);
+void showcase(int next_num,const int HORIZONTAL_BLOCK_NUM);
 
-//解答
-void game(const int VERTICAL_BLOCK_NUM,const int HORIZONTAL_BLOCK_NUM,const int OPTION);

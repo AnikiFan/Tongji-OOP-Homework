@@ -27,7 +27,13 @@
     <ClCompile Include="90-02-b1-manip.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="90-02-b1-multi_sln.cpp">
+    <ClCompile Include="..\common\calc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\list.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\make.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

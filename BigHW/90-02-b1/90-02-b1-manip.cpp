@@ -3,6 +3,9 @@
 #include<conio.h>
 #include"../include/cmd_console_tools.h"
 #include"../include/menu.h"
+#include"../include/calc.h"
+#include"../include/make.h"
+#include"../include/list.h"
 #include"90-02-b1.h"
 using namespace std;
 //=====================================================
@@ -12,7 +15,7 @@ using namespace std;
 //返 回 值:
 //说    明:
 //=====================================================
-void make_board(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH], const int VERTICAL_BLOCK_NUM, const int HORIZONTAL_BLOCK_NUM)
+void make_gameboard(int matrix[MAX_BOARD_HEIGHT][MAX_BOARD_WIDTH], const int VERTICAL_BLOCK_NUM, const int HORIZONTAL_BLOCK_NUM)
 {
 	for (int i = 0; i < MAX_BOARD_HEIGHT; i++)
 		for (int j = 0; j < MAX_BOARD_WIDTH; j++)
@@ -410,5 +413,26 @@ cct_showint(SCOREBOARD_X + SCOREBOARD_SIDE_WIDTH + 12, SCOREBOARD_Y + 1 + 5, 1, 
 	//cct_gotoxy(0, 0);
 	return;
 }
-
+//=====================================================
+//函 数 名:showcase
+//功能描述:展示下一个方块
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+void showcase(int next_num,const int HORIZONTAL_BLOCK_NUM)
+{
+	make_colorblock(SHOWCASE_X+BOARD_SIDE_WIDTH, SHOWCASE_Y+1, 3 * BLOCK_WIDTH, 5 * BLOCK_HEIGHT, SHOWCASE_COLOR);
+	int index_num_list[NUM_BOUND] = INDEX_NUM_LIST, block_color_list[NUM_BOUND] = BLOCK_COLOR_LIST;
+	struct Index initiate_index { 0,0 }, rel_index_list[NUM_BOUND][MAX_REL_INDEX_NUM] = REL_INDEX_LIST;
+	struct Block block { initiate_index, index_num_list[next_num], rel_index_list[next_num], block_color_list[next_num] };
+	const char* block_list[] = BLOCK;
+	for (int i = 0; i < block.index_num; i++) {
+		int rel_x = block.rel_index[i].x, rel_y = block.rel_index[i].y;
+		struct point point = linear_transformation(rel_x, rel_y,BLOCK_WIDTH,0,0,BLOCK_HEIGHT,
+			SHOWCASE_X+BLOCK_WIDTH+BOARD_SIDE_WIDTH,SHOWCASE_Y+2*BLOCK_HEIGHT+1);
+		make_block(point.x, point.y, block_list, 3, block.color, BLOCK_FRAME_COLOR);
+	}
+	return;
+}
 

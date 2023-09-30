@@ -21,5 +21,14 @@
     <ClInclude Include="menu.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="calc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="make.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="list.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

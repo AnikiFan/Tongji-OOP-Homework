@@ -139,7 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="calc.cpp" />
     <ClCompile Include="cmd_console_tools.cpp" />
+    <ClCompile Include="list.cpp" />
+    <ClCompile Include="make.cpp" />
     <ClCompile Include="menu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
