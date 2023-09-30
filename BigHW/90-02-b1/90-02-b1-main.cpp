@@ -2,9 +2,9 @@
 #include <iostream>
 #include<windows.h>
 #include "../include/cmd_console_tools.h"
-#include "../include/menu.h"
-#include"../include/calc.h"
-#include"../include/make.h"
+#include "../include/common_interact.h"
+#include"../include/common_calc.h"
+#include"../include/common_make.h"
 #include"90-02-b1.h"
 using namespace std;
 void game(const int VERTICAL_BLOCK_NUM, const int HORIZONTAL_BLOCK_NUM, const int OPTION)

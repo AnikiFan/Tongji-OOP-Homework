@@ -139,11 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="calc.h" />
+    <ClInclude Include="common_calc.h" />
     <ClInclude Include="cmd_console_tools.h" />
-    <ClInclude Include="list.h" />
-    <ClInclude Include="make.h" />
-    <ClInclude Include="menu.h" />
+    <ClInclude Include="common_list.h" />
+    <ClInclude Include="common_make.h" />
+    <ClInclude Include="common_interact.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

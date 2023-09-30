@@ -1,4 +1,8 @@
-﻿  90-02-b1-main.cpp
+﻿  common_calc.cpp
+  common_interact.cpp
+  common_list.cpp
+  common_make.cpp
   90-02-b1-manip.cpp
+  90-02-b1-main.cpp
   正在生成代码...
   90-02-b1.vcxproj -> D:\Coding\homework_for_OOP\BigHW\Debug\90-02-b1.exe

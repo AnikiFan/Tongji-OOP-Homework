@@ -18,16 +18,16 @@
     <ClInclude Include="cmd_console_tools.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="menu.h">
+    <ClInclude Include="common_interact.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="calc.h">
+    <ClInclude Include="common_calc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="make.h">
+    <ClInclude Include="common_make.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="list.h">
+    <ClInclude Include="common_list.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

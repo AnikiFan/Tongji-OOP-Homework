@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\calc.cpp" />
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
-    <ClCompile Include="..\common\list.cpp" />
-    <ClCompile Include="..\common\make.cpp" />
-    <ClCompile Include="..\common\menu.cpp" />
+    <ClCompile Include="..\common\common_calc.cpp" />
+    <ClCompile Include="..\common\common_interact.cpp" />
+    <ClCompile Include="..\common\common_list.cpp" />
+    <ClCompile Include="..\common\common_make.cpp" />
     <ClCompile Include="90-01-b2-base.cpp" />
     <ClCompile Include="90-01-b2-console.cpp" />
     <ClCompile Include="90-01-b2-main.cpp" />
@@ -31,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\cmd_console_tools.h" />
+    <ClInclude Include="..\include\common_interact.h" />
     <ClInclude Include="90-01-b2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

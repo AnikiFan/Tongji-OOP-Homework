@@ -1,3 +1,4 @@
+/* 2254298 大数据 范潇 */
 #pragma once
 #include"../include/cmd_console_tools.h"
 //大小
@@ -71,7 +72,7 @@
 #define SHOWCASE_SHADOW_COLOR COLOR_PINK
 
 //文字
-#define CONSOLE_TITLE "数字俄罗斯分块"
+#define CONSOLE_TITLE "数字俄罗斯方块"
 #define CONSOLE_FONT_FAMILY "点阵字体"
 #define MENU_LIST {"打印边框和得分板","单个数字下落","多个数字叠加","多个数字可加速下落","除更新得分板以及速度以外的所有功能","完整版"}
 #define VERTICAL_BLOCK_NUM_LIST {"18","19","20","21","22","23","24","25","26"}

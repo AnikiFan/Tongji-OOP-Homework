@@ -18,16 +18,16 @@
     <ClCompile Include="cmd_console_tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="menu.cpp">
+    <ClCompile Include="common_interact.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="calc.cpp">
+    <ClCompile Include="common_calc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="list.cpp">
+    <ClCompile Include="common_list.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="make.cpp">
+    <ClCompile Include="common_make.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

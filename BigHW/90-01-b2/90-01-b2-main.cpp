@@ -1,6 +1,6 @@
 /* 2254298 ´óÊı¾İ ·¶äì */
 #include"90-01-b2.h"
-#include"../include/menu.h"
+#include"../include/common_interact.h"
 int main()
 {
 	char option;

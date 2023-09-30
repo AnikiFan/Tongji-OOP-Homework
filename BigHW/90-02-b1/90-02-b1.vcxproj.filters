@@ -18,22 +18,22 @@
     <ClCompile Include="..\common\cmd_console_tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\menu.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="90-02-b1-main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="90-02-b1-manip.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\calc.cpp">
+    <ClCompile Include="..\common\common_calc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\list.cpp">
+    <ClCompile Include="..\common\common_interact.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\make.cpp">
+    <ClCompile Include="..\common\common_list.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\common_make.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,10 +41,19 @@
     <ClInclude Include="..\include\cmd_console_tools.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\menu.h">
+    <ClInclude Include="90-02-b1.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="90-02-b1.h">
+    <ClInclude Include="..\include\common_calc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\common_interact.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\common_list.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\common_make.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
