@@ -33,6 +33,15 @@
     <ClCompile Include="..\common\menu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\calc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\list.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\make.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="90-01-b2.h">

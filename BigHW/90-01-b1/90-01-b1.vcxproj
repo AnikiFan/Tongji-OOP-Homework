@@ -139,7 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\calc.cpp" />
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
+    <ClCompile Include="..\common\list.cpp" />
+    <ClCompile Include="..\common\make.cpp" />
     <ClCompile Include="..\common\menu.cpp" />
     <ClCompile Include="90-01-b1-hanoi_main.cpp" />
     <ClCompile Include="90-01-b1-hanoi_multiple_solutions.cpp" />

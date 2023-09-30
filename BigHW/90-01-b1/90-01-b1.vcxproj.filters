@@ -27,6 +27,15 @@
     <ClCompile Include="..\common\menu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\calc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\list.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\make.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\cmd_console_tools.h">

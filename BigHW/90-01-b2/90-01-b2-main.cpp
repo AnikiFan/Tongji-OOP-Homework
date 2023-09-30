@@ -26,7 +26,7 @@ int main()
 		//cout << temp;
 		//return 0;
 		option = 'a'+menu(menu_list,7,quit_key,true)-1;
-
+		cct_setfontsize("µãÕó×ÖÌå", 20);
 
 		if (option == 'a'-1)
 			break;

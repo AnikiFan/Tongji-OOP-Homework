@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\calc.cpp" />
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
+    <ClCompile Include="..\common\list.cpp" />
+    <ClCompile Include="..\common\make.cpp" />
     <ClCompile Include="..\common\menu.cpp" />
     <ClCompile Include="90-01-b2-base.cpp" />
     <ClCompile Include="90-01-b2-console.cpp" />

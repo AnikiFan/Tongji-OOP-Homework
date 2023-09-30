@@ -46,6 +46,7 @@ int main()
 
 	while (1) {
 		inputnumber = '0'+menu(menu_list, 9, "0");
+	cct_setfontsize("µãÕó×ÖÌå", 20);
 	cct_setconsoleborder(120, 40, 120, 9000);
 		//cout <<(int)inputnumber << endl;
 		//return 0;

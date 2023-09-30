@@ -216,8 +216,10 @@ void matrixInitialize(int maxRow, int maxCol, bool frame, int matrix[][10])
 	//system("pause");
 	//
 	// 
-	cct_setconsoleborder(55 + (maxCol - 8) * 6 + frame * 14 + frame * 2 * (maxCol - 8), 32 + (maxRow - 8) * 3 + frame * 7 + frame * (maxRow - 8), 55 + (maxCol - 8) * 6 + frame * 14 + frame * 2 * (maxCol - 8), 32 + (maxRow - 8) * 3 + frame * 7 + frame * (maxRow - 8));
-	cout << "屏幕当前设置为: " << 32 + (maxRow - 8) * 3 + frame * 7 + frame * (maxRow - 8) << "行" << 55 + (maxCol - 8) * 6 + frame * 14 + frame * 2 * (maxCol - 8) << "列" << endl;
+	cct_setconsoleborder(55 + (maxCol - 8) * 6 + frame * 14 + frame * 2 * (maxCol - 8), 32 + (maxRow - 8) * 3 + frame * 7 + frame * (maxRow - 8),
+		55 + (maxCol - 8) * 6 + frame * 14 + frame * 2 * (maxCol - 8), 32 + (maxRow - 8) * 3 + frame * 7 + frame * (maxRow - 8));
+	cout << "屏幕当前设置为: " << 32 + (maxRow - 8) * 3 + frame * 7 + frame * (maxRow - 8) << "行"
+		<< 55 + (maxCol - 8) * 6 + frame * 14 + frame * 2 * (maxCol - 8) << "列" << endl;
 	for (i = 0; i < maxCol; i++) {
 		delay;
 		cct_showint(6 + i * (6 + 2 * frame), 1, i, defaultColor, 1);
@@ -295,6 +297,9 @@ void matrixInitialize(int maxRow, int maxCol, bool frame, int matrix[][10])
 				cout << "║";
 				j++;
 			}
+
+		}
+		for (i = 0; i < maxRow - 1; i++) {
 			j = 4;
 			while (j < 6 + (maxCol - 1) * (6 + 2 * frame) + 4) {
 				cct_gotoxy(j, 4 + i * (3 + frame) + 2);
@@ -418,61 +423,61 @@ void module4(int rowMax, int colMax, int matrix[][10])
 				}
 				cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
 				switch (keycode1) {
-					case 224:
-						reverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
-						switch (keycode2) {
-							case KB_ARROW_UP:
+				case 224:
+					reverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
+					switch (keycode2) {
+					case KB_ARROW_UP:
 
-								if (y == 4)
-									y = 4 + (rowMax - 1) * (3 + frame);
-								else
-									y -= blockheight;
+						if (y == 4)
+							y = 4 + (rowMax - 1) * (3 + frame);
+						else
+							y -= blockheight;
 
-								break;
-							case KB_ARROW_DOWN:
-								if (y == 4 + (rowMax - 1) * (3 + frame))
-									y = 4;
-								else
-									y += blockheight;
-								break;
-							case KB_ARROW_LEFT:
-								if (x == 6)
-									x = 6 + (colMax - 1) * (6 + 2 * frame);
-								else
-									x -= blockwidth;
+						break;
+					case KB_ARROW_DOWN:
+						if (y == 4 + (rowMax - 1) * (3 + frame))
+							y = 4;
+						else
+							y += blockheight;
+						break;
+					case KB_ARROW_LEFT:
+						if (x == 6)
+							x = 6 + (colMax - 1) * (6 + 2 * frame);
+						else
+							x -= blockwidth;
 
-								break;
-							case KB_ARROW_RIGHT:
-								if (x == 6 + (colMax - 1) * (6 + 2 * frame))
-									x = 6;
-								else
-									x += blockwidth;
+						break;
+					case KB_ARROW_RIGHT:
+						if (x == 6 + (colMax - 1) * (6 + 2 * frame))
+							x = 6;
+						else
+							x += blockwidth;
 
-								break;
-						}
-						inverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						cout << "[当前键盘] " << (char)('A' + (y - 3) / blockheight) << "行" << (x - 4) / blockwidth << "列";
 						break;
-					case 13:	//ENTER键
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						cout << "选中了" << (char)('A' + (y - 3) / blockheight) << "行" << (x - 4) / blockwidth << "列";
-						loop = 0;
-						break;
-					case 'q':
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						loop = 0;
-						break;
-					case'Q':
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						loop = 0;
-						break;
+					}
+					inverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					cout << "[当前键盘] " << (char)('A' + (y - 3) / blockheight) << "行" << (x - 4) / blockwidth << "列";
+					break;
+				case 13:	//ENTER键
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					cout << "选中了" << (char)('A' + (y - 3) / blockheight) << "行" << (x - 4) / blockwidth << "列";
+					loop = 0;
+					break;
+				case 'q':
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					loop = 0;
+					break;
+				case'Q':
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					loop = 0;
+					break;
 				}//end of swicth(keycode1)
 			}//end of else if(ret == CCT_KEYBOARD_EVENT）
 		} //end of while(1)
@@ -588,61 +593,61 @@ void module5(int rowMax, int colMax, int matrix[][10])
 				}
 				cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
 				switch (keycode1) {
-					case 224:
-						reverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
-						switch (keycode2) {
-							case KB_ARROW_UP:
+				case 224:
+					reverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
+					switch (keycode2) {
+					case KB_ARROW_UP:
 
-								if (y == 4)
-									y = 4 + (rowMax - 1) * (3 + frame);
-								else
-									y -= (blockheight + 1);
+						if (y == 4)
+							y = 4 + (rowMax - 1) * (3 + frame);
+						else
+							y -= (blockheight + 1);
 
-								break;
-							case KB_ARROW_DOWN:
-								if (y == 4 + (rowMax - 1) * (3 + frame))
-									y = 4;
-								else
-									y += (blockheight + 1);
-								break;
-							case KB_ARROW_LEFT:
-								if (x == 6)
-									x = 6 + (colMax - 1) * (6 + 2 * frame);
-								else
-									x -= (blockwidth + 2);
+						break;
+					case KB_ARROW_DOWN:
+						if (y == 4 + (rowMax - 1) * (3 + frame))
+							y = 4;
+						else
+							y += (blockheight + 1);
+						break;
+					case KB_ARROW_LEFT:
+						if (x == 6)
+							x = 6 + (colMax - 1) * (6 + 2 * frame);
+						else
+							x -= (blockwidth + 2);
 
-								break;
-							case KB_ARROW_RIGHT:
-								if (x == 6 + (colMax - 1) * (6 + 2 * frame))
-									x = 6;
-								else
-									x += (blockwidth + 2);
+						break;
+					case KB_ARROW_RIGHT:
+						if (x == 6 + (colMax - 1) * (6 + 2 * frame))
+							x = 6;
+						else
+							x += (blockwidth + 2);
 
-								break;
-						}
-						inverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						cout << "[当前键盘] " << (char)('A' + (y - 3) / (blockheight + frame)) << "行" << (x - 4) / (blockwidth + 2 * frame) << "列";
 						break;
-					case 13:	//ENTER键
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						cout << "选中了" << (char)('A' + (y - 3) / (blockheight + frame)) << "行" << (x - 4) / (blockwidth + 2 * frame) << "列";
-						loop = 0;
-						break;
-					case 'q':
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						loop = 0;
-						break;
-					case'Q':
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						loop = 0;
-						break;
+					}
+					inverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					cout << "[当前键盘] " << (char)('A' + (y - 3) / (blockheight + frame)) << "行" << (x - 4) / (blockwidth + 2 * frame) << "列";
+					break;
+				case 13:	//ENTER键
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					cout << "选中了" << (char)('A' + (y - 3) / (blockheight + frame)) << "行" << (x - 4) / (blockwidth + 2 * frame) << "列";
+					loop = 0;
+					break;
+				case 'q':
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					loop = 0;
+					break;
+				case'Q':
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					loop = 0;
+					break;
 				}//end of swicth(keycode1)
 			}//end of else if(ret == CCT_KEYBOARD_EVENT）
 		} //end of while(1)
@@ -858,148 +863,148 @@ void module6(int rowMax, int colMax, int matrix[][10])
 						pivotMatrix[i][j] = 0;
 				sum = 0;
 				switch (keycode1) {
-					case 224:
-						reverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
-						if (keycode2 == KB_ARROW_UP || keycode2 == KB_ARROW_DOWN || keycode2 == KB_ARROW_LEFT || keycode2 == KB_ARROW_RIGHT) {
-							if (warning) {
-								cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-								cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 3, ' ', background, coverLength);
-								cct_setcolor(defaultColor);
-								warning = false;
-							}
-							if (selected) {
-								cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-								cct_setcolor(defaultColor);
-								search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 6, 6, 4, blockheight - 1, blockwidth - 1, pivotMatrix, sum);
-								selected = false;
-							}
-						}
-						switch (keycode2) {
-							case KB_ARROW_UP:
-
-
-								if (y == 4)
-									y = 4 + (rowMax - 1) * (3 + frame);
-								else
-									y -= blockheight;
-
-								break;
-							case KB_ARROW_DOWN:
-
-
-								if (y == 4 + (rowMax - 1) * (3 + frame))
-									y = 4;
-								else
-									y += blockheight;
-								break;
-							case KB_ARROW_LEFT:
-
-
-								if (x == 6)
-									x = 6 + (colMax - 1) * (6 + 2 * frame);
-								else
-									x -= blockwidth;
-
-								break;
-							case KB_ARROW_RIGHT:
-
-
-								if (x == 6 + (colMax - 1) * (6 + 2 * frame))
-									x = 6;
-								else
-									x += blockwidth;
-
-								break;
-						}
-						inverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						cout << "[当前键盘] " << (char)('A' + (y - 3) / blockheight) << "行" << (x - 4) / blockwidth << "列";
-						break;
-					case 13:	//ENTER键
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						sum = search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 0, 0, 0, 0, 0, pivotMatrix, sum);
-						//
-						//cout << (y - 3) / blockheight<< (x - 4) / blockwidth<<matrix[(y - 3) / blockheight][(x - 4) / blockwidth] <<sum;
-						//
-						if (sum == 1) {
-							cct_setcolor(texthighlight);
-							cout << "周围无相同值,";
-							cct_setcolor(defaultColor);
-							cout << endl << "箭头键/鼠标移动,回车键/单击左键选择,Q/单击右键结束";
-							warning = true;
-						}
-						else if (!selected && !warning) {
-							cout << "箭头键/鼠标移动取消当前选择,回车键/单击左键合成";
-							//
-							//for (i = 0; i < rowMax; i++) {
-							//	for (j = 0; j < colMax; j++)
-							//		cout << matrix[i][j] << " ";
-							//	cout << endl;
-							//}
-							//system("pause");
-							//
-							for (i = 0; i < 10; i++)
-								for (j = 0; j < 10; j++)
-									pivotMatrix[i][j] = 0;
-							search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 4, 6, 4, blockheight - 1, blockwidth - 1, pivotMatrix, sum);
-							selected = true;
-							inverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
-
-						}
-						else if (selected && !warning) {
-							cct_showch(0, 0, ' ', background, coverLength);
-							cct_setcolor(defaultColor);
-							cct_gotoxy(0, 0);
-							score += sum * sum * 5;
-							cout << "本次得分" << sum * sum * 5 << " 总分:" << score;
-							cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-							cout << "合成完成,回车键/单击左键下落";
-							for (i = 0; i < 10; i++)
-								for (j = 0; j < 10; j++)
-									pivotMatrix[i][j] = 0;
-							search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 7, 6, 4, blockheight - 1, blockwidth - 1, pivotMatrix, sum);
-							while (1) {
-								ret = cct_read_keyboard_and_mouse(X, Y, maction, keycode1, keycode2);
-
-								if (ret == CCT_MOUSE_EVENT && (maction == MOUSE_LEFT_BUTTON_CLICK || maction == MOUSE_LEFT_BUTTON_DOUBLE_CLICK || maction == MOUSE_LEFTRIGHT_BUTTON_CLICK || maction == FROM_LEFT_2ND_BUTTON_PRESSED))
-									break;
-								else if (ret == CCT_KEYBOARD_EVENT && keycode1 == 13)
-									break;
-							}
-							zeroMoving(matrix, rowMax, colMax, false);
+				case 224:
+					reverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
+					if (keycode2 == KB_ARROW_UP || keycode2 == KB_ARROW_DOWN || keycode2 == KB_ARROW_LEFT || keycode2 == KB_ARROW_RIGHT) {
+						if (warning) {
 							cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-							cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-							cct_setcolor(texthighlight);
-
-							cout << "本次合成结束,按C/单击左键继续新一次的合成";
+							cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 3, ' ', background, coverLength);
 							cct_setcolor(defaultColor);
-							while (1) {
-								ret = cct_read_keyboard_and_mouse(X, Y, maction, keycode1, keycode2);
-
-								if (ret == CCT_MOUSE_EVENT && (maction == MOUSE_LEFT_BUTTON_CLICK || maction == MOUSE_LEFT_BUTTON_DOUBLE_CLICK))
-									break;
-								else if (ret == CCT_KEYBOARD_EVENT && keycode1 == 'c' || keycode1 == 'C')
-									break;
-							}
-							loop = 0;
+							warning = false;
 						}
+						if (selected) {
+							cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+							cct_setcolor(defaultColor);
+							search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 6, 6, 4, blockheight - 1, blockwidth - 1, pivotMatrix, sum);
+							selected = false;
+						}
+					}
+					switch (keycode2) {
+					case KB_ARROW_UP:
+
+
+						if (y == 4)
+							y = 4 + (rowMax - 1) * (3 + frame);
+						else
+							y -= blockheight;
+
 						break;
-					case 'q':
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					case KB_ARROW_DOWN:
+
+
+						if (y == 4 + (rowMax - 1) * (3 + frame))
+							y = 4;
+						else
+							y += blockheight;
+						break;
+					case KB_ARROW_LEFT:
+
+
+						if (x == 6)
+							x = 6 + (colMax - 1) * (6 + 2 * frame);
+						else
+							x -= blockwidth;
+
+						break;
+					case KB_ARROW_RIGHT:
+
+
+						if (x == 6 + (colMax - 1) * (6 + 2 * frame))
+							x = 6;
+						else
+							x += blockwidth;
+
+						break;
+					}
+					inverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					cout << "[当前键盘] " << (char)('A' + (y - 3) / blockheight) << "行" << (x - 4) / blockwidth << "列";
+					break;
+				case 13:	//ENTER键
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					sum = search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 0, 0, 0, 0, 0, pivotMatrix, sum);
+					//
+					//cout << (y - 3) / blockheight<< (x - 4) / blockwidth<<matrix[(y - 3) / blockheight][(x - 4) / blockwidth] <<sum;
+					//
+					if (sum == 1) {
+						cct_setcolor(texthighlight);
+						cout << "周围无相同值,";
 						cct_setcolor(defaultColor);
-						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-						loop = 0;
-						break;
-					case'Q':
-						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+						cout << endl << "箭头键/鼠标移动,回车键/单击左键选择,Q/单击右键结束";
+						warning = true;
+					}
+					else if (!selected && !warning) {
+						cout << "箭头键/鼠标移动取消当前选择,回车键/单击左键合成";
+						//
+						//for (i = 0; i < rowMax; i++) {
+						//	for (j = 0; j < colMax; j++)
+						//		cout << matrix[i][j] << " ";
+						//	cout << endl;
+						//}
+						//system("pause");
+						//
+						for (i = 0; i < 10; i++)
+							for (j = 0; j < 10; j++)
+								pivotMatrix[i][j] = 0;
+						search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 4, 6, 4, blockheight - 1, blockwidth - 1, pivotMatrix, sum);
+						selected = true;
+						inverseBlock(x, y, matrix[((y - 3) / blockheight)][(x - 4) / blockwidth]);
+
+					}
+					else if (selected && !warning) {
+						cct_showch(0, 0, ' ', background, coverLength);
 						cct_setcolor(defaultColor);
+						cct_gotoxy(0, 0);
+						score += sum * sum * 5;
+						cout << "本次得分" << sum * sum * 5 << " 总分:" << score;
 						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+						cout << "合成完成,回车键/单击左键下落";
+						for (i = 0; i < 10; i++)
+							for (j = 0; j < 10; j++)
+								pivotMatrix[i][j] = 0;
+						search((y - 3) / blockheight, (x - 4) / blockwidth, matrix, rowMax, colMax, 7, 6, 4, blockheight - 1, blockwidth - 1, pivotMatrix, sum);
+						while (1) {
+							ret = cct_read_keyboard_and_mouse(X, Y, maction, keycode1, keycode2);
+
+							if (ret == CCT_MOUSE_EVENT && (maction == MOUSE_LEFT_BUTTON_CLICK || maction == MOUSE_LEFT_BUTTON_DOUBLE_CLICK || maction == MOUSE_LEFTRIGHT_BUTTON_CLICK || maction == FROM_LEFT_2ND_BUTTON_PRESSED))
+								break;
+							else if (ret == CCT_KEYBOARD_EVENT && keycode1 == 13)
+								break;
+						}
+						zeroMoving(matrix, rowMax, colMax, false);
+						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+						cct_setcolor(texthighlight);
+
+						cout << "本次合成结束,按C/单击左键继续新一次的合成";
+						cct_setcolor(defaultColor);
+						while (1) {
+							ret = cct_read_keyboard_and_mouse(X, Y, maction, keycode1, keycode2);
+
+							if (ret == CCT_MOUSE_EVENT && (maction == MOUSE_LEFT_BUTTON_CLICK || maction == MOUSE_LEFT_BUTTON_DOUBLE_CLICK))
+								break;
+							else if (ret == CCT_KEYBOARD_EVENT && keycode1 == 'c' || keycode1 == 'C')
+								break;
+						}
 						loop = 0;
-						break;
+					}
+					break;
+				case 'q':
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					loop = 0;
+					break;
+				case'Q':
+					cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+					cct_setcolor(defaultColor);
+					cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+					loop = 0;
+					break;
 				}//end of swicth(keycode1)
 			}//end of else if(ret == CCT_KEYBOARD_EVENT）
 		} //end of while(1)
@@ -1276,197 +1281,197 @@ void module7(int rowMax, int colMax, int matrix[][10])
 							pivotMatrix[i][j] = 0;
 					sum = 0;
 					switch (keycode1) {
-						case 224:
-							reverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
-							if (keycode2 == KB_ARROW_UP || keycode2 == KB_ARROW_DOWN || keycode2 == KB_ARROW_LEFT || keycode2 == KB_ARROW_RIGHT) {
-								if (warning) {
-									cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-									cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 3, ' ', background, coverLength);
-									cct_setcolor(defaultColor);
-									warning = false;
-								}
-								if (selected) {
-									cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-									cct_setcolor(defaultColor);
-									search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 6, 6, 4, blockheight, blockwidth + 1, pivotMatrix, sum);
-									selected = false;
-								}
-							}
-							if (x == 6)
-								i = 6 + (colMax - 1) * (6 + 2 * frame);
-							else
-								i = x - (blockwidth + 2);
-							while (matrix[(y - 3) / (blockheight + frame)][(i - 4) / (blockwidth + 2 * frame)] == 0 && i != x) {
-								if (i == 6)
-									i = 6 + (colMax - 1) * (6 + 2 * frame);
-								else
-									i -= (blockwidth + 2);
-							}
-							if (x == 6 + (colMax - 1) * (6 + 2 * frame))
-								j = 6;
-							else
-								j = x + (blockwidth + 2);
-							while (matrix[(y - 3) / (blockheight + frame)][(j - 4) / (blockwidth + 2 * frame)] == 0 && j != x) {
-								if (j == 6 + (colMax - 1) * (6 + 2 * frame))
-									j = 6;
-								else
-									j += (blockwidth + 2);
-
-							}
-							switch (keycode2) {
-								case KB_ARROW_UP:
-
-									if (y == 4 || matrix[(y - 3) / (blockheight + frame) - 1][(x - 4) / (blockwidth + 2 * frame)] == 0)
-										y = 4 + (rowMax - 1) * (3 + frame);
-									else
-										y -= (blockheight + 1);
-
-									break;
-								case KB_ARROW_DOWN:
-
-
-									if (y == 4 + (rowMax - 1) * (3 + frame)) {
-										y = 4;
-										while (1)
-											if (matrix[(y - 3) / (blockheight + frame)][(x - 4) / (blockwidth + 2 * frame)] == 0)
-												y += (blockheight + 1);
-											else
-												break;
-
-									}
-									else
-										y += (blockheight + 1);
-									break;
-								case KB_ARROW_LEFT:
-									x = i;
-									break;
-								case KB_ARROW_RIGHT:
-									x = j;
-									break;
-							}
-							inverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
-							cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-							cout << "[当前键盘] " << (char)('A' + (y - 3) / (blockheight + frame)) << "行" << (x - 4) / (blockwidth + 2 * frame) << "列";
-							break;
-						case 13:	//ENTER键
-							cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, 60);
-							cct_setcolor(defaultColor);
-							cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-							sum = search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 0, 0, 0, 0, 0, pivotMatrix, sum);
-							if (sum == 1) {
-								cct_setcolor(texthighlight);
-								cout << "周围无相同值,";
+					case 224:
+						reverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
+						if (keycode2 == KB_ARROW_UP || keycode2 == KB_ARROW_DOWN || keycode2 == KB_ARROW_LEFT || keycode2 == KB_ARROW_RIGHT) {
+							if (warning) {
+								cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+								cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 3, ' ', background, coverLength);
 								cct_setcolor(defaultColor);
-								cout << endl << "箭头键/鼠标移动,回车键/单击左键选择,Q/单击右键结束";
-								warning = true;
+								warning = false;
 							}
-							else if (!selected && !warning) {
-								cout << "箭头键/鼠标移动取消当前选择,回车键/单击左键合成";
-								//
-								//for (i = 0; i < rowMax; i++) {
-								//	for (j = 0; j < colMax; j++)
-								//		cout << matrix[i][j] << " ";
-								//	cout << endl;
-								//}
-								//system("pause");
-								//
-								for (i = 0; i < 10; i++)
-									for (j = 0; j < 10; j++)
-										pivotMatrix[i][j] = 0;
-								search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 4, 6, 4, blockheight, blockwidth + 1, pivotMatrix, sum);
-								selected = true;
-								inverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
-
-							}
-							else if (selected && !warning) {
-
-								if (matrix[((y - 3) / (blockheight + 1))][(x - 4) / (blockwidth + 2 * frame)] != 0) {
-									cct_showch(0, 0, ' ', background, 40);
-									cct_setcolor(defaultColor);
-									cct_gotoxy(0, 0);
-									score += sum * sum * 5;
-									cout << "本次得分" << sum * sum * 5 << " 总分:" << score;
-								}
+							if (selected) {
 								cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
 								cct_setcolor(defaultColor);
+								search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 6, 6, 4, blockheight, blockwidth + 1, pivotMatrix, sum);
+								selected = false;
+							}
+						}
+						if (x == 6)
+							i = 6 + (colMax - 1) * (6 + 2 * frame);
+						else
+							i = x - (blockwidth + 2);
+						while (matrix[(y - 3) / (blockheight + frame)][(i - 4) / (blockwidth + 2 * frame)] == 0 && i != x) {
+							if (i == 6)
+								i = 6 + (colMax - 1) * (6 + 2 * frame);
+							else
+								i -= (blockwidth + 2);
+						}
+						if (x == 6 + (colMax - 1) * (6 + 2 * frame))
+							j = 6;
+						else
+							j = x + (blockwidth + 2);
+						while (matrix[(y - 3) / (blockheight + frame)][(j - 4) / (blockwidth + 2 * frame)] == 0 && j != x) {
+							if (j == 6 + (colMax - 1) * (6 + 2 * frame))
+								j = 6;
+							else
+								j += (blockwidth + 2);
+
+						}
+						switch (keycode2) {
+						case KB_ARROW_UP:
+
+							if (y == 4 || matrix[(y - 3) / (blockheight + frame) - 1][(x - 4) / (blockwidth + 2 * frame)] == 0)
+								y = 4 + (rowMax - 1) * (3 + frame);
+							else
+								y -= (blockheight + 1);
+
+							break;
+						case KB_ARROW_DOWN:
+
+
+							if (y == 4 + (rowMax - 1) * (3 + frame)) {
+								y = 4;
+								while (1)
+									if (matrix[(y - 3) / (blockheight + frame)][(x - 4) / (blockwidth + 2 * frame)] == 0)
+										y += (blockheight + 1);
+									else
+										break;
+
+							}
+							else
+								y += (blockheight + 1);
+							break;
+						case KB_ARROW_LEFT:
+							x = i;
+							break;
+						case KB_ARROW_RIGHT:
+							x = j;
+							break;
+						}
+						inverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
+						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+						cout << "[当前键盘] " << (char)('A' + (y - 3) / (blockheight + frame)) << "行" << (x - 4) / (blockwidth + 2 * frame) << "列";
+						break;
+					case 13:	//ENTER键
+						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, 60);
+						cct_setcolor(defaultColor);
+						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+						sum = search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 0, 0, 0, 0, 0, pivotMatrix, sum);
+						if (sum == 1) {
+							cct_setcolor(texthighlight);
+							cout << "周围无相同值,";
+							cct_setcolor(defaultColor);
+							cout << endl << "箭头键/鼠标移动,回车键/单击左键选择,Q/单击右键结束";
+							warning = true;
+						}
+						else if (!selected && !warning) {
+							cout << "箭头键/鼠标移动取消当前选择,回车键/单击左键合成";
+							//
+							//for (i = 0; i < rowMax; i++) {
+							//	for (j = 0; j < colMax; j++)
+							//		cout << matrix[i][j] << " ";
+							//	cout << endl;
+							//}
+							//system("pause");
+							//
+							for (i = 0; i < 10; i++)
+								for (j = 0; j < 10; j++)
+									pivotMatrix[i][j] = 0;
+							search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 4, 6, 4, blockheight, blockwidth + 1, pivotMatrix, sum);
+							selected = true;
+							inverseBlock(x, y, matrix[((y - 3) / (blockheight + frame))][(x - 4) / (blockwidth + 2 * frame)]);
+
+						}
+						else if (selected && !warning) {
+
+							if (matrix[((y - 3) / (blockheight + 1))][(x - 4) / (blockwidth + 2 * frame)] != 0) {
+								cct_showch(0, 0, ' ', background, 40);
+								cct_setcolor(defaultColor);
+								cct_gotoxy(0, 0);
+								score += sum * sum * 5;
+								cout << "本次得分" << sum * sum * 5 << " 总分:" << score;
+							}
+							cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+							cct_setcolor(defaultColor);
+							for (i = 0; i < 10; i++)
+								for (j = 0; j < 10; j++)
+									pivotMatrix[i][j] = 0;
+							search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 7, 6, 4, blockheight, blockwidth + 1, pivotMatrix, sum);
+							if (whetherMove(matrix, rowMax, colMax)) {
+								cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+								cout << "合成完成,回车键/单击左键下落";
+
+								while (1) {
+									ret = cct_read_keyboard_and_mouse(X, Y, maction, keycode1, keycode2);
+
+									if (ret == CCT_MOUSE_EVENT && (maction == MOUSE_LEFT_BUTTON_CLICK || maction == MOUSE_LEFT_BUTTON_DOUBLE_CLICK || maction == MOUSE_LEFTRIGHT_BUTTON_CLICK || maction == FROM_LEFT_2ND_BUTTON_PRESSED))
+										break;
+									else if (ret == CCT_KEYBOARD_EVENT && keycode1 == 13)
+										break;
+								}
+								zeroMoving(matrix, rowMax, colMax, true);
+							}
+							if (victory(matrix, rowMax, colMax, remainder)) {
+								cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+								cct_setcolor(texthighlight);
+								cout << "剩余" << remainder << "个星星, 无可消除项,本关结束!";
+								cct_setcolor(defaultColor);
+								cout << "回车继续下一关";
+								cct_gotoxy(0, 0);
+								cout << "奖励得分:";
+								if (remainder >= 10)
+									cout << "0 ";
+								else {
+									cout << (10 - remainder) * 180 << " ";
+									score += (10 - remainder) * 180;
+								}
+								cout << "总分:" << score;
+								while (_getch() != 13)
+									;
+								loop = 0;
+								cct_gotoxy(0, 0);
 								for (i = 0; i < 10; i++)
 									for (j = 0; j < 10; j++)
-										pivotMatrix[i][j] = 0;
-								search((y - 3) / (blockheight + frame), (x - 4) / (blockwidth + 2 * frame), matrix, rowMax, colMax, 7, 6, 4, blockheight, blockwidth + 1, pivotMatrix, sum);
-								if (whetherMove(matrix, rowMax, colMax)) {
-									cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-									cout << "合成完成,回车键/单击左键下落";
-
-									while (1) {
-										ret = cct_read_keyboard_and_mouse(X, Y, maction, keycode1, keycode2);
-
-										if (ret == CCT_MOUSE_EVENT && (maction == MOUSE_LEFT_BUTTON_CLICK || maction == MOUSE_LEFT_BUTTON_DOUBLE_CLICK || maction == MOUSE_LEFTRIGHT_BUTTON_CLICK || maction == FROM_LEFT_2ND_BUTTON_PRESSED))
-											break;
-										else if (ret == CCT_KEYBOARD_EVENT && keycode1 == 13)
-											break;
-									}
-									zeroMoving(matrix, rowMax, colMax, true);
-								}
-								if (victory(matrix, rowMax, colMax, remainder)) {
-									cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-									cct_setcolor(texthighlight);
-									cout << "剩余" << remainder << "个星星, 无可消除项,本关结束!";
+										matrix[i][j] = (rand() % 5) + 1;
+								x = 6;
+								y = 4;
+							}
+							else {
+								if ((keycode1 == 224 && (keycode2 == KB_ARROW_UP || keycode2 == KB_ARROW_DOWN || keycode2 == KB_ARROW_LEFT || keycode2 == KB_ARROW_RIGHT)) || keycode1 == 13 || keycode1 == 'q' || keycode1 == 'Q') {
+									cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
 									cct_setcolor(defaultColor);
-									cout << "回车继续下一关";
-									cct_gotoxy(0, 0);
-									cout << "奖励得分:";
-									if (remainder >= 10)
-										cout << "0 ";
-									else {
-										cout << (10 - remainder) * 180 << " ";
-										score += (10 - remainder) * 180;
-									}
-									cout << "总分:" << score;
-									while (_getch() != 13)
-										;
-									loop = 0;
-									cct_gotoxy(0, 0);
-									for (i = 0; i < 10; i++)
-										for (j = 0; j < 10; j++)
-											matrix[i][j] = (rand() % 5) + 1;
-									x = 6;
-									y = 4;
 								}
-								else {
-									if ((keycode1 == 224 && (keycode2 == KB_ARROW_UP || keycode2 == KB_ARROW_DOWN || keycode2 == KB_ARROW_LEFT || keycode2 == KB_ARROW_RIGHT)) || keycode1 == 13 || keycode1 == 'q' || keycode1 == 'Q') {
-										cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-										cct_setcolor(defaultColor);
-									}
-									cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-									cout << "箭头键/鼠标移动,回车键/单击左键选择,Q/单击右键结束";
-									x = 6;
-									y = 4;
-									while (matrix[(y - 3) / (blockheight + frame)][(j - 4) / (blockwidth + 2 * frame)] == 0) {
-										if (y == 4 + (rowMax - 1) * (3 + frame))
-											y = 4;
-										else
-											y += (blockheight + 1);
-									}
-									inverseBlock(x, y, matrix[(y - 3) / (blockheight + frame)][(j - 4) / (blockwidth + 2 * frame)]);
+								cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+								cout << "箭头键/鼠标移动,回车键/单击左键选择,Q/单击右键结束";
+								x = 6;
+								y = 4;
+								while (matrix[(y - 3) / (blockheight + frame)][(j - 4) / (blockwidth + 2 * frame)] == 0) {
+									if (y == 4 + (rowMax - 1) * (3 + frame))
+										y = 4;
+									else
+										y += (blockheight + 1);
 								}
-								break;
-						case 'q':
-							cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-							cct_setcolor(defaultColor);
-							cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-							loop = 0;
-							end = true;
-							cin.ignore(10000, '\n');
+								inverseBlock(x, y, matrix[(y - 3) / (blockheight + frame)][(j - 4) / (blockwidth + 2 * frame)]);
+							}
 							break;
-						case'Q':
-							cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
-							cct_setcolor(defaultColor);
-							cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
-							loop = 0;
-							end = true;
-							cin.ignore(10000, '\n');
-							break;
-							}//end of swicth(keycode1)
+					case 'q':
+						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+						cct_setcolor(defaultColor);
+						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+						loop = 0;
+						end = true;
+						cin.ignore(10000, '\n');
+						break;
+					case'Q':
+						cct_showch(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4, ' ', background, coverLength);
+						cct_setcolor(defaultColor);
+						cct_gotoxy(0, 32 + (rowMax - 8) * 3 + frame * 7 + frame * (rowMax - 8) - 4);
+						loop = 0;
+						end = true;
+						cin.ignore(10000, '\n');
+						break;
+						}//end of swicth(keycode1)
 					}//end of else if(ret == CCT_KEYBOARD_EVENT）
 				} //end of while(1)
 
