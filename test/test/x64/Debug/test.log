@@ -1,2 +1,5 @@
 ﻿  test.cpp
-  test.vcxproj -> D:\Coding\homework_for_OOP\test\test\x64\Debug\test.exe
+C:\Users\15800\Desktop\OOP\homework_for_OOP\test\test\test.cpp(9,11): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\15800\Desktop\OOP\homework_for_OOP\test\test\test.cpp(31,14): error C3861: “next_combination”: 找不到标识符
+C:\Users\15800\Desktop\OOP\homework_for_OOP\test\test\test.cpp(38,14): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\15800\Desktop\OOP\homework_for_OOP\test\test\test.cpp(60,14): error C3861: “next_combination”: 找不到标识符
