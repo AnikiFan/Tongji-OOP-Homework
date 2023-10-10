@@ -1,11 +1,7 @@
 /* 2254298 大数据 范潇 */
 #include <iostream>
 using namespace std;
-template <typename T, std::size_t N>
-std::size_t getArraySize(T(&)[N]) {
-	return N;
-}
-template <typename T, std::size_t N>
+template <typename T>
 /***************************************************************************
   函数名称：
   功    能：
@@ -13,11 +9,11 @@ template <typename T, std::size_t N>
   返 回 值：
   说    明：
 ***************************************************************************/
-void test(T(&array)[N])	//将...替换为相应内容
+void test(T(&array))	//将...替换为相应内容
 {
 	cout << sizeof(array) << endl;	//array为形参名
 }
-template<std::size_t N>
+template<typename T>
 /***************************************************************************
   函数名称：
   功    能：
@@ -25,7 +21,7 @@ template<std::size_t N>
   返 回 值：
   说    明：
 ***************************************************************************/
-char* tj_strcpy_s(char(&dst)[N],const char*src)	//将...替换为相应内容
+char* tj_strcpy_s(T(&dst),const char*src)	//将...替换为相应内容
 {
 	char* d = dst;		//dst为要复制的目标串
 	const char* s = src;	//src为要复制的源串

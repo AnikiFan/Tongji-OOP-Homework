@@ -4,7 +4,7 @@
 using namespace std;
 
 const char* sp = "=====================================";
-template <typename T, size_t Rows, size_t Cols>
+template <typename T>
 /***************************************************************************
   函数名称：
   功    能：
@@ -12,20 +12,22 @@ template <typename T, size_t Rows, size_t Cols>
   返 回 值：
   说    明：每个数字宽度为8，右对齐
 ***************************************************************************/
-void matrix_print(const char *info,T (&mat)[Rows][Cols])	//将...替换为相应内容
+void matrix_print(const char *info,T (&mat))	//将...替换为相应内容
 {
 	/* 按需增加内容 */
+	int Cols = sizeof(*mat)/sizeof(**mat);
+	int Rows = sizeof(mat) / sizeof(*mat);
 	cout << info << endl;
 	cout << setiosflags(ios::right);
-	for (long unsigned int i = 0; i < Rows; i++) {
-		for (long unsigned int j = 0; j < Cols; j++)
+	for (int i = 0; i < Rows; i++) {
+		for (int j = 0; j < Cols; j++)
 			cout << setw(8)<<*(*mat+i*Cols+j);
 		cout << endl;
 	}
 	cout << resetiosflags(ios::right);
 	return;
 }
-template <typename T_ans, typename T1, typename T2, size_t Rows, size_t Cols>
+template <typename T_ans, typename T1, typename T2,RT>
 /***************************************************************************
   函数名称：
   功    能：
@@ -33,17 +35,18 @@ template <typename T_ans, typename T1, typename T2, size_t Rows, size_t Cols>
   返 回 值：
   说    明：
 ***************************************************************************/
-void matrix_addition(T_ans (&ans)[Rows][Cols],T1 (&mat1)[Rows][Cols],T2 (&mat2)[Rows][Cols])	//将...替换为相应内容
+void matrix_addition(T_ans (&ans),T1 (&mat1),T2 (&mat2))	//将...替换为相应内容
 {
 	/* 按需增加内容 */
-	cout << "源矩阵1 : 行=" <<Rows<<" 列=" << Cols<<" 占用空间="<<sizeof(T1)*Rows*Cols<<"字节"<<endl;
-	cout << "源矩阵2 : 行=" << Rows << " 列=" << Cols << " 占用空间=" << sizeof(T2) * Rows * Cols << "字节" << endl;
-	cout << "和矩阵  : 行=" << Rows << " 列=" << Cols << " 占用空间=" 	<< (sizeof(T_ans)) * Rows * Cols << "字节" << endl;
-	for (long unsigned int i = 0; i < Rows * Cols; i++)
-		*(*ans + i) =(T_ans)( *(*mat1 + i)) +(  *(*mat2 + i));
+	int Cols = sizeof(*ans)/sizeof(**ans), Rows = sizeof(ans) / sizeof(*ans);
+	cout << "源矩阵1 : 行=" <<Rows<<" 列=" << Cols<<" 占用空间="<<sizeof(**mat1)*Rows*Cols<<"字节"<<endl;
+	cout << "源矩阵2 : 行=" << Rows << " 列=" << Cols << " 占用空间=" << sizeof(**mat2) * Rows * Cols << "字节" << endl;
+	cout << "和矩阵  : 行=" << Rows << " 列=" << Cols << " 占用空间=" 	<< (sizeof(**ans)) * Rows * Cols << "字节" << endl;
+	for (int i = 0; i < Rows * Cols; i++)
+		*(*ans + i) = (RT)(*(*mat1 + i)) + (*(*mat2 + i));
 	return;
 }
-template <typename T_ans,typename T1,typename T2, size_t Row1, size_t mid,size_t Col2>
+template <typename T_ans,typename T1,typename T2>
 /***************************************************************************
   函数名称：
   功    能：
@@ -51,20 +54,21 @@ template <typename T_ans,typename T1,typename T2, size_t Row1, size_t mid,size_t
   返 回 值：
   说    明：
 ***************************************************************************/
-void matrix_multiplication(T_ans(&ans)[Row1][Col2],T1(&mat1)[Row1][mid],T2(&mat2)[mid][Col2])	//将...替换为相应内容
+void matrix_multiplication(T_ans(&ans),T1(&mat1),T2(&mat2))	//将...替换为相应内容
 {
 	/* 按需增加内容 */
-	size_t Row2 = mid, Col1 = mid;
-	cout << "源矩阵1 : 行=" <<Row1<<" 列="<<Col1<<" 占用空间="<<sizeof(T1)*Row1*Col1<<"字节"<<endl;
-	cout << "源矩阵2 : 行=" <<Row2<<" 列="<<Col2<<" 占用空间="<<sizeof(T2)*Row2*Col2<<"字节"<<endl;
-	cout << "积矩阵  : 行=" <<Row1<<" 列="<<Col2<<" 占用空间="	<<sizeof(T_ans)*Row1*Col2<<"字节"<<endl;
-	T_ans sum;
-	for(long unsigned int i = 0;i<Row1;i++)
-		for (long unsigned int j = 0; j < Col2; j++) {
-			sum = 0;
-			for (long unsigned int k = 0; k < mid; k++)
-				sum += (T_ans)((*(*(mat1 + i) + k)) * (*(*(mat2 + k) + j)));
-			*(*(ans + i) + j) = sum;
+	int Col2 = sizeof(*ans) / sizeof(**ans), Row1 = sizeof(ans) / sizeof(*ans), mid = sizeof(*mat1) / sizeof(**mat1);
+	int Row2 = mid, Col1 = mid;
+	cout << "源矩阵1 : 行=" <<Row1<<" 列="<<Col1<<" 占用空间="<<sizeof(**mat1)*Row1*Col1<<"字节"<<endl;
+	cout << "源矩阵2 : 行=" <<Row2<<" 列="<<Col2<<" 占用空间="<<sizeof(**mat2)*Row2*Col2<<"字节"<<endl;
+	cout << "积矩阵  : 行=" <<Row1<<" 列="<<Col2<<" 占用空间="	<<sizeof(**ans)*Row1*Col2<<"字节"<<endl;
+	for(int i = 0;i<Row1;i++)
+		for (int j = 0; j < Col2; j++) {
+			 *(*(ans + i) + j) = 0;
+			for (int k = 0; k < mid; k++) {
+				auto temp= ((*(*(mat1 + i) + k)) * (*(*(mat2 + k) + j)));
+				 *(*(ans + i) + j) += temp;
+			}
 		}
 	return;
 }

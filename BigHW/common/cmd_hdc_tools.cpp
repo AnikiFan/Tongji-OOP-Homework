@@ -356,9 +356,9 @@ void hdc_rectangle(const int left_up_x, const int left_up_y, const int width, co
 	const int angle = from_custom_to_system(rotation_angles, 270, 1);
 	if (RGB_value != INVALID_RGB)
 		hdc_set_pencolor(RGB_value);
-	const int x1 = left_up_x,y1=left_up_y,x2=x1+(int)(width*sin(angle *PI/180)),y2=y1-(int)(width*cos(angle *PI/180));
-	const int x3 = x2+(int)(high*sin((angle+90) *PI/180)),y3=y2-(int)(high*cos((angle+90) *PI/180));
-	const int x4 = x1+(int)(high*sin((angle+90) *PI/180)),y4=y1-(int)(high*cos((angle+90) *PI/180));
+	const int x1 = left_up_x,y1=left_up_y,x2=x1-(int)(width*sin(angle *PI/180)),y2=y1+(int)(width*cos(angle *PI/180));
+	const int x3 = x2-(int)(high*sin((angle+90) *PI/180)),y3=y2+(int)(high*cos((angle+90) *PI/180));
+	const int x4 = x1-(int)(high*sin((angle+90) *PI/180)),y4=y1+(int)(high*cos((angle+90) *PI/180));
 	if (filled) {
 		hdc_triangle(x1,y1,x2,y2,x3,y3,true,thickness,RGB_value);
 		hdc_triangle(x1,y1,x3,y3,x4,y4,true,thickness,RGB_value);
@@ -487,8 +487,8 @@ void hdc_sector(const int point_x, const int point_y, const int radius, const in
 				hdc_base_point(point_x+rel_x,point_y+rel_y);
 		}
 	if (!filled) {
-		hdc_line(point_x, point_y, point_x + (int)(radius * sin(angle_begin*PI/180)), point_y - (int)(radius * cos(angle_begin*PI/180)), thickness/2, RGB_value);
-		hdc_line(point_x, point_y, point_x + (int)(radius * sin(angle_end*PI/180)), point_y - (int)(radius * cos(angle_end*PI/180)), thickness/2, RGB_value);
+		hdc_line(point_x, point_y, point_x - (int)(radius * sin(begin_radian)), point_y + (int)(radius * cos(begin_radian)), thickness/2, RGB_value);
+		hdc_line(point_x, point_y, point_x - (int)(radius * sin(end_radian)), point_y + (int)(radius * cos(end_radian)), thickness/2, RGB_value);
 	}
 	return;
 }
