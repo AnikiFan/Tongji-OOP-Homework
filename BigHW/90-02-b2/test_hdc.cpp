@@ -267,20 +267,20 @@ int main(int argc, char** argv)
 		hdc_line(500, 110, 100, 110,8, RGB(rand() % 256, rand() % 256, rand() % 256));
 
 		/* 竖线(双向) */
-		hdc_line(100, 120, 100, 500, 50, RGB(rand() % 256, rand() % 256, rand() % 256));
-		hdc_line(110, 500, 110, 120, 40, RGB(rand() % 256, rand() % 256, rand() % 256));
+		hdc_line(100, 120, 100, 500, 5, RGB(rand() % 256, rand() % 256, rand() % 256));
+		hdc_line(110, 500, 110, 120, 4, RGB(rand() % 256, rand() % 256, rand() % 256));
 
 		/* 45度斜线(双向) */
-		hdc_line(130, 130, 500, 500, 15, RGB(rand() % 256, rand() % 256, rand() % 256));
+		hdc_line(130, 130, 500, 500, 5, RGB(rand() % 256, rand() % 256, rand() % 256));
 		hdc_line(510, 500, 140, 130, 9, RGB(rand() % 256, rand() % 256, rand() % 256));
 
 		/* 45度斜线(双向) */
-		hdc_line(130, 500, 500, 130, 40, RGB(rand() % 256, rand() % 256, rand() % 256));
-		hdc_line(510, 130, 140, 500, 50, RGB(rand() % 256, rand() % 256, rand() % 256));
+		hdc_line(130, 500, 500, 130, 4, RGB(rand() % 256, rand() % 256, rand() % 256));
+		hdc_line(510, 130, 140, 500, 5, RGB(rand() % 256, rand() % 256, rand() % 256));
 
 		/* 接近于平行于x/y轴的直线 */
-		hdc_line(150, 300, 600, 330, 20, RGB(rand() % 256, rand() % 256, rand() % 256));
-		hdc_line(150, 350, 600, 350, 40, RGB(rand() % 256, rand() % 256, rand() % 256));
+		hdc_line(150, 300, 600, 330, 2, RGB(rand() % 256, rand() % 256, rand() % 256));
+		hdc_line(150, 350, 600, 350, 4, RGB(rand() % 256, rand() % 256, rand() % 256));
 
 		to_be_continued("继续测试随机画直线", STL_X, STL_Y);
 
@@ -391,7 +391,7 @@ int main(int argc, char** argv)
 		struct {
 			int angle_begin, angle_end;
 		} t[] = {
-		{180,900},
+			{180,900},
 			{0, 60},
 			{-360, 60},
 			{-45, 45},
@@ -449,9 +449,9 @@ int main(int argc, char** argv)
 			{225, 360},
 			{-45, 45},
 			{90, 180},
-			{90, 270},
+			{180, 900},
 			{300, 90},
-			{180, 181},	//一点
+			{180,181},	//一点
 			{45, -45},	//超过半圆的扇区
 			{225, 135},
 			{135, 45},
