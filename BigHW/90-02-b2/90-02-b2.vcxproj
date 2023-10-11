@@ -23,6 +23,8 @@
     <ClCompile Include="..\common\cmd_hdc_tools.cpp" />
     <ClCompile Include="2150244-黄隽阳-hdc_cartoon.cpp" />
     <ClCompile Include="2150244-黄隽阳-hdc_math.cpp" />
+    <ClCompile Include="hdc_cartoon.cpp" />
+    <ClCompile Include="hdc_math.cpp" />
     <ClCompile Include="test_draw_peppapig.cpp" />
     <ClCompile Include="test_hdc.cpp" />
   </ItemGroup>

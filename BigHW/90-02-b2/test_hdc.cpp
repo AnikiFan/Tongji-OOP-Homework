@@ -577,7 +577,7 @@ int main(int argc, char** argv)
 			const char* name;
 			void (*fun)(void);
 		} hdc_draw_Mathematical_curve[] = {
-			{2150244, "黄隽阳", hdc_draw_Mathematical_curve_2150244},
+			{2254298, "范潇", hdc_draw_Mathematical_curve_2254298},
 			{0,NULL,NULL}
 		};
 		
@@ -590,6 +590,7 @@ int main(int argc, char** argv)
 		}
 
 		/* 在此添加自己的数学曲线，具体内容可自选（例：阿基米德螺线），必做项 */
+
 	}
 
 	if (test_choise[T_CUSTOM] == '1') {
@@ -604,7 +605,7 @@ int main(int argc, char** argv)
 			int x;
 			int y;
 		} hdc_draw_cartoon[] = {
-			{2150244, "黄隽阳", hdc_draw_cartoon_2150244, 400, 400},
+			{2254298, "范潇", hdc_draw_cartoon_2254298, 400, 400},
 			{0,NULL,NULL}
 		};
 		/* 显示显示助教哥哥/姐姐们画的卡通图像
