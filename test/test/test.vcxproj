@@ -24,12 +24,12 @@
     <ClCompile Include="FileName.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\BigHW\lib\lib_thdc_tools.lib" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\BigHW\include\cmd_console_tools.h" />
     <ClInclude Include="..\..\BigHW\include\cmd_hdc_tools.h" />
     <ClInclude Include="..\..\BigHW\include\lib_thdc_tools.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib_thdc_tools.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

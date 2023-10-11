@@ -188,10 +188,6 @@ int main(int argc, char** argv)
 	char tmp[80];
 	int i, round;
 	int delay_ms = 0; //初始为不延时
-
-	to_be_continued("\n\n\n演示需要设置为旧版控制台，如果目前是新版，请设置后关闭cmd窗口，再次运行才能生效", 0, 0);
-	cout << endl << endl << endl;
-
 #if 1
 	cout << "请选择自动演示(0)还是单步演示(1) : ";
 	while (1) {

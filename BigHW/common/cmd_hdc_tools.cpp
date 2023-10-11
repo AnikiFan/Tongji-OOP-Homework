@@ -319,9 +319,9 @@ void hdc_triangle(const int x1, const int y1, const int x2, const int y2, const 
 {
 	if (RGB_value != INVALID_RGB)
 		hdc_set_pencolor(RGB_value);
-	hdc_line(x1,y1,x2,y2,thickness/2,RGB_value);
-	hdc_line(x2,y2,x3,y3,thickness/2,RGB_value);
-	hdc_line(x3,y3,x1,y1,thickness/2,RGB_value);
+	hdc_line(x1,y1,x2,y2,thickness,RGB_value);
+	hdc_line(x2,y2,x3,y3,thickness,RGB_value);
+	hdc_line(x3,y3,x1,y1,thickness,RGB_value);
 	if (filled) {
 		int UPPER_X= largest(x1,x2,x3),LOWER_X=smallest(x1,x2,x3);
 		int UPPER_Y= largest(y1,y2,y3),LOWER_Y=smallest(y1,y2,y3);
@@ -364,10 +364,10 @@ void hdc_rectangle(const int left_up_x, const int left_up_y, const int width, co
 		hdc_triangle(x1,y1,x3,y3,x4,y4,true,thickness,RGB_value);
 	}
 	else {
-	hdc_line(x1,y1,x2,y2,thickness/2,RGB_value);
-	hdc_line(x2,y2,x3,y3,thickness/2,RGB_value);
-	hdc_line(x3,y3,x4,y4,thickness/2,RGB_value);
-	hdc_line(x4,y4,x1,y1,thickness/2,RGB_value);
+	hdc_line(x1,y1,x2,y2,thickness,RGB_value);
+	hdc_line(x2,y2,x3,y3,thickness,RGB_value);
+	hdc_line(x3,y3,x4,y4,thickness,RGB_value);
+	hdc_line(x4,y4,x1,y1,thickness,RGB_value);
 	}
 
 }
@@ -487,8 +487,8 @@ void hdc_sector(const int point_x, const int point_y, const int radius, const in
 				hdc_base_point(point_x+rel_x,point_y+rel_y);
 		}
 	if (!filled) {
-		hdc_line(point_x, point_y, point_x - (int)(radius * sin(begin_radian)), point_y + (int)(radius * cos(begin_radian)), thickness/2, RGB_value);
-		hdc_line(point_x, point_y, point_x - (int)(radius * sin(end_radian)), point_y + (int)(radius * cos(end_radian)), thickness/2, RGB_value);
+		hdc_line(point_x, point_y, point_x - (int)((radius+thickness/2) * sin(begin_radian)), point_y + (int)((radius+thickness/2) * cos(begin_radian)), thickness/2, RGB_value);
+		hdc_line(point_x, point_y, point_x - (int)((radius+thickness/2) * sin(end_radian)), point_y + (int)((radius+thickness/2) * cos(end_radian)), thickness/2, RGB_value);
 	}
 	return;
 }
