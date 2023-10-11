@@ -4,7 +4,7 @@
 
 #define INVALID_RGB		0x7FFFFFFF
 
-#define HDC_SERIES_BY_TEACHER   0  
+#define HDC_SERIES_BY_TEACHER   0
 
 #if !HDC_SERIES_BY_TEACHER   
 /* -----------------------------------------------------------

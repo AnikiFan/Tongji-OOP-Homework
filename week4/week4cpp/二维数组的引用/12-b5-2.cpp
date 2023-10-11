@@ -27,7 +27,7 @@ void matrix_print(const char *info,T (&mat))	//½«...Ìæ»»ÎªÏàÓ¦ÄÚÈİ
 	cout << resetiosflags(ios::right);
 	return;
 }
-template <typename T_ans, typename T1, typename T2,RT>
+template <typename T_ans, typename T1, typename T2>
 /***************************************************************************
   º¯ÊıÃû³Æ£º
   ¹¦    ÄÜ£º
@@ -35,15 +35,16 @@ template <typename T_ans, typename T1, typename T2,RT>
   ·µ »Ø Öµ£º
   Ëµ    Ã÷£º
 ***************************************************************************/
-void matrix_addition(T_ans (&ans),T1 (&mat1),T2 (&mat2))	//½«...Ìæ»»ÎªÏàÓ¦ÄÚÈİ
+void matrix_addition(T_ans(& ans), T1(&mat1), T2(&mat2))	//½«...Ìæ»»ÎªÏàÓ¦ÄÚÈİ
 {
 	/* °´ĞèÔö¼ÓÄÚÈİ */
+	using BaseType = typename std::remove_all_extents<T_ans>::type;
 	int Cols = sizeof(*ans)/sizeof(**ans), Rows = sizeof(ans) / sizeof(*ans);
 	cout << "Ô´¾ØÕó1 : ĞĞ=" <<Rows<<" ÁĞ=" << Cols<<" Õ¼ÓÃ¿Õ¼ä="<<sizeof(**mat1)*Rows*Cols<<"×Ö½Ú"<<endl;
 	cout << "Ô´¾ØÕó2 : ĞĞ=" << Rows << " ÁĞ=" << Cols << " Õ¼ÓÃ¿Õ¼ä=" << sizeof(**mat2) * Rows * Cols << "×Ö½Ú" << endl;
 	cout << "ºÍ¾ØÕó  : ĞĞ=" << Rows << " ÁĞ=" << Cols << " Õ¼ÓÃ¿Õ¼ä=" 	<< (sizeof(**ans)) * Rows * Cols << "×Ö½Ú" << endl;
 	for (int i = 0; i < Rows * Cols; i++)
-		*(*ans + i) = (RT)(*(*mat1 + i)) + (*(*mat2 + i));
+		*(*ans + i) =(BaseType)(*(*mat1 + i)) + (*(*mat2 + i));
 	return;
 }
 template <typename T_ans,typename T1,typename T2>
@@ -52,11 +53,12 @@ template <typename T_ans,typename T1,typename T2>
   ¹¦    ÄÜ£º
   ÊäÈë²ÎÊı£º
   ·µ »Ø Öµ£º
-  Ëµ    Ã÷£º
+  Ëµ    Ã÷£º 
 ***************************************************************************/
 void matrix_multiplication(T_ans(&ans),T1(&mat1),T2(&mat2))	//½«...Ìæ»»ÎªÏàÓ¦ÄÚÈİ
 {
 	/* °´ĞèÔö¼ÓÄÚÈİ */
+	using BaseType = typename std::remove_all_extents<T_ans>::type;
 	int Col2 = sizeof(*ans) / sizeof(**ans), Row1 = sizeof(ans) / sizeof(*ans), mid = sizeof(*mat1) / sizeof(**mat1);
 	int Row2 = mid, Col1 = mid;
 	cout << "Ô´¾ØÕó1 : ĞĞ=" <<Row1<<" ÁĞ="<<Col1<<" Õ¼ÓÃ¿Õ¼ä="<<sizeof(**mat1)*Row1*Col1<<"×Ö½Ú"<<endl;
@@ -65,10 +67,8 @@ void matrix_multiplication(T_ans(&ans),T1(&mat1),T2(&mat2))	//½«...Ìæ»»ÎªÏàÓ¦ÄÚÈ
 	for(int i = 0;i<Row1;i++)
 		for (int j = 0; j < Col2; j++) {
 			 *(*(ans + i) + j) = 0;
-			for (int k = 0; k < mid; k++) {
-				auto temp= ((*(*(mat1 + i) + k)) * (*(*(mat2 + k) + j)));
-				 *(*(ans + i) + j) += temp;
-			}
+			for (int k = 0; k < mid; k++) 
+				 *(*(ans + i) + j) +=(BaseType)((*(*(mat1 + i) + k)) * (*(*(mat2 + k) + j))) ;
 		}
 	return;
 }
