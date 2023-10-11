@@ -18,6 +18,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\BigHW\common\cmd_console_tools.cpp" />
+    <ClCompile Include="..\..\BigHW\common\cmd_hdc_tools.cpp" />
+    <ClCompile Include="FileName.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\BigHW\lib\lib_thdc_tools.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\BigHW\include\cmd_console_tools.h" />
+    <ClInclude Include="..\..\BigHW\include\cmd_hdc_tools.h" />
+    <ClInclude Include="..\..\BigHW\include\lib_thdc_tools.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -126,9 +139,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="test.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
