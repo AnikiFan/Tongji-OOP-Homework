@@ -436,21 +436,45 @@ void hdc_sector(const int point_x, const int point_y, const int radius, const in
 		hdc_set_pencolor(RGB_value);
 	int UPPER = radius+thickness/2,LOWER= filled ? 0 : radius - thickness/2;
 	double begin_radian = begin  * PI / 180, end_radian = end  * PI / 180,radian_angle;
-	for(int rel_x = -UPPER;rel_x<= UPPER;rel_x++)
-		for (int rel_y = -UPPER; rel_y <= UPPER; rel_y++) {
-			if (rel_x< 0)
-				radian_angle = acos(((double)rel_y)/sqrt(rel_x*rel_x+rel_y*rel_y));
-			else
-				radian_angle =2* PI-acos(((double)rel_y) / sqrt(rel_x*rel_x+rel_y*rel_y));
-			if(rel_x*rel_x+rel_y*rel_y<=UPPER*UPPER&&rel_x*rel_x+rel_y*rel_y>=LOWER*LOWER&&
-				((end<=360&&radian_angle > begin_radian && radian_angle < end_radian)||
-			(end>360&&	(radian_angle>begin_radian||radian_angle<end_radian-2*PI))	))
-				hdc_base_point(point_x+rel_x,point_y+rel_y);
-		}
+
 	if (!filled) {
+		hdc_arc(point_x, point_y, radius, angle_begin, angle_end, thickness, RGB_value);
 		hdc_line(point_x, point_y, point_x - (int)((radius+thickness/2) * sin(begin_radian)), point_y + (int)((radius+thickness/2) * cos(begin_radian)), thickness/2, RGB_value);
 		hdc_line(point_x, point_y, point_x - (int)((radius+thickness/2) * sin(end_radian)), point_y + (int)((radius+thickness/2) * cos(end_radian)), thickness/2, RGB_value);
+		return;
 	}
+	int rel_y,rel_x;
+	for ( rel_x = -(int)(UPPER*0.8); rel_x <= (int)(UPPER*0.8); rel_x++){
+		rel_y = (int)sqrt(UPPER * UPPER - rel_x *  rel_x);
+		if (rel_x< 0)
+			radian_angle = acos(((double)rel_y)/sqrt(rel_x*rel_x+rel_y*rel_y));
+		else
+			radian_angle =2* PI-acos(((double)rel_y) / sqrt(rel_x*rel_x+rel_y*rel_y));
+		if (((end <= 360 && radian_angle > begin_radian && radian_angle < end_radian) ||
+			(end > 360 && (radian_angle > begin_radian || radian_angle < end_radian - 2 * PI))))
+			hdc_line(point_x, point_y, point_x + rel_x, point_y + rel_y, 2, RGB_value);
+		rel_y =- (int)sqrt(UPPER * UPPER - rel_x *  rel_x);
+		if (rel_x< 0)
+			radian_angle = acos(((double)rel_y)/sqrt(rel_x*rel_x+rel_y*rel_y));
+		else
+			radian_angle =2* PI-acos(((double)rel_y) / sqrt(rel_x*rel_x+rel_y*rel_y));
+		if (((end <= 360 && radian_angle > begin_radian && radian_angle < end_radian) ||
+			(end > 360 && (radian_angle > begin_radian || radian_angle < end_radian - 2 * PI))))
+			hdc_line(point_x, point_y, point_x + rel_x, point_y + rel_y, 2, RGB_value);
+	}
+	for ( rel_y = -(int)(UPPER*0.8); rel_y <= (int)(UPPER*0.8); rel_y++){
+		rel_x = (int)sqrt(UPPER * UPPER - rel_y *  rel_y);
+			radian_angle =2* PI-acos(((double)rel_y) / sqrt(rel_x*rel_x+rel_y*rel_y));
+		if (((end <= 360 && radian_angle > begin_radian && radian_angle < end_radian) ||
+			(end > 360 && (radian_angle > begin_radian || radian_angle < end_radian - 2 * PI))))
+			hdc_line(point_x, point_y, point_x + rel_x, point_y + rel_y, 2, RGB_value);
+		rel_x =- (int)sqrt(UPPER * UPPER - rel_y *  rel_y);
+			radian_angle = acos(((double)rel_y)/sqrt(rel_x*rel_x+rel_y*rel_y));
+		if (((end <= 360 && radian_angle > begin_radian && radian_angle < end_radian) ||
+			(end > 360 && (radian_angle > begin_radian || radian_angle < end_radian - 2 * PI))))
+			hdc_line(point_x, point_y, point_x + rel_x, point_y + rel_y, 2, RGB_value);
+	}
+
 	return;
 }
 
