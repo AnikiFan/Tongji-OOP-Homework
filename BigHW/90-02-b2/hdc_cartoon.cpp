@@ -112,10 +112,10 @@ static void body(int center_x,int center_y)
 	//ª≠◊Û—€÷È
 	hdc_ellipse(center_x - 160, center_y - 25, 36, 30, -70, true, 0,SIDE_COLOR);
 	//ª≠”“—€
-	hdc_ellipse(center_x +150, center_y -50, 55, 50, -60, true, 0, EYE_WHITE_COLOR);
-	hdc_ellipse(center_x + 150, center_y - 50, 55, 50, -60, false, SIDE_WIDTH, SIDE_COLOR);
+	hdc_ellipse(center_x +150, center_y -55, 55, 50, -60, true, 0, EYE_WHITE_COLOR);
+	hdc_ellipse(center_x + 150, center_y - 55, 55, 50, -60, false, SIDE_WIDTH, SIDE_COLOR);
 	//ª≠”“—€÷È
-	hdc_ellipse(center_x + 160, center_y - 55, 36, 30, -80, true, 0, SIDE_COLOR);
+	hdc_ellipse(center_x + 160, center_y - 60, 36, 30, -80, true, 0, SIDE_COLOR);
 	return;
 }
 void hdc_draw_cartoon_2254298(const int base_x,const int base_y)

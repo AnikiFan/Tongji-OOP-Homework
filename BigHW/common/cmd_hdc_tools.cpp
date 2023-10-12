@@ -359,17 +359,21 @@ void hdc_rectangle(const int left_up_x, const int left_up_y, const int width, co
 	const int x1 = left_up_x,y1=left_up_y,x2=x1-(int)(width*sin(angle *PI/180)),y2=y1+(int)(width*cos(angle *PI/180));
 	const int x3 = x2-(int)(high*sin((angle+90) *PI/180)),y3=y2+(int)(high*cos((angle+90) *PI/180));
 	const int x4 = x1-(int)(high*sin((angle+90) *PI/180)),y4=y1+(int)(high*cos((angle+90) *PI/180));
-	if (filled) {
-		hdc_triangle(x1,y1,x2,y2,x3,y3,true,thickness,RGB_value);
-		hdc_triangle(x1,y1,x3,y3,x4,y4,true,thickness,RGB_value);
-	}
-	else {
+
 	hdc_line(x1,y1,x2,y2,thickness,RGB_value);
 	hdc_line(x2,y2,x3,y3,thickness,RGB_value);
 	hdc_line(x3,y3,x4,y4,thickness,RGB_value);
 	hdc_line(x4,y4,x1,y1,thickness,RGB_value);
+	int x = 0, y = 0,length=0;
+	if (filled) {
+		while (length<=high) {
+			length++;
+			x = (int)(int)(length * sin((angle + 90) * PI / 180));
+			y = (int)(length * cos((angle + 90) * PI / 180));
+			hdc_line(x1 - x, y1 + y, x2 - x, y2 + y,2,RGB_value);
+		}
 	}
-
+	return;
 }
 
 /***************************************************************************
