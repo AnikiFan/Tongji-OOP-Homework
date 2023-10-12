@@ -99,8 +99,23 @@ static void body(int center_x,int center_y)
 	hdc_ellipse(center_x, center_y, 60, 50, -10, true, 0, MOUTH_COLOR);
 	hdc_ellipse(center_x, center_y, 60, 50, -10, false, SIDE_WIDTH, SIDE_COLOR);
 	//ª≠◊Û◊Ï¥Ω
-	hdc_sector(center_x-75,center_y-100 , 100,  118,183, true, 0, CAT_COLOR);
-	hdc_arc(center_x - 75, center_y-100 , 100, 118, 183, SIDE_WIDTH, SIDE_COLOR);
+	hdc_sector(center_x-75,center_y-100 , 100,  125,183, true, 0, CAT_COLOR);
+	hdc_arc(center_x - 75, center_y-100 , 100, 125, 183, SIDE_WIDTH, SIDE_COLOR);
+	//ª≠”“◊Ï¥Ω
+	hdc_sector(center_x +50, center_y - 100, 80, 160, 220, true, 0, CAT_COLOR);
+	hdc_arc(center_x +50, center_y - 100,80,  160,220, SIDE_WIDTH, SIDE_COLOR);
+	//»•µÙ∂‡”‡≤ø∑÷
+	hdc_square(center_x - 25, center_y - 100, 55, 0, true, 0, CAT_COLOR);
+	//ª≠◊Û—€
+	hdc_ellipse(center_x-150, center_y-20, 55, 50, -50, true, 0, EYE_WHITE_COLOR);
+	hdc_ellipse(center_x - 150, center_y - 20, 55, 50, -50, false, SIDE_WIDTH, SIDE_COLOR);
+	//ª≠◊Û—€÷È
+	hdc_ellipse(center_x - 160, center_y - 25, 36, 30, -70, true, 0,SIDE_COLOR);
+	//ª≠”“—€
+	hdc_ellipse(center_x +150, center_y -50, 55, 50, -60, true, 0, EYE_WHITE_COLOR);
+	hdc_ellipse(center_x + 150, center_y - 50, 55, 50, -60, false, SIDE_WIDTH, SIDE_COLOR);
+	//ª≠”“—€÷È
+	hdc_ellipse(center_x + 160, center_y - 55, 36, 30, -80, true, 0, SIDE_COLOR);
 	return;
 }
 void hdc_draw_cartoon_2254298(const int base_x,const int base_y)
