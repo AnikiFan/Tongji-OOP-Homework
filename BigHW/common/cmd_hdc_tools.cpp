@@ -33,49 +33,6 @@ static int from_custom_to_system(const int ANGLE, const int INIT_ANGLE = 0, cons
 	const int SYSTEM_ANGLE = 0;
 	return (SYSTEM_ANGLE + INIT_ANGLE + DIRECTION * ANGLE) ;
 }
-/***************************************************************************
-  函数名称：area
-  功    能：
-  输入参数：
-  返 回 值：
-  说    明：
-***************************************************************************/
-static double area(const int x1,const int y1, const int x2, const int y2, const int x3, const int y3)
-{
-	return abs((x1*y2+x2*y3+x3*y1-x1*y3-x2*y1-x3*y2)/2.0);
-}
-/***************************************************************************
-  函数名：largest
-  功    能：
-  输入参数：
-  返 回 值：
-  说    明：
-/***************************************************************************/
-static int largest(int a, int b, int c)
-{
-	int max = a;
-	if (b > max)
-		max = b;
-	if (c > max)
-		max = c;
-	return max;
-}
-/***************************************************************************
-  函数名：smallest
-  功    能：
-  输入参数：
-  返 回 值：
-  说    明：
-/***************************************************************************/
-static int smallest(int a, int b, int c)
-{
-	int smallest = a;
-	if (b < smallest)
-		smallest = b;
-	if (c < smallest)
-		smallest = c;
-	return smallest;
-}
 /* 下面给出了几个基本函数的完整实现，不要改动 */
 /***************************************************************************
   函数名称：
@@ -323,16 +280,16 @@ void hdc_triangle(const int x1, const int y1, const int x2, const int y2, const 
 	hdc_line(x2,y2,x3,y3,thickness,RGB_value);
 	hdc_line(x3,y3,x1,y1,thickness,RGB_value);
 	if (filled) {
-		int UPPER_X= largest(x1,x2,x3),LOWER_X=smallest(x1,x2,x3);
-		int UPPER_Y= largest(y1,y2,y3),LOWER_Y=smallest(y1,y2,y3);
-		const int  AREA = (int)area(x1,y1,x2,y2,x3,y3);
-		for(int x = LOWER_X;x<=UPPER_X;x++)
-			for(int y = LOWER_Y;y<=UPPER_Y;y++)
-				if (AREA == (int)(area(x1, y1, x2, y2, x, y) + area(x1, y1, x3, y3, x, y) + area(x2, y2, x3, y3, x, y))||
-					AREA == (int)(area(x1, y1, x2, y2, x, y) + area(x1, y1, x3, y3, x, y) + area(x2, y2, x3, y3, x, y))+1||
-					AREA == (int)(area(x1, y1, x2, y2, x, y) + area(x1, y1, x3, y3, x, y) + area(x2, y2, x3, y3, x, y)) + 2||
-					AREA == (int)(area(x1, y1, x2, y2, x, y) + area(x1, y1, x3, y3, x, y) + area(x2, y2, x3, y3, x, y)) +3 )
-					hdc_base_point(x,y);
+		int lena = (int)sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)), lenb = (int)sqrt((x1 - x3) * (x1 - x3) + (y1 - y3) * (y1 - y3));
+		int  n = lena;
+		if (lenb > n)
+			n = lenb;
+		int i = 0;
+		while (i <= n) {
+			hdc_line(x1 + i * (x2 - x1) / n, y1 + i * (y2 - y1) / n, x1 + i * (x3 - x1) / n, y1 + i * (y3 - y1) / n, 2, RGB_value);
+			i++;
+
+		}
 	}
 	return;
 }
@@ -513,11 +470,14 @@ void hdc_circle(const int point_x, const int point_y, const int radius, const bo
 {
 	if (RGB_value != INVALID_RGB)
 		hdc_set_pencolor(RGB_value);
-	int UPPER = radius+thickness/2,LOWER= filled ? 0 : radius - thickness/2;
+	int UPPER = radius+thickness/2,LOWER=  radius - thickness/2;
 	for(int rel_x = -UPPER;rel_x<= UPPER;rel_x++)
 		for(int rel_y =  -UPPER;rel_y<= UPPER;rel_y++)
 			if(rel_x*rel_x+rel_y*rel_y<=UPPER*UPPER&&rel_x*rel_x+rel_y*rel_y>=LOWER*LOWER)
 				hdc_base_point(point_x+rel_x,point_y+rel_y);
+	if(filled)
+	for (int rel_x = -UPPER; rel_x <= UPPER; rel_x++)
+		hdc_line(rel_x + point_x, (int)sqrt(UPPER* UPPER - rel_x * rel_x) + point_y, rel_x + point_x, -(int)sqrt(UPPER * UPPER - rel_x * rel_x) + point_y, 2, RGB_value);
 	return;
 }
 
@@ -537,6 +497,7 @@ void hdc_circle(const int point_x, const int point_y, const int radius, const bo
 ***************************************************************************/
 void hdc_ellipse(const int point_x, const int point_y, const int radius_a, const int radius_b, const int rotation_angles, const bool filled, const int thickness, const int RGB_value)
 {
+	const int angle = from_custom_to_system(rotation_angles, 270, 1);
 	if (RGB_value != INVALID_RGB)
 		hdc_set_pencolor(RGB_value);
 	int BOUND;
@@ -552,9 +513,20 @@ void hdc_ellipse(const int point_x, const int point_y, const int radius_a, const
 		for (int rel_y = -BOUND; rel_y <= BOUND; rel_y++) {
         	 da = cos(radian_angles)*rel_x+sin(radian_angles)*rel_y, db = -sin(radian_angles)*rel_x+cos(radian_angles)*rel_y;
 					if (da * da / (UPPER_A * UPPER_A) + db * db / (UPPER_B* UPPER_B) <= 1 &&
-						(filled|| da * da / (LOWER_A * LOWER_A) + db * db / (LOWER_B * LOWER_B) >= 1))
+						( da * da / (LOWER_A * LOWER_A) + db * db / (LOWER_B * LOWER_B) >= 1))
 				hdc_base_point(point_x + rel_x, point_y + rel_y);
 		}
+	if (filled) {
+		double h;
+		int tempx, tempy;
+		for (int x = -radius_a; x <= radius_a; x++) {
+			h = radius_b  * sqrt(radius_a * radius_a - x * x) / radius_a;
+			tempx = point_x - (int)(x * sin((angle ) * PI / 180));
+			tempy =point_y + (int)(x * cos((angle ) * PI / 180));
+			hdc_line(tempx - (int)(h * sin((angle-90)*PI / 180)), tempy+(int)(h * cos((angle-90)*PI / 180)),
+				tempx - (int)(-h * sin((angle-90)*PI / 180)),tempy +(int)(-h * cos((angle-90)*PI / 180)), 2, RGB_value);
+		}
+	}
 	return;
 }
 
