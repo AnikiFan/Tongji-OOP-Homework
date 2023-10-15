@@ -397,7 +397,11 @@ void hdc_arc(const int point_x, const int point_y, const int radius, const int a
 					(end > 360 && (radian_angle > begin_radian || radian_angle < end_radian - 2 * PI))))
 				hdc_base_point(point_x + rel_x, point_y + rel_y);
 		}
-	return;
+	if (thickness > 5) {
+	hdc_circle( point_x - (int)((radius) * sin(begin_radian)), point_y + (int)((radius) * cos(begin_radian)), thickness/2-2,true,0, RGB_value);
+	hdc_circle( point_x - (int)((radius) * sin(end_radian)), point_y + (int)((radius) * cos(end_radian)), thickness/2-2,true,0, RGB_value);
+	}
+return;
 }
 
 /***************************************************************************

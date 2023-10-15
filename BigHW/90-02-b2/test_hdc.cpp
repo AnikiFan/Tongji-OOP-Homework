@@ -577,7 +577,7 @@ int main(int argc, char** argv)
 			const char* name;
 			void (*fun)(void);
 		} hdc_draw_Mathematical_curve[] = {
-			{2254298, "∑∂‰Ï", hdc_draw_Mathematical_curve_2254298},
+			{2254298, "∑∂‰Ï", hdc_draw_Mathematical_curve_2150244},
 			{0,NULL,NULL}
 		};
 		
