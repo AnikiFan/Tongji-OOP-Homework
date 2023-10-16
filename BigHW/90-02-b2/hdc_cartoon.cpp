@@ -28,7 +28,7 @@ static void make_bubble(const int center_x,const int center_y)
 		RGB(138,125,142),
 		RGB(106,83,112),
 		RGB(81,129,117),
-		(112,116,94)
+		RGB(112,116,94)
 	};
 	for(int i=0;i<20;i++){
 		 color = color_list[rand() % 9];
