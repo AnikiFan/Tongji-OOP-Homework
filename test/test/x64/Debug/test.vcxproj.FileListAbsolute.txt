@@ -1,2 +1,0 @@
-D:\Coding\homework_for_OOP\test\test\x64\Debug\test.exe
-C:\Users\15800\Desktop\OOP\homework_for_OOP\test\test\x64\Debug\test.exe
