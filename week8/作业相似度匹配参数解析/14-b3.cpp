@@ -18,9 +18,61 @@ int usage(const char* const procname)
 
 	return 0;
 }
-int main()
+int check_name(const char* name, int obj) {//先判断位数，再判断是否为数字
+	if (strlen(name) != 7)
+		if (!obj) {
+			cout << "要检查的学号不是7位" << endl;
+			return 0;
+		}
+		else {
+			cout << "要匹配的学号不是7位" << endl;
+			return 0;
+		}
+	else
+		for (int i = 0; i < 7; i++)
+			if (name[i] < '0' || name[i]>'9')
+				if (!obj) {
+					cout << "要检查的学号不是7位数字" << endl;
+					return 0;
+				}
+				else {
+					cout << "要匹配的学号不是7位数字" << endl;
+					return 0;
+				}
+	return 1;
+}
+int main(int argc, char** argv)
 {
-	cout << "" << endl;
-	cin >> ;
+	int para = 80;
+	if (argc != 6) {
+		usage(argv[0]);
+		return 0;
+	}
+	if (!strcmp((const char*)argv[1], "all")) {
+		if (!check_name((const char*)argv[2], 1))//学号不对，先报错
+			cout << "检查学号是all，匹配学号必须是all" << endl;//学号对了，报all错
+	}
+	else if (!check_name((const char*)argv[1], 0))
+		return 0;
+	else if (strcmp((const char*)argv[2], "all") && !check_name((const char*)argv[2], 1))
+		return 0;
+	else if (!strcmp((const char*)argv[1], (const char*)argv[2]) && strcmp((const char*)argv[1], "all")) {
+		cout << "匹配学号与要检查学号相同" << endl;
+		return 0;
+	}
+	//名字参数检查完毕
+	if (strlen(argv[3]) > 32) {
+		cout << "源程序文件名超过了32字节" << endl;
+		return 0;
+	}
+	if (strlen(argv[4]) == 2&&argv[4][0]>='0'&&argv[4][0]<='9'&&argv[4][1]>='0'&&argv[4][1]<='9') {
+		para = 10 * (argv[4][0] - '0') + argv[4][1] - '0';
+		if (para < 60 || para>100)
+			para = 80;
+	}
+	if (strlen(argv[5]) > 32) {
+		cout << "源程序文件名超过了32字节" << endl;
+		return 0;
+	}
 	return 0;
 }
