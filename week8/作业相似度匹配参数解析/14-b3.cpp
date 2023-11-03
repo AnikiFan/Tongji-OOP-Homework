@@ -48,13 +48,17 @@ int main(int argc, char** argv)
 		usage(argv[0]);
 		return 0;
 	}
-	if (!strcmp((const char*)argv[1], "all")) {
-		if (!check_name((const char*)argv[2], 1))//学号不对，先报错
+	if (!strcmp((const char*)argv[1], "all")) {//第一个参数是all 
+		if (strcmp("all",(const char *)argv[2])&&!check_name((const char*)argv[2], 1)) //检查第二个参数对不对
+			return 0;
+		else if (strcmp((const char*)argv[2], "all")) {//是对的
 			cout << "检查学号是all，匹配学号必须是all" << endl;//学号对了，报all错
+			return 0;
+		}
 	}
-	else if (!check_name((const char*)argv[1], 0))
+else if (!check_name((const char*)argv[1], 0))//检查第一个参数对不对
 		return 0;
-	else if (strcmp((const char*)argv[2], "all") && !check_name((const char*)argv[2], 1))
+	else if (strcmp((const char*)argv[2], "all") && !check_name((const char*)argv[2], 1))//检查第二个参数对不对
 		return 0;
 	else if (!strcmp((const char*)argv[1], (const char*)argv[2]) && strcmp((const char*)argv[1], "all")) {
 		cout << "匹配学号与要检查学号相同" << endl;
@@ -71,8 +75,14 @@ int main(int argc, char** argv)
 			para = 80;
 	}
 	if (strlen(argv[5]) > 32) {
-		cout << "源程序文件名超过了32字节" << endl;
+		cout << "输出结果文件名超过了32字节" << endl;
 		return 0;
 	}
+	cout << "参数检查通过" << endl;
+	cout << "检查学号：" << argv[1] << endl;
+	cout << "匹配学号：" << argv[2] << endl;
+	cout << "源文件名：" << argv[3] << endl;
+	cout << "匹配阈值：" << para << endl;
+	cout << "输出目标：" << argv[5] << endl;
 	return 0;
 }
