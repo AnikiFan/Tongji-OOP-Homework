@@ -1,5 +1,6 @@
 /* 2254298 大数据 范潇 */
 #include<iostream>
+#include<string.h>
 using namespace std;
 /***************************************************************************
   函数名称：
@@ -30,7 +31,7 @@ int check_name(const char* name, int obj) {//先判断位数，再判断是否为数字
 		}
 	else
 		for (int i = 0; i < 7; i++)
-			if (name[i] < '0' || name[i]>'9')
+			if (name[i] < '0' || name[i]>'9') {
 				if (!obj) {
 					cout << "要检查的学号不是7位数字" << endl;
 					return 0;
@@ -39,6 +40,7 @@ int check_name(const char* name, int obj) {//先判断位数，再判断是否为数字
 					cout << "要匹配的学号不是7位数字" << endl;
 					return 0;
 				}
+			}
 	return 1;
 }
 int main(int argc, char** argv)

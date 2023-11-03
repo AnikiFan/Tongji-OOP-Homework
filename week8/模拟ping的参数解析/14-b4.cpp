@@ -3,6 +3,7 @@
 #include<iostream>
 #include<iomanip>
 #include<stdlib.h>
+#include<string.h>
 using namespace std;
 #define MAXPARANUM 10
 #define MAXRANGESIZE 20
@@ -36,7 +37,7 @@ void usage(para *para_list ,const char* filename)
 		cout << setw(header_len[i]) << header[i];
 	cout << endl;
 	cout << setw(TAB) << setfill(' ') <<' ' << setw(sum) << setfill('=') << '=' << endl;
-	for (int i = 0; i < PARANUM; i++) {
+	for (int i = 0; i < PARANUM; i++) { 
 		char temp[MAXRANGESIZE];
 		cout << setw(TAB) << setfill(' ')<<' ';
 		cout << '-' << setw(header_len[0]-1) << para_list[i].code;
@@ -50,7 +51,7 @@ void usage(para *para_list ,const char* filename)
 }
 int check_ip(char* ip)
 {
-	int numc = 0, dotc = 0,temp;
+	int  dotc = 0,temp;
 	if (*ip < '0' || *ip>'9')
 		return 0;
 	while (*ip) {

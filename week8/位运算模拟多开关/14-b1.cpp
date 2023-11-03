@@ -1,6 +1,7 @@
 /* 2254298 ´óÊı¾İ ·¶äì */
 #include<iostream>
 #include<iomanip>
+#include<string.h>
 using namespace std;
 #define ALPHA cout<<"A   B   C   D   E   F   G   H   I   J"<<endl;
 #define INPUTSIZE 100

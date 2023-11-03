@@ -33,7 +33,7 @@ void showcard(int i) {
 			else {
 				int suit = i % 4;
 				int pt = i / 4;
-#if (__Linux__)
+#if (__linux__)
 				switch (suit) {
 					case 0: 
 						cout << "C";
