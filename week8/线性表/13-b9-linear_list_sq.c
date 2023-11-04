@@ -7,7 +7,7 @@
 #endif 
 #include <math.h>               //fabs函数
 #include <string.h>		//strcpy/strcmp等函数
-#include "linear_list_sq.h"	//形式定义
+#include "13-b9-linear_list_sq.h"	//形式定义
 
 /* 初始化线性表 */
 Status InitList(sqlist* L)

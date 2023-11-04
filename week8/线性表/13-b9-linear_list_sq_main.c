@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include "linear_list_sq.h"
+#include "13-b9-linear_list_sq.h"
 
 #define INSERT_NUM		115		//初始插入表中的元素数量
 #define INSERT_NUM_LESS 85

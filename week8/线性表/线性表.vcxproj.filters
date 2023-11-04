@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="linear_list_sq.h">
+    <ClInclude Include="13-b9-linear_list_sq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

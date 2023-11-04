@@ -131,7 +131,7 @@
     <ClCompile Include="13-b9-linear_list_sq_main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="linear_list_sq.h" />
+    <ClInclude Include="13-b9-linear_list_sq.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

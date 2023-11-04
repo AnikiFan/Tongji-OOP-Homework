@@ -1,5 +1,7 @@
 /* 2254298 大数据 范潇 */
+#ifndef __linux__
 #pragma once
+#endif
 //#define ELEMTYPE_IS_INT		//不定义也行
 //#define ELEMTYPE_IS_DOUBLE//待检查
 //#define ELEMTYPE_IS_CHAR_ARRAY//待检查
