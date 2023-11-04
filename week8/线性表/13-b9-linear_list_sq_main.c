@@ -452,7 +452,7 @@ int main()
 #ifdef ELEMTYPE_IS_DOUBLE
     printf("插入%d个元素：\n", INSERT_NUM);
     for (i = INSERT_NUM * 2; i > 0; i -= 2)
-        ListInsert(&L, 1, (ElemType)i/10);	//i是整型，严格来说需要转换为double
+        ListInsert(&L, 1, (ElemType)(i/10));	//i是整型，严格来说需要转换为double
 #elif defined (ELEMTYPE_IS_CHAR_ARRAY)
     printf("插入%d个元素：\n", INSERT_NUM);
     for (i = INSERT_NUM * 2; i > 0; i -= 2) {

@@ -343,16 +343,16 @@ Status	ListInsert1(sqlist* L, ElemType cur_e, ElemType e, Status(*compare)(ElemT
     strcpy(*q, e);
 #elif defined (ELEMTYPE_IS_CHAR_P)
     /* 原来L->elem[i-1]的指针已放入[i]中，要重新申请空间，插入新元素，长度+1 */
-    L->elem[i - 1] = (ElemType)malloc((strlen(e) + 1) * sizeof(char));
-    if (L->elem[i - 1] == NULL)
+    L->elem[i ] = (ElemType)malloc((strlen(e) + 1) * sizeof(char));
+    if (L->elem[i] == NULL)
         return LOVERFLOW;
 
     strcpy(*q, e);
 #elif defined (ELEMTYPE_IS_STRUCT_STUDENT)
     memcpy(q, &e, sizeof(ElemType));
 #elif defined (ELEMTYPE_IS_STRUCT_STUDENT_P)
-    L->elem[i - 1] = (ElemType)malloc(sizeof(ET));
-    if (L->elem[i - 1] == NULL)
+    L->elem[i ] = (ElemType)malloc(sizeof(ET));
+    if (L->elem[i ] == NULL)
         return LOVERFLOW;
 
     memcpy(*q, e, sizeof(ET));
