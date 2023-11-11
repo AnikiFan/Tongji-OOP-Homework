@@ -19,7 +19,7 @@ int main()
 	while (1) {
 		if (opt[0] == 'Q' || opt[0] == 'q')
 			return 0;
-		cout << "请以(\"A On / J Off\"形式输入，输入\"Q on / off\"退出)" << endl;
+		cout << "请以(\"A On /J Off\"形式输入，输入\"Q on/off\"退出)" << endl;
 		cin >> opt;
 		if (strlen(opt) != 1 || !((opt[0] >= 'a' && opt[0] <= 'j') || (opt[0] >= 'A' && opt[0] <= 'J')))
 			continue;

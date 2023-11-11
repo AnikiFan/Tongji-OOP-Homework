@@ -26,75 +26,75 @@ void addnew(unsigned long long& deck, unsigned long long& player)
 	return;
 }
 void showcard(int i) {
-			if (i == 53)
-				cout << "RJ ";
-			else if (i == 52)
-				cout << "BJ ";
-			else {
-				int suit = i % 4;
-				int pt = i / 4;
+	if (i == 53)
+		cout << "RJ ";
+	else if (i == 52)
+		cout << "BJ ";
+	else {
+		int suit = i % 4;
+		int pt = i / 4;
 #if (__linux__)
-				switch (suit) {
-					case 0: 
-						cout << "C";
-						break;
-					case 1:
-						cout << "D";
-						break;
-					case 2:
-						cout << "H";
-						break;
-					case 3:
-						cout << "S";
-						break;
-				}
+		switch (suit) {
+			case 0:
+				cout << "C";
+				break;
+			case 1:
+				cout << "D";
+				break;
+			case 2:
+				cout << "H";
+				break;
+			case 3:
+				cout << "S";
+				break;
+		}
 #else
-				switch (suit) {
-					case 0:
-						cout << '\5';
-						break;
-					case 1:
-						cout << '\4';
-						break;
-					case 2:
-						cout << '\3';
-						break;
-					case 3:
-						cout << '\6';
-						break;
-				}
+		switch (suit) {
+			case 0:
+				cout << '\5';
+				break;
+			case 1:
+				cout << '\4';
+				break;
+			case 2:
+				cout << '\3';
+				break;
+			case 3:
+				cout << '\6';
+				break;
+		}
 #endif
-				switch (pt) {
-					case 11:
-						cout << "A";
-						break;
-					case 7:
-						cout << "T";
-						break;
-					default:
-						cout << pt+3;
-						break;
-					case 8:
-						cout << "J";
-						break;
-					case 9:
-						cout << "Q";
-						break;
-					case 10:
-						cout << "K";
-						break;
-					case 12:
-						cout << 2;
-						break;
-				}
-				cout << ' ';
-			}
+		switch (pt) {
+			case 11:
+				cout << "A";
+				break;
+			case 7:
+				cout << "T";
+				break;
+			default:
+				cout << pt + 3;
+				break;
+			case 8:
+				cout << "J";
+				break;
+			case 9:
+				cout << "Q";
+				break;
+			case 10:
+				cout << "K";
+				break;
+			case 12:
+				cout << 2;
+				break;
+		}
+		cout << ' ';
+	}
 	return;
 }
 void display(unsigned long long player)
 {
-	for(int i = 0;i<54;i++)
-		if ((player >> i) % 2) 
+	for (int i = 0; i < 54; i++)
+		if ((player >> i) % 2)
 			showcard(i);
 	return;
 }
@@ -134,23 +134,23 @@ int deal(unsigned long long* player)
 		cout << "甲的牌：";
 		addnew(deck, player[0]);
 		display(player[0]);
-		cout << endl<<"乙的牌：";
+		cout << endl << "乙的牌：";
 		addnew(deck, player[1]);
 		display(player[1]);
-		cout <<endl<< "丙的牌：";
+		cout << endl << "丙的牌：";
 		addnew(deck, player[2]);
 		display(player[2]);
 		cout << endl;
-		cout << endl;
 	}
-		cout << "请选择一个地主[0-2]："<<endl;
-		cin >> landlord;
-		for (int pos = 0; pos < 54; pos++) {
-			if ((deck >> pos) % 2)
-				continue;
-			deck |= (1ULL << pos);
-			player[landlord] |= (1ULL << pos);
-		}
+	cout << endl;
+	cout << "请选择一个地主[0-2]：" << endl;
+	cin >> landlord;
+	for (int pos = 0; pos < 54; pos++) {
+		if ((deck >> pos) % 2)
+			continue;
+		deck |= (1ULL << pos);
+		player[landlord] |= (1ULL << pos);
+	}
 	return landlord; //此处修改为选定的地主(0-2)
 }
 

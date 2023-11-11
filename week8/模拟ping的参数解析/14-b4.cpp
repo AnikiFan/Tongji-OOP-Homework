@@ -10,8 +10,9 @@ using namespace std;
 #define DEFAULTPARA "IP地址"
 #define HEADER {"参数","附加参数","范围","默认值"}
 #define HEADER_LEN {5,9,12,7}
-#define TAB 7
+#define TAB 8
 #define PARANUM 3
+#define SEP cout << setw(TAB-1) << setfill(' ') <<" " << setw(sum+1) << setfill('=') <<"=" << endl;
 struct para {
 	char code;
 	const char* name;
@@ -22,21 +23,25 @@ struct para {
 void usage(para *para_list ,const char* filename)
 {
 	cout << "Usage：" << filename << " ";
-	for (int i = 0; i < PARANUM; i++)
-		cout << "[-" << para_list[i].code << " " << para_list[i].name << "] ";
+	for (int i = 0; i < PARANUM; i++) {
+		cout << "[-" << para_list[i].code;
+		if (para_list[i].name[0])
+			cout << ' ';
+		cout<< para_list[i].name << "] ";
+	}
 	cout << DEFAULTPARA << endl;
 	const char* header[4] = HEADER;
 	const int header_len[4] = HEADER_LEN;
 	int sum = 0;
 	for (int i = 0; i < 4; i++)
 		sum += header_len[i];
-	cout << setw(TAB) << setfill(' ') <<" " << setw(sum) << setfill('=') <<"=" << endl;
+	SEP
 	cout << setw(TAB) << setfill(' ')<<" ";
 	cout << setiosflags(ios::left);
 	for (int i = 0; i < 4; i++)
 		cout << setw(header_len[i]) << header[i];
 	cout << endl;
-	cout << setw(TAB) << setfill(' ') <<' ' << setw(sum) << setfill('=') << '=' << endl;
+	SEP
 	for (int i = 0; i < PARANUM; i++) { 
 		char temp[MAXRANGESIZE];
 		cout << setw(TAB) << setfill(' ')<<' ';
@@ -47,7 +52,7 @@ void usage(para *para_list ,const char* filename)
 		cout << setw(header_len[3]) << para_list[i].def;
 		cout << endl;
 	}
-	cout << setw(TAB) << setfill(' ') << ' '<<setw(sum) << setfill('=') << '=' << endl;
+	SEP
 }
 int check_ip(char* ip)
 {
