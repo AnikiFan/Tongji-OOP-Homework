@@ -1,4 +1,5 @@
 /* 2254298 大数据 范潇 */
+/* 2050215 吴樾强 2151188 陆李天 2153538 刘博洋 2251320 涂中浩 2253716 欧佳音 2252313 陈兴悦 2253733 廖耀文 2251882 聂师扬 2151753 彭坤宇 2253204 邵琳博 2252086 孙靖贻 2251924 晏景豪 */
 #include<iostream>
 #include<iomanip>
 #include<fstream>
@@ -17,9 +18,9 @@ int main()
 	cin >> filename;
 	ifstream infile (filename, ios::in|ios::binary);
 	if (!infile) {
-		cout << "输入文件打开失败!" << endl;
+		cout << "输入文件"<<filename<<" 打开失败!" << endl;
 		infile.close();
-		return 0;
+		return -1;
 	}
 	infile.seekg(0, ios::end);
 	long long end = infile.tellg(),count = 0;
@@ -44,6 +45,8 @@ int main()
 		}
 		count++;
 	}
+	if (!top)
+		return 0;
 	cout << "  ";
 	for (int i = 0; i < 16 - top; i++)
 		cout << "   ";

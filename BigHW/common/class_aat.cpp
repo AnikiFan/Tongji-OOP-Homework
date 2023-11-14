@@ -13,8 +13,6 @@ using namespace std;
 /* ---------------------------------------------------------------
 	 允许加入其它需要static函数（内部工具用）
    ---------------------------------------------------------------- */
-
-
 /***************************************************************************
   函数名称：
   功    能：
@@ -24,6 +22,7 @@ using namespace std;
  ***************************************************************************/
 args_analyse_tools::args_analyse_tools()
 {
+	extargs_type =  ST_EXTARGS_TYPE::null;
 }
 
 /***************************************************************************
@@ -35,6 +34,10 @@ args_analyse_tools::args_analyse_tools()
  ***************************************************************************/
 args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE type, const int ext_num, const bool def)
 {
+	args_name = name;
+	extargs_type = type;
+	extargs_num = ext_num;
+	extargs_bool_default = def;
 }
 
 /***************************************************************************
@@ -46,6 +49,12 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
  ***************************************************************************/
 args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE type, const int ext_num, const int def, const int _min, const int _max)
 {
+	args_name = name;
+	extargs_type = type;
+	extargs_num = ext_num;
+	extargs_int_default = def;
+	extargs_int_min = _min;
+	extargs_int_max = _max;
 }
 
 /***************************************************************************
@@ -57,6 +66,11 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
  ***************************************************************************/
 args_analyse_tools::args_analyse_tools(const char* name, const enum ST_EXTARGS_TYPE type, const int ext_num, const int def_of_set_pos, const int* const set)
 {
+	args_name = name;
+	extargs_type = type;
+	extargs_num = ext_num;
+	extargs_int_default = set[def_of_set_pos];
+	extargs_int_set = (int*)set;
 }
 
 /***************************************************************************
@@ -68,6 +82,24 @@ args_analyse_tools::args_analyse_tools(const char* name, const enum ST_EXTARGS_T
  ***************************************************************************/
 args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE type, const int ext_num, const string def)
 {
+	args_name = name;
+	extargs_type = type;
+	extargs_num = ext_num;
+	int n=0;
+	int temp=0;
+	if (type == ST_EXTARGS_TYPE::str)
+		extargs_string_default = def;
+	else
+		for (int i = def.size()-1;i>0; i--) {
+			if (def[i] == '.') {
+				extargs_ipaddr_default += (temp / 16) << 2 * n + 1;
+				extargs_ipaddr_default += (temp %16) << 2 * n ;
+				n++;
+				temp = 0;
+			}
+			temp *= 10;
+			temp += def[i];
+		}
 }
 
 /***************************************************************************
@@ -79,6 +111,11 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
  ***************************************************************************/
 args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE type, const int ext_num, const int def_of_set_pos, const string* const set)
 {
+	args_name = name;
+	extargs_type = type;
+	extargs_num = ext_num;
+	extargs_string_default =set[def_of_set_pos];
+	extargs_string_set = (string*)set;
 }
 
 /***************************************************************************
@@ -166,7 +203,28 @@ const unsigned int args_analyse_tools::get_ipaddr() const
  ***************************************************************************/
 const string args_analyse_tools::get_str_ipaddr() const
 {
-	return ""; //此句根据需要修改
+	string ipaddr();
+	int h, t, o,temp;
+	for (int i = 0; i < 3; i++) {
+		o = extargs_ipaddr_value >> ((3 * i) + 1);
+		t = extargs_ipaddr_value >> ((3 * i) + 2);
+		h = extargs_ipaddr_value >> ((3 * i) + 3);
+		temp = 100 * h + 10 * t + o;
+		while (temp) {
+			ipaddr.insert(ipaddr.begin(), temp%10+'0');
+			temp /= 10;
+		}
+		ipaddr.insert(ipaddr.begin(), '.');
+	}
+	o = extargs_ipaddr_value >> ((3 * i) + 1);
+	t = extargs_ipaddr_value >> ((3 * i) + 2);
+	h = extargs_ipaddr_value >> ((3 * i) + 3);
+	temp = 100 * h + 10 * t + o;
+	while (temp) {
+		ipaddr.insert(ipaddr.begin(), temp%10+'0');
+		temp /= 10;
+	}
+	return ipaddr; //此句根据需要修改
 }
 
 
@@ -181,6 +239,120 @@ const string args_analyse_tools::get_str_ipaddr() const
 ***************************************************************************/
 int args_analyse_process(const int argc, const char* const *const argv, args_analyse_tools* const args, const int follow_up_args)
 {
+	int i = 1;
+	while (i < argc) {
+		int j = 0;
+		if (strlen(argv[i]) < 3 || argv[i][0] != '-' || argv[i][1] != '-') {
+			cout << "参数[" << argv[i] << "]格式非法(不是--开头的有效内容)." << endl;
+			return -1;
+		}
+		while (argv[i]!=args[j].args_name) {
+			if (args[j].type == ST_EXTARGS_TYPE::NULL) {//无匹配参数
+				cout << "参数["<<argv[i] << "]非法." << endl;
+				return -1;
+			}
+			j++;
+		}
+		if (args[j].exargs_type == ST_EXTARGS_TYPE::boolean) {//此处默认bool型额外参数数量一定为0
+			if (args[j].args_existed) {
+				cout << "参数[" << args[j].args_name << "]重复" << endl;
+				return -1;
+			}
+			args_existed = 1;
+		}
+		else if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error
+			||args[j].exargs_type == ST_EXTARGS_TYPE::int_with_set_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_set_error) {
+			if (args[j].args_existed) {
+				cout << "参数[" << args[j].args_name << "]重复" << endl;
+				return -1;
+			}
+			if (i+args[j].extargs_num >= argc) {
+				if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error) 
+					cout << "参数[" << argv[i] << "]的附加参数不足. (类型:int, 范围[" << args[j].int_min << ".." << args[j].int_max << "])" << endl;
+				else {
+					cout << "参数[" << argv[i] << "]的附加参数不足. (类型:int, 可取值[";
+					int* p = args[j].extargs_int_set;
+					cout << *p;
+					p++;
+					while (*p != INVALID_INT_VALUE_OF_SET)
+						cout << "/" << *p;
+					if (args[j].exargs_types == ST_EXTARGS_TYPE::int_with_set_default)
+						cout << "] 缺省:" << args[j].extargs_int_default << ")" << endl;
+					else
+						cout << "])" << endl;
+				}
+				return -1;
+			}
+			i++;
+			int k = 0;
+			int temp = 0;
+			while (argv[i][k]) {
+				if (argv[i][k] < '0' || argv[i][k]>'9') {
+					if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error) 
+						cout << "参数[" << argv[i] << "]的附加参数不是整数. (类型:int, 范围[" << args[j].int_min << ".." << args[j].int_max << "])" << endl;
+					else {
+						cout << "参数[" << argv[i] << "]的附加参数不是整数. (类型:int, 可取值[";
+						int* p = args[j].extargs_int_set;
+						cout << *p;
+						p++;
+						while (*p != INVALID_INT_VALUE_OF_SET)
+							cout << "/" << *p;
+						if (args[j].exargs_types == ST_EXTARGS_TYPE::int_with_set_default)
+							cout << "] 缺省:" << args[j].extargs_int_default << ")" << endl;
+						else
+							cout << "])" << endl;
+				}
+				return -1;
+				}
+				temp *= 10;
+				temp += (argv[i][k] - '0');
+				k++;
+			}
+			if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error) {
+				if (temp<args[j].int_min || temp> args[j].int_max)
+					if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default)
+						extargs_int_value = extargs_int_default;
+					else {
+						cout << "参数[" << argv[i] << "]的附加参数值("<<temp<<")非法. (类型:int, 范围[" << args[j].int_min << ".." << args[j].int_max << "])" << endl;
+						return -1;
+					}
+				else
+					extargs_int_value = temp;
+			}
+			else {
+				int* p = args[j].exargs_int_set;
+				while (*p != INVALID_INT_VALUE_OF_SET) {
+					if (*p == temp)
+						break;
+					p++;
+				}
+				if (*p == INVALID_INT_VALUE_OF_SET)
+					if (type == ST_EXTARGS_TYPE::int_with_default)
+						extargs_int_value = extargs_int_default;
+					else {
+							cout << "参数[" << argv[i] << "]的附加参数不是整数. (类型:int, 可取值[";
+						int* p = args[j].extargs_int_set;
+						cout << *p;
+						p++;
+						while (*p != INVALID_INT_VALUE_OF_SET)
+							cout << "/" << *p;
+						cout << "])" << endl;
+						return -1;
+					}
+				else
+					args[j].extargs_int_value = temp;
+			}
+		args[j].args_existed = 1;
+		}
+		else if (args[j].exargs_type == ST_EXTARGS_TYPE::ipaddr_default || args[j].exargs_type == ST_EXTARGS_TYPE::ipaddr_error) {
+
+		}
+		else if (args[j].exargs_type == ST_EXTARGS_TYPE::str ) {
+		}
+		else if (args[j].exargs_type == st_extargs_type::str_with_set_default || args[j].exargs_type == st_extargs_type::str_with_set_error) {
+
+		}
+	}
 	return 0; //此句根据需要修改
 }
 

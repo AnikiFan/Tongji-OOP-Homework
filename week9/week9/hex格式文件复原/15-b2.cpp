@@ -1,4 +1,5 @@
 /* 2254298 大数据 范潇 */
+/* 2050215 吴樾强 2151188 陆李天 2153538 刘博洋 2251320 涂中浩 2253716 欧佳音 2252313 陈兴悦 2253733 廖耀文 2251882 聂师扬 2151753 彭坤宇 2253204 邵琳博 2252086 孙靖贻 2251924 晏景豪 */
 #include<iostream>
 #include<fstream>
 #define MAXFILESIZE 200
@@ -16,16 +17,16 @@ int main(int argc,char**argv)
 	cin >> output;
 	ifstream infile(filename, ios::in|ios::binary);
 	if (!infile) {
-		cout << "打开文件" << filename << "失败!" << endl;
+		cout << "输入文件" << filename << "打开失败!" << endl;
 		infile.close();
-		return 0;
+		return -1;
 	}
 	ofstream outfile(output, ios::out|ios::binary);
 	if (!outfile) {
-		cout << "打开文件" << output << "失败!" << endl;
+		cout << "输出文件" << output << "打开失败!" << endl;
 		outfile.close();
 		infile.close();
-		return 0;
+		return -1;
 	}
 	infile.seekg(0, ios::end);
 	long long end = infile.tellg(), count = 11;
@@ -75,5 +76,6 @@ int main(int argc,char**argv)
 		}
 	}
 	infile.close();
+	outfile.close();
 	return 0;
 }
