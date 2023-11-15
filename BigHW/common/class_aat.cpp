@@ -92,8 +92,8 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
 	else
 		for (int i = def.size()-1;i>0; i--) {
 			if (def[i] == '.') {
-				extargs_ipaddr_default += (temp / 16) << 2 * n + 1;
-				extargs_ipaddr_default += (temp %16) << 2 * n ;
+				extargs_ipaddr_default += (temp / 16) << (2 * n + 1);
+				extargs_ipaddr_default += (temp %16) <<( 2 * n) ;
 				n++;
 				temp = 0;
 			}
@@ -203,23 +203,21 @@ const unsigned int args_analyse_tools::get_ipaddr() const
  ***************************************************************************/
 const string args_analyse_tools::get_str_ipaddr() const
 {
-	string ipaddr();
-	int h, t, o,temp;
+	string ipaddr;
+	int  t, o,temp;
 	for (int i = 0; i < 3; i++) {
-		o = extargs_ipaddr_value >> ((3 * i) + 1);
-		t = extargs_ipaddr_value >> ((3 * i) + 2);
-		h = extargs_ipaddr_value >> ((3 * i) + 3);
-		temp = 100 * h + 10 * t + o;
+		o = extargs_ipaddr_value >> ((2 * i) + 1);
+		t = extargs_ipaddr_value >> ((2 * i) + 2);
+		temp =  16 * t + o;
 		while (temp) {
-			ipaddr.insert(ipaddr.begin(), temp%10+'0');
+			ipaddr.insert(ipaddr.begin(), temp%16+'0');
 			temp /= 10;
 		}
 		ipaddr.insert(ipaddr.begin(), '.');
 	}
-	o = extargs_ipaddr_value >> ((3 * i) + 1);
-	t = extargs_ipaddr_value >> ((3 * i) + 2);
-	h = extargs_ipaddr_value >> ((3 * i) + 3);
-	temp = 100 * h + 10 * t + o;
+	o = extargs_ipaddr_value >> ((3 * 2) + 1);
+	t = extargs_ipaddr_value >> ((3 * 2) + 2);
+	temp = 16 * t + o;
 	while (temp) {
 		ipaddr.insert(ipaddr.begin(), temp%10+'0');
 		temp /= 10;
@@ -247,28 +245,28 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 			return -1;
 		}
 		while (argv[i]!=args[j].args_name) {
-			if (args[j].type == ST_EXTARGS_TYPE::NULL) {//无匹配参数
+			if (args[j].extargs_type == ST_EXTARGS_TYPE::null) {//无匹配参数
 				cout << "参数["<<argv[i] << "]非法." << endl;
 				return -1;
 			}
 			j++;
 		}
-		if (args[j].exargs_type == ST_EXTARGS_TYPE::boolean) {//此处默认bool型额外参数数量一定为0
+		if (args[j].extargs_type == ST_EXTARGS_TYPE::boolean) {//此处默认bool型额外参数数量一定为0
 			if (args[j].args_existed) {
 				cout << "参数[" << args[j].args_name << "]重复" << endl;
 				return -1;
 			}
-			args_existed = 1;
+			args[j].args_existed = 1;
 		}
-		else if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error
-			||args[j].exargs_type == ST_EXTARGS_TYPE::int_with_set_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_set_error) {
+		else if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].extargs_type == ST_EXTARGS_TYPE::int_with_error
+			||args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_default || args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_error) {
 			if (args[j].args_existed) {
 				cout << "参数[" << args[j].args_name << "]重复" << endl;
 				return -1;
 			}
 			if (i+args[j].extargs_num >= argc) {
-				if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error) 
-					cout << "参数[" << argv[i] << "]的附加参数不足. (类型:int, 范围[" << args[j].int_min << ".." << args[j].int_max << "])" << endl;
+				if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].extargs_type == ST_EXTARGS_TYPE::int_with_error) 
+					cout << "参数[" << argv[i] << "]的附加参数不足. (类型:int, 范围[" << args[j].extargs_int_min << ".." << args[j].extargs_int_max << "])" << endl;
 				else {
 					cout << "参数[" << argv[i] << "]的附加参数不足. (类型:int, 可取值[";
 					int* p = args[j].extargs_int_set;
@@ -276,20 +274,20 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 					p++;
 					while (*p != INVALID_INT_VALUE_OF_SET)
 						cout << "/" << *p;
-					if (args[j].exargs_types == ST_EXTARGS_TYPE::int_with_set_default)
+					if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_default)
 						cout << "] 缺省:" << args[j].extargs_int_default << ")" << endl;
 					else
 						cout << "])" << endl;
 				}
 				return -1;
 			}
-			i++;
+			i++;//只考虑了参数数量为1的情况
 			int k = 0;
 			int temp = 0;
 			while (argv[i][k]) {
 				if (argv[i][k] < '0' || argv[i][k]>'9') {
-					if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error) 
-						cout << "参数[" << argv[i] << "]的附加参数不是整数. (类型:int, 范围[" << args[j].int_min << ".." << args[j].int_max << "])" << endl;
+					if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].extargs_type == ST_EXTARGS_TYPE::int_with_error) 
+						cout << "参数[" << argv[i] << "]的附加参数不是整数. (类型:int, 范围[" << args[j].extargs_int_min << ".." << args[j].extargs_int_max << "])" << endl;
 					else {
 						cout << "参数[" << argv[i] << "]的附加参数不是整数. (类型:int, 可取值[";
 						int* p = args[j].extargs_int_set;
@@ -297,7 +295,7 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 						p++;
 						while (*p != INVALID_INT_VALUE_OF_SET)
 							cout << "/" << *p;
-						if (args[j].exargs_types == ST_EXTARGS_TYPE::int_with_set_default)
+						if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_default)
 							cout << "] 缺省:" << args[j].extargs_int_default << ")" << endl;
 						else
 							cout << "])" << endl;
@@ -308,27 +306,27 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 				temp += (argv[i][k] - '0');
 				k++;
 			}
-			if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].exargs_type == ST_EXTARGS_TYPE::int_with_error) {
-				if (temp<args[j].int_min || temp> args[j].int_max)
-					if (args[j].exargs_type == ST_EXTARGS_TYPE::int_with_default)
-						extargs_int_value = extargs_int_default;
+			if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].extargs_type == ST_EXTARGS_TYPE::int_with_error) {
+				if (temp<args[j].extargs_int_min || temp> args[j].extargs_int_max)
+					if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_default)
+						args[j].extargs_int_value = args[j].extargs_int_default;
 					else {
-						cout << "参数[" << argv[i] << "]的附加参数值("<<temp<<")非法. (类型:int, 范围[" << args[j].int_min << ".." << args[j].int_max << "])" << endl;
+						cout << "参数[" << argv[i] << "]的附加参数值("<<temp<<")非法. (类型:int, 范围[" << args[j].extargs_int_min << ".." << args[j].extargs_int_max << "])" << endl;
 						return -1;
 					}
 				else
-					extargs_int_value = temp;
+					args[j].extargs_int_value = temp;
 			}
 			else {
-				int* p = args[j].exargs_int_set;
+				int* p = args[j].extargs_int_set;
 				while (*p != INVALID_INT_VALUE_OF_SET) {
 					if (*p == temp)
 						break;
 					p++;
 				}
 				if (*p == INVALID_INT_VALUE_OF_SET)
-					if (type == ST_EXTARGS_TYPE::int_with_default)
-						extargs_int_value = extargs_int_default;
+					if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_default)
+						args[j].extargs_int_value = args[j].extargs_int_default;
 					else {
 							cout << "参数[" << argv[i] << "]的附加参数不是整数. (类型:int, 可取值[";
 						int* p = args[j].extargs_int_set;
@@ -344,13 +342,148 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 			}
 		args[j].args_existed = 1;
 		}
-		else if (args[j].exargs_type == ST_EXTARGS_TYPE::ipaddr_default || args[j].exargs_type == ST_EXTARGS_TYPE::ipaddr_error) {
-
+		else if (args[j].extargs_type == ST_EXTARGS_TYPE::ipaddr_with_default || args[j].extargs_type == ST_EXTARGS_TYPE::ipaddr_with_error) {
+			if (args[j].args_existed) {
+				cout << "参数[" << args[j].args_name << "]重复" << endl;
+				return -1;
+			}
+			if (i + args[j].extargs_num >= argc) {
+				if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_error)
+					cout << "参数[" << argv[i] << "]的附加参数不足. (类型:IP地址)" << endl;
+				else
+					cout << "参数[" << argv[i] << "]的附加参数不足. (类型:IP地址 缺省" << args[j].get_str_ipaddr() << ")" << endl;
+				return -1;
+			}
+			i++;//只考虑了参数数量为1的情况
+			unsigned int tempadd = 0, temp = 0, n = 0, dotn = 0;
+			int invalid = 0;
+			string input = argv[i];
+			for (int i = input.size() - 1; i > 0; i--) {
+				if (input[i] != '.' && (input[i] < '0' || input[i]>'9')) {
+					invalid = 1;
+					break;
+				}
+				if (input[i] == '.') {
+					if (dotn > 3) {
+						invalid = 1;
+						break;
+					}
+					tempadd += (temp / 16) << (2 * n + 1);
+					tempadd += (temp % 16) << (2 * n);
+					n++;
+					temp = 0;
+					dotn++;
+					continue;
+				}
+				temp *= 10;
+				temp += input[i] - '0';
+				if (temp > 255) {
+					invalid = 1;
+					break;
+				}
+			}
+			if (invalid) {
+				if (args[j].extargs_type == ST_EXTARGS_TYPE::ipaddr_with_error) {
+					cout << "参数[" << argv[i - 1] << "]的附加参数值(" << argv[i] << ")非法. (类型:IP地址)" << endl;
+					return -1;
+				}
+				else
+					args[j].extargs_ipaddr_value = args[j].extargs_ipaddr_default;
+			}
+			else
+				args[j].extargs_ipaddr_value = tempadd;
+			args[j].args_existed = 1;
 		}
-		else if (args[j].exargs_type == ST_EXTARGS_TYPE::str ) {
-		}
-		else if (args[j].exargs_type == st_extargs_type::str_with_set_default || args[j].exargs_type == st_extargs_type::str_with_set_error) {
-
+		else if (args[j].extargs_type == ST_EXTARGS_TYPE::str 
+			||args[j].extargs_type == ST_EXTARGS_TYPE::str_with_set_default || args[j].extargs_type == ST_EXTARGS_TYPE::str_with_set_error) {
+				if (args[j].args_existed) {
+					cout << "参数[" << args[j].args_name << "]重复" << endl;
+					return -1;
+				}
+				if (i + args[j].extargs_num >= argc) {
+					if (args[j].extargs_type == ST_EXTARGS_TYPE::str)
+						cout << "参数[" << argv[i] << "]的附加参数不足. (类型:string"<< (args[j].extargs_string_default.length()?"":"缺省:")	<<args[j].extargs_string_default<<")" << endl;
+					else {
+						cout << "参数[" << argv[i] << "]的附加参数不足. (类型:string, 可取值[";
+						string* p = args[j].extargs_string_set;
+						cout << *p;
+						p++;
+						while (p->length() )
+							cout << "/" << *p;
+						if (args[j].extargs_type == ST_EXTARGS_TYPE::str_with_set_default)
+							cout << "] 缺省:" << args[j].extargs_string_default << ")" << endl;
+						else
+							cout << "])" << endl;
+					}
+					return -1;
+				}
+				i++;//只考虑了参数数量为1的情况
+				string input;
+				cin >> input;
+				if (input.length() >= 2 && input[0] == '-' && input[1] == '-') {
+					if (args[j].extargs_type == ST_EXTARGS_TYPE::str)
+						cout << "参数[" << argv[i] << "]的附加参数不足. (类型:string" << (args[j].extargs_string_default.length() ? "" : "缺省:") << args[j].extargs_string_default << ")" << endl;
+					else {
+						cout << "参数[" << argv[i] << "]的附加参数不足. (类型:string, 可取值[";
+						string* p = args[j].extargs_string_set;
+						cout << *p;
+						p++;
+						while (p->length())
+							cout << "/" << *p;
+						if (args[j].extargs_type == ST_EXTARGS_TYPE::str_with_set_default)
+							cout << "] 缺省:" << args[j].extargs_string_default << ")" << endl;
+						else
+							cout << "])" << endl;
+					}
+					return -1;
+				}
+				int flag = (input[0]=='"');
+				if (flag) {
+					input.erase(0, 1);
+					if (input.find('"') > 0) {
+						flag = 0;
+						for (unsigned int i = 0; i < input.size(); i++)
+							if (input[i] == '"')
+								input.erase(i);
+					}
+				}
+				while (flag&&i+1<argc) {
+					i++;
+					string temp;
+					cin >> temp;
+					if (temp.find('"') > 0) {
+						flag = 0;
+						for (unsigned int i = 0; i < input.size(); i++)
+							if (input[i] == '"')
+								input.erase(i);
+					}
+					input += temp;
+				}
+				if (args[j].extargs_type == ST_EXTARGS_TYPE::str)
+					args[j].extargs_string_value = input;
+				else {
+					int i = 0;
+					while (args[j].extargs_string_set[i].length()) {
+						if (input == args[j].extargs_string_set[i])
+							break;
+						i++;
+					}
+					if (args[j].extargs_string_set[i].length())
+						args[j].extargs_string_value = input;
+					else
+						if (args[j].extargs_type == ST_EXTARGS_TYPE::str_with_set_default)
+							args[j].extargs_string_value = args[j].extargs_string_default;
+						else {
+							cout << "参数[" << argv[i] << "]的附加参值("<<input<<")非法. (类型:string, 可取值[";
+							string* p = args[j].extargs_string_set;
+							cout << *p;
+							p++;
+							while (p->length())
+								cout << "/" << *p;
+							cout << "])" << endl;
+						}
+				}
+				args[j].args_existed = 1;
 		}
 	}
 	return 0; //此句根据需要修改
