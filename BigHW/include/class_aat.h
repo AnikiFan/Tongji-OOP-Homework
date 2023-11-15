@@ -60,6 +60,7 @@ enum class ST_EXTARGS_TYPE {
 
 
 
+
 /* ---------------------------------------------------------------
 	   class args_analyse_tools的定义，已有部分不要动，允许private加入其它需要的定义
    ---------------------------------------------------------------- */
@@ -88,12 +89,20 @@ private:
 	string extargs_string_value;		//string型额外参数读到的值
 	unsigned int extargs_ipaddr_value;	//IP地址额外参数读到的值（IP地址的内部存储为此形式，字符串形式需要转换）
 
+	//各参数打印时的长度
+	int args_name_length;
+	int type_length;
+	int default_length;
+	int exists_length;
+	int value_length;
+	int range_set_length;
+	char type_name[20];
 	/* ---------------------------------------------------------------
 		 允许加入其它需要的定义（内部用）
 		   1、为了与lib库中的class相同，最多允许定义额外的68字节成员
 		   2、如果需要自定义数据成员，则相应扣减pad数组的大小，维持总大小200字节不变
 	   ---------------------------------------------------------------- */
-	char pad[68];
+	char pad[24];
 
 public:
 	args_analyse_tools();
