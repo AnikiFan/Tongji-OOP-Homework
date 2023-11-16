@@ -96,13 +96,13 @@ private:
 	int exists_length;
 	int value_length;
 	int range_set_length;
-	char type_name[20];
+	char type_name[24];
 	/* ---------------------------------------------------------------
 		 允许加入其它需要的定义（内部用）
 		   1、为了与lib库中的class相同，最多允许定义额外的68字节成员
 		   2、如果需要自定义数据成员，则相应扣减pad数组的大小，维持总大小200字节不变
 	   ---------------------------------------------------------------- */
-	char pad[24];
+	char pad[20];
 
 public:
 	args_analyse_tools();

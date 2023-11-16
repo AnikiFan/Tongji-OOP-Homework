@@ -28,24 +28,15 @@ static int num_length(int num)
 static string from_ipaddr_to_str(unsigned int ip)
 {
 	string ipaddr;
-	int  t, o, temp;
+	unsigned int* temp = &ip;
+	const char* p = (const char*)temp;
+	char num[10];
 	for (int i = 0; i < 3; i++) {
-		o = ip >> ((2 * i) + 1);
-		t = ip >> ((2 * i) + 2);
-		temp = 16 * t + o;
-		while (temp) {
-			ipaddr.insert(ipaddr.begin(), temp % 16 + '0');
-			temp /= 10;
-		}
-		ipaddr.insert(ipaddr.begin(), '.');
+		ipaddr.append(_itoa(*p,num,10));
+		ipaddr.append(".");
+		p++;
 	}
-	o = ip >> ((3 * 2) + 1);
-	t = ip >> ((3 * 2) + 2);
-	temp = 16 * t + o;
-	while (temp) {
-		ipaddr.insert(ipaddr.begin(), temp % 10 + '0');
-		temp /= 10;
-	}
+	ipaddr.append(_itoa(*p,num,10));
 	return ipaddr; //此句根据需要修改
 }
 /***************************************************************************
@@ -130,6 +121,7 @@ args_analyse_tools::args_analyse_tools(const char* name, const enum ST_EXTARGS_T
 	default_length = (type ==ST_EXTARGS_TYPE::int_with_set_default?num_length(set[def_of_set_pos]) : 1);
 	exists_length = 1;
 	value_length = 1;
+	range_set_length = 0;
 	int  i = 0;
 	while (set[i] != INVALID_INT_VALUE_OF_SET) {
 		range_set_length += num_length(set[i]);
@@ -154,6 +146,7 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
 	args_name = name;
 	extargs_type = type;
 	extargs_num = ext_num;
+	args_existed = 0;
 	int n=0;
 	int temp=0;
 	if (type == ST_EXTARGS_TYPE::str)
@@ -206,12 +199,14 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
 	extargs_type = type;
 	extargs_num = ext_num;
 	extargs_string_default =set[def_of_set_pos];
+	args_existed = 0;
 	extargs_string_set = (string*)set;
 	args_name_length = strlen(name);
 	type_length = (type ==ST_EXTARGS_TYPE::str_with_set_default?20:18);
 	default_length = (type == ST_EXTARGS_TYPE::str_with_set_default ? set[def_of_set_pos].length() : 1);
 	exists_length = 1;
 	value_length = 1;
+	range_set_length = 0;
 	int  i = 0;
 	while (set[i].length()) {
 		range_set_length += set[i].length();
@@ -360,8 +355,10 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 					int* p = args[j].extargs_int_set;
 					cout << *p;
 					p++;
-					while (*p != INVALID_INT_VALUE_OF_SET)
+					while (*p != INVALID_INT_VALUE_OF_SET) {
 						cout << "/" << *p;
+						p++;
+					}
 					if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_default)
 						cout << "] 缺省:" << args[j].extargs_int_default << ")" << endl;
 					else
@@ -381,8 +378,10 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 						int* p = args[j].extargs_int_set;
 						cout << *p;
 						p++;
-						while (*p != INVALID_INT_VALUE_OF_SET)
+						while (*p != INVALID_INT_VALUE_OF_SET) {
 							cout << "/" << *p;
+							p++;
+						}
 						if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_default)
 							cout << "] 缺省:" << args[j].extargs_int_default << ")" << endl;
 						else
@@ -426,8 +425,10 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 						int* p = args[j].extargs_int_set;
 						cout << *p;
 						p++;
-						while (*p != INVALID_INT_VALUE_OF_SET)
+						while (*p != INVALID_INT_VALUE_OF_SET) {
 							cout << "/" << *p;
+							p++;
+						}
 						cout << "])" << endl;
 						return -1;
 					}
@@ -508,8 +509,10 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 						string* p = args[j].extargs_string_set;
 						cout << *p;
 						p++;
-						while (p->length() )
+						while (p->length()) {
 							cout << "/" << *p;
+							p++;
+						}
 						if (args[j].extargs_type == ST_EXTARGS_TYPE::str_with_set_default)
 							cout << "] 缺省:" << args[j].extargs_string_default << ")" << endl;
 						else
@@ -528,8 +531,10 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 						string* p = args[j].extargs_string_set;
 						cout << *p;
 						p++;
-						while (p->length())
+						while (p->length()) {
 							cout << "/" << *p;
+							p++;
+						}
 						if (args[j].extargs_type == ST_EXTARGS_TYPE::str_with_set_default)
 							cout << "] 缺省:" << args[j].extargs_string_default << ")" << endl;
 						else
@@ -594,14 +599,17 @@ int args_analyse_process(const int argc, const char* const *const argv, args_ana
 							string* p = args[j].extargs_string_set;
 							cout << *p;
 							p++;
-							while (p->length())
+							while (p->length()) {
 								cout << "/" << *p;
+								p++;
+							}
 							cout << "])" << endl;
 							return -1;
 						}
 				}
 				args[j].args_existed = 1;
 		}
+		i++;
 	}
 	return 0; //此句根据需要修改
 }
@@ -632,13 +640,15 @@ int args_analyse_print(const args_analyse_tools* const args)
 			max_value_length = args[i].value_length;
 		if (args[i].range_set_length > max_range_set_length)
 			max_range_set_length = args[i].range_set_length;
+		i++;
 	}
 	int sum = 6 + max_args_name_length + max_type_length + max_default_length + max_exists_length + max_value_length + max_range_set_length;
-	cout << setw(sum)<<setfill('=')<<"=" << endl;
+	cout << setiosflags(ios::left);
+	cout << setw(sum)<<setfill('=')<<"="<<setfill(' ') << endl;
 	cout << TAB << setw(max_args_name_length) << header[0] << TAB << setw(max_type_length) << header[1]
 		<< TAB << setw(max_default_length) << header[2] << TAB << setw(max_exists_length) << header[3]
 		<< TAB << setw(max_value_length) << header[4] << TAB << setw(max_range_set_length) << header[5] << endl;
-	cout << setw(sum)<<setfill('=')<<"=" << endl;
+	cout << setw(sum)<<setfill('=')<<"="<<setfill(' ') << endl;
 	i = 0;
 	while (args[i].extargs_type != ST_EXTARGS_TYPE::null) {
 		cout << TAB << setw(max_args_name_length) << args[i].args_name << TAB << setw(max_type_length) << args[i].type_name
@@ -678,40 +688,49 @@ int args_analyse_print(const args_analyse_tools* const args)
 		cout << TAB << setw(max_exists_length) << (args[i].args_existed ? '1' : '0') << TAB << setw(max_value_length);
 		switch (args[i].extargs_type) {
 			case ST_EXTARGS_TYPE::boolean:
-				if (args[i].args_existed)
-					cout << "true";
-				else 
-					cout << (args[i].extargs_bool_default ? "true" : "false");
+				cout << (args[i].args_existed ? "true" : "/");
 				break;
 			case ST_EXTARGS_TYPE::int_with_default:
-				cout << args[i].extargs_int_value;
+				if (args[i].args_existed)
+					cout << args[i].extargs_int_value;
+				else
+					cout << "/";
 				break;
 			case ST_EXTARGS_TYPE::int_with_error:
-				cout << args[i].extargs_int_value;
+				if (args[i].args_existed)
+					cout << args[i].extargs_int_value;
+				else
+					cout << "/";
 				break;
 			case ST_EXTARGS_TYPE::int_with_set_default:
-				cout << args[i].extargs_int_value;
+				if (args[i].args_existed)
+					cout << args[i].extargs_int_value;
+				else
+					cout << "/";
 				break;
 			case ST_EXTARGS_TYPE::int_with_set_error:
-				cout << args[i].extargs_int_value;
+				if (args[i].args_existed)
+					cout << args[i].extargs_int_value;
+				else
+					cout << "/";
 				break;
 			case ST_EXTARGS_TYPE::str:
-				cout << args[i].extargs_string_value;
+				cout <<(args[i].args_existed? args[i].extargs_string_value:"/");
 				break;
 			case ST_EXTARGS_TYPE::str_with_set_default:
-				cout << args[i].extargs_string_value;
+				cout <<(args[i].args_existed? args[i].extargs_string_value:"/");
 				break;
 			case ST_EXTARGS_TYPE::str_with_set_error:
-				cout << args[i].extargs_string_value;
+				cout <<(args[i].args_existed? args[i].extargs_string_value:"/");
 				break;
 			case ST_EXTARGS_TYPE::ipaddr_with_default:
-				cout << args[i].get_str_ipaddr();
+				cout <<(args[i].args_existed? args[i].get_str_ipaddr():"/");
 				break;
 			case ST_EXTARGS_TYPE::ipaddr_with_error:
-				cout << args[i].get_str_ipaddr();
+				cout <<(args[i].args_existed? args[i].get_str_ipaddr():"/");
 				break;
 		}
-		cout << TAB << setw(max_range_set_length) ;
+		cout << TAB  ;
 				int* p = args[i].extargs_int_set;
 				string* s = args[i].extargs_string_set;
 				string* t = args[i].extargs_string_set;
@@ -720,45 +739,45 @@ int args_analyse_print(const args_analyse_tools* const args)
 				cout << "/";
 				break;
 			case ST_EXTARGS_TYPE::int_with_default:
-				cout <<"[" << args[i].extargs_int_min << ".." << args[i].extargs_int_max << "])" ;
+				cout <<"[" << args[i].extargs_int_min << ".." << args[i].extargs_int_max << "]" ;
 				break;
 			case ST_EXTARGS_TYPE::int_with_error:
-				cout <<"[" << args[i].extargs_int_min << ".." << args[i].extargs_int_max << "])" ;
+				cout <<"[" << args[i].extargs_int_min << ".." << args[i].extargs_int_max << "]" ;
 				break;
 			case ST_EXTARGS_TYPE::int_with_set_default:
-				cout << "[";
 				cout << *p;
 				p++;
-				while (*p != INVALID_INT_VALUE_OF_SET)
+				while (*p != INVALID_INT_VALUE_OF_SET) {
 					cout << "/" << *p;
-				cout << "]";
+					p++;
+				}
 				break;
 			case ST_EXTARGS_TYPE::int_with_set_error:
-				cout << "[";
 				cout << *p;
-			p++;
-				while (*p != INVALID_INT_VALUE_OF_SET)
+				p++;
+				while (*p != INVALID_INT_VALUE_OF_SET) {
 					cout << "/" << *p;
-				cout << "]";
+					p++;
+				}
 				break;
 			case ST_EXTARGS_TYPE::str:
 				cout << "/";
 				break;
 			case ST_EXTARGS_TYPE::str_with_set_default:
-				cout << "[";
 				cout << *s;
 				s++;
-				while (s->length())
-					cout << "/" << *p;
-				cout << "]";
+				while (s->length()) {
+					cout << "/" << *s;
+					s++;
+				}
 				break;
 			case ST_EXTARGS_TYPE::str_with_set_error:
-				cout << "[";
 				cout << *t;
 				t++;
-				while (t->length())
-					cout << "/" << *p;
-				cout << "]";
+				while (t->length()) {
+					cout << "/" << *t;
+					t++;
+				}
 				break;
 			case ST_EXTARGS_TYPE::ipaddr_with_default:
 				cout << "/";
@@ -768,7 +787,9 @@ int args_analyse_print(const args_analyse_tools* const args)
 				break;
 		}
 		cout << endl;
+		i++;
 	}
+		cout << setw(sum) << setfill('=') << "=" << setfill(' ') << endl;
 	return 0; //此句根据需要修改
 }
 
