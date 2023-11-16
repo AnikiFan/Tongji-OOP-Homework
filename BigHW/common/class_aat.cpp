@@ -32,7 +32,7 @@ static string from_ipaddr_to_str(unsigned int ip)
 	const char* p = (const char*)temp;
 	char num[10];
 	for (int i = 0; i < 3; i++) {
-		ipaddr.append(_itoa(*p,num,10));
+		ipaddr.append(_itoa(*p<0?128+*p:*p,num,10));
 		ipaddr.append(".");
 		p++;
 	}
