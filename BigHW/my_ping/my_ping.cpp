@@ -1,4 +1,4 @@
-/* 学号 姓名 班级 */
+/* 2254298 大数据 范潇 */
 #include <iostream>
 //可根据需要再加入其它需要的头文件
 #include "../include/class_aat.h"
