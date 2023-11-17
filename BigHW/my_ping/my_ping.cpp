@@ -58,7 +58,53 @@ static void usage(const char* const fullpath_procname)
 ***************************************************************************/
 static bool is_ipaddr_valid(const char* const ipstr)
 {
-	return true; //本函数需要自行实现，返回值按需修改
+	string input( ipstr);
+	int invalid = 0;
+	int time = 1;
+	int zero = 0;
+	int temp = 0;
+	int dotn = 0;
+	if (input[0] == '.' || input[input.length() - 1] == '.')
+		invalid = 1;
+	else {
+		for (int i = input.size() - 1; i >= 0; i--) {
+			if (zero && input[i] == '.' && temp) {
+				invalid = 1;
+				break;
+			}
+			else
+				zero = 0;
+			if (input[i] != '.' && (input[i] < '0' || input[i]>'9')) {
+				invalid = 1;
+				break;
+			}
+			if (input[i] == '.') {
+				if (input[i - 1] == '.') {
+					invalid = 1;
+					break;
+				}
+				if (dotn >= 3) {
+					invalid = 1;
+					break;
+				}
+				temp = 0;
+				time = 1;
+				dotn++;
+				continue;
+			}
+			temp += (input[i] - '0') * time;
+			if (input[i] == '0')
+				zero = 1;
+			time *= 10;
+			if (temp > 255) {
+				invalid = 1;
+				break;
+			}
+		}
+	}
+	if (dotn < 3)
+		invalid = 1;
+	return !invalid; //本函数需要自行实现，返回值按需修改
 }
 
 /***************************************************************************

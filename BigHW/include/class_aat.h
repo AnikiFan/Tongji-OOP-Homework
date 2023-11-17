@@ -16,7 +16,7 @@ using namespace std;
 		1、本项(ENABLE_LIB_COMMON_TOOLS)必须置0
 		2、从对应的 lib 目录中删除 lib_common_tools.lib
 ----------------------------------------------------------------------------------------------------------------------------------------------------------- */
-#define ENABLE_LIB_COMMON_TOOLS			 0
+#define ENABLE_LIB_COMMON_TOOLS			 1
 
 #if ENABLE_LIB_COMMON_TOOLS
 

@@ -579,7 +579,9 @@ int args_analyse_process(const int argc, const char* const* const argv, args_ana
 				}
 				tempadd += (temp << (8 * 3));
 			}
-			if (invalid||dotn<3) {
+			if (dotn < 3)
+				invalid = 1;
+			if (invalid) {
 				if (args[j].extargs_type == ST_EXTARGS_TYPE::ipaddr_with_error) {
 					cout << "参数[" << argv[i - 1] << "]的附加参数值(" << argv[i] << ")非法. (类型:IP地址)" << endl;
 					return -1;
