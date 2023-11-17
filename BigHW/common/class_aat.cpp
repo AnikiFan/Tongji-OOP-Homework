@@ -96,9 +96,11 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
 	exists_length = 1;
 	value_length = 1;
 	range_set_length = 4 + num_length(_min) + num_length(_max);
-	if (type == ST_EXTARGS_TYPE::int_with_default)
+	if (type == ST_EXTARGS_TYPE::int_with_default) {
 		strcpy(type_name, "IntWithDefault");
-	else
+		extargs_int_value = extargs_int_default;
+	}
+	else 
 		strcpy(type_name, "IntWithError");
 }
 
@@ -129,9 +131,11 @@ args_analyse_tools::args_analyse_tools(const char* name, const enum ST_EXTARGS_T
 		i++;
 	}
 	range_set_length += i - 1;
-	if (type == ST_EXTARGS_TYPE::int_with_set_default)
+	if (type == ST_EXTARGS_TYPE::int_with_set_default) {
 		strcpy(type_name, "IntSETWithDefault");
-	else
+		extargs_int_value = extargs_int_default;
+	}
+	else 
 		strcpy(type_name, "IntSETWithError");
 }
 
@@ -184,11 +188,15 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
 	exists_length = 1;
 	value_length = 1;
 	range_set_length = 1;
-	if (type == ST_EXTARGS_TYPE::str)
+	if (type == ST_EXTARGS_TYPE::str) {
 		strcpy(type_name, "String");
-	else if (type == ST_EXTARGS_TYPE::ipaddr_with_default)
+		extargs_string_value = extargs_string_default;
+	}
+	else if (type == ST_EXTARGS_TYPE::ipaddr_with_default) {
 		strcpy(type_name, "IPAddrWithDefault");
-	else
+		extargs_ipaddr_value = extargs_ipaddr_default;
+	}
+	else 
 		strcpy(type_name, "IPAddrWithError");
 }
 
@@ -219,9 +227,11 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
 		i++;
 	}
 	range_set_length += i - 1;
-	if (type == ST_EXTARGS_TYPE::str_with_set_default)
+	if (type == ST_EXTARGS_TYPE::str_with_set_default) {
 		strcpy(type_name, "StringSETWithDefault");
-	else
+		extargs_string_value = extargs_string_default;
+	}
+	else 
 		strcpy(type_name, "StringSETWithError");
 }
 
@@ -326,6 +336,7 @@ const string args_analyse_tools::get_str_ipaddr() const
 int args_analyse_process(const int argc, const char* const* const argv, args_analyse_tools* const args, const int follow_up_args)
 {
 	int i = 1;
+	int t = 0;
 	while (i < argc) {
 		int j = 0;
 		if (strlen(argv[i]) < 3 || argv[i][0] != '-' || argv[i][1] != '-') {
