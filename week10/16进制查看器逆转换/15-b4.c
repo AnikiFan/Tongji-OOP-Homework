@@ -45,8 +45,13 @@ int main(int argc, char** argv)
 	fclose(tempf);
 	fseek(infile, 0, SEEK_END);
 	int end = ftell(infile), count = 10;
+#if(__linux__)
+	int compensate = -1;
+#else 
+	int compensate = 0;
+#endif
 	fseek(infile, 10, SEEK_SET);
-	while (count + 82 < end) {
+	while (count + 82+compensate < end) {
 		for (int i = 0; i < 8; i++) {
 			fread(input, 1, 3, infile);
 			if (input[0] > '9')
@@ -64,8 +69,8 @@ int main(int argc, char** argv)
 				input[1] = input[1] - 'a' + 10 + '0';
 			printf("%c", (char)((input[0] - '0') * 16 + input[1] - '0')) ;
 		}
-		count += 82;
-		fseek(infile, 32, SEEK_CUR);
+		count += (82+compensate);
+		fseek(infile, 32+compensate, SEEK_CUR);
 	}
 	int quit = 0;
 	char temp;

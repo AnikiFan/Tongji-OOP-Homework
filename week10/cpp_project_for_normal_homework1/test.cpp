@@ -4,8 +4,11 @@
 using namespace std;
 int main()
 {
-	ofstream outfile("out.txt", ios::out | ios::binary);
-	outfile.put(0x0A);
-	 
+	fstream outfile("test.out", ios::out|ios::in);
+	char a = 'a';
+	char temp = 0;
+	outfile.write(&a, 1);
+	outfile.read(&temp, 1);
+
 	return 0;
 }
