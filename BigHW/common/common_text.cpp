@@ -41,7 +41,7 @@ int ch_in_str(char ch, char* str, int strlen)
 //返 回 值:,当返回1时表示读到文件结尾（人为添加的EOF不算），若读入字符数超过maxn则放回-1，其余情况返回0
 //说    明:读入字符数（不包括结束字符和被trim字符）
 //=====================================================
-int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_ch, char ch_num, char* end, int end_len, int maxn, int CR_CRLF_not_equal)
+int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_ch, char ch_num, char* end, int end_len,  enum system& sys, int maxn, int CR_CRLF_not_equal)
 {
 	inputn = 0;
 	int cur_pos = (int)infile.tellg();
@@ -53,10 +53,19 @@ int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_c
 	char input;
 	int trim_left = 0;
 	int comp_p = 0;
+	int D = 0;
 	if (trim == TRIM_LEFT || trim == TRIM_ALL)
 		trim_left = 1;
 	while (infile.tellg() != end_pos) {
 		input = infile.get();
+		if (input == 0x0D)
+			D = 1;
+		else if (input == 0x0A && D) {
+			sys = WINDOWS;
+			D = 0;
+		}
+		else
+			D = 0;
 		if (trim_left && ch_in_str(input, trim_ch, ch_num))
 			continue;
 		else {

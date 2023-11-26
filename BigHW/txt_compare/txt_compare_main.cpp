@@ -194,19 +194,36 @@ int main(int argc, char** argv)
 		args_analyse_print(args);
 
 	/* 进入实际的功能调用，完成相应的功能 */
+	if (args[OPT_ARGS_DEBUG].existed()) {
+		cout << endl;
+		cout << setw(13) << "File1" << ": " << args[OPT_ARGS_FILE1].get_string() << endl;
+		cout << setw(13) << "File2" << ": " << args[OPT_ARGS_FILE2].get_string() << endl;
+		cout << setw(13) << "Trim" << ": " << args[OPT_ARGS_TRIM].get_string() << endl;
+		cout << setw(13) << "Display" << ": " << args[OPT_ARGS_DISPLAY].get_string() << endl;
+		cout << setw(13) << "Skip" << ": " << args[OPT_ARGS_LINE_SKIP].get_int() << endl;
+		cout << setw(13) << "Offset" << ": " << args[OPT_ARGS_LINE_OFFSET].get_int() << endl;
+		cout << setw(13) << "MaxDiff" << ": " << args[OPT_ARGS_MAX_DIFFNUM].get_int() << endl;
+		cout << setw(13) << "MaxLine" << ": " << args[OPT_ARGS_MAX_LINENUM].get_int() << endl;
+		cout << setw(13) << "IgnoreBlank" << ": " << args[OPT_ARGS_IGNORE_BLANK].existed() << endl;
+		cout << setw(13) << "CR/CRLF" << ": " << args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed() << endl;
+		cout << setw(13) << "Debug" << ": " << args[OPT_ARGS_DEBUG].existed() << endl;
+		cout << endl;
+	}
 	ifstream infile1(args[OPT_ARGS_FILE1].get_string(), ios::in | ios::binary);
 	ifstream infile2(args[OPT_ARGS_FILE2].get_string(), ios::in | ios::binary);
 	if (!infile1) {
 		cout << "第1个文件[" << args[OPT_ARGS_FILE1].get_string() << "]无法打开." << endl;
 		infile1.close();
 		infile2.close();
+		return -1;
 	}
 	else if (!infile2) {
 		cout << "第2个文件[" << args[OPT_ARGS_FILE2].get_string() << "]无法打开." << endl;
 		infile1.close();
 		infile2.close();
+		return -1;
 	}
-	
+
 	int rown1 = 0, rown2 = 0;
 	char buffer1[MAXN + 1], buffer2[MAXN + 1];
 	int status1, status2;
@@ -214,23 +231,56 @@ int main(int argc, char** argv)
 	char end[10] = { '\n' };
 	int inputn1, inputn2;
 	//TODO: 先全部读入一遍，检查是否有某一行超过最大字符数，同时获取总行数。
-	int maxlen = 0;
+	int maxlen1 = 0, maxlen2 = 0;
 	int templen = 0;
-	while (!(status1 = get_line(infile1, buffer1, templen, TRIM_NONE, trim_ch, 2, end, 1))) {
+	enum system sys1 = LINUX, sys2 = LINUX, dummy = WINDOWS;
+	while (!(status1 = get_line(infile1, buffer1, templen, TRIM_NONE, trim_ch, 2, end, 1, sys1))) {
 		rown1++;
-		if (templen > maxlen)
-			maxlen = templen;
+		if (templen > maxlen1)
+			maxlen1 = templen;
 	}
-	while (!(status2 = get_line(infile2, buffer2, templen, TRIM_NONE, trim_ch, 2, end, 1))) {
+	while (!(status2 = get_line(infile2, buffer2, templen, TRIM_NONE, trim_ch, 2, end, 1, sys2))) {
 		rown2++;
-		if (templen > maxlen)
-			maxlen = templen;
+		if (templen > maxlen2)
+			maxlen2 = templen;
+	}
+	int maxlen = (maxlen1 > maxlen2 ? maxlen1 : maxlen2);
+	if (status1 == -1)
+		cout << "文件[" << args[OPT_ARGS_FILE1].get_string() << "]的第(" << rown1 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
+	else if (args[OPT_ARGS_DEBUG].existed()) {
+		cout << "第1个文件的基本信息：" << endl;
+		cout << "============================================================================================================================================" << endl;
+		cout << "文 件 名：" << args[OPT_ARGS_FILE1].get_string() << endl;
+		cout << "大    小：";
+		infile1.seekg(0, ios::end);
+		cout << infile1.tellg() << endl;
+		infile1.seekg(0, ios::beg);
+		cout << "行    数：" << rown1 + 1 << endl;
+		cout << "最大行长：" << maxlen1 << endl;
+		cout << "文件格式：" << (sys1 == LINUX ? "Linux" : "Windows") << endl;
+		cout << "============================================================================================================================================" << endl;
+		cout << endl;
+	}
+	if (status2 == -1)
+		cout << "文件[" << args[OPT_ARGS_FILE2].get_string() << "]的第(" << rown2 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
+	else if (args[OPT_ARGS_DEBUG].existed()) {
+		cout << "第2个文件的基本信息：" << endl;
+		cout << "============================================================================================================================================" << endl;
+		cout << "文 件 名：" << args[OPT_ARGS_FILE2].get_string() << endl;
+		cout << "大    小：";
+		infile2.seekg(0, ios::end);
+		cout << infile2.tellg() << endl;
+		infile2.seekg(0, ios::beg);
+		cout << "行    数：" << rown2 + 1 << endl;
+		cout << "最大行长：" << maxlen2 << endl;
+		cout << "文件格式：" << (sys2 == LINUX ? "Linux" : "Windows") << endl;
+		cout << "============================================================================================================================================" << endl;
+		cout << endl;
+		cout << endl;
 	}
 	if (status1 == -1 || status2 == -1) {
-		if (status1 == -1)
-			cout << "文件[" << args[OPT_ARGS_FILE1].get_string() << "]的第(" << rown1 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
-		if (status2 == -1)
-			cout << "文件[" << args[OPT_ARGS_FILE2].get_string() << "]的第(" << rown2 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
+		infile1.close();
+		infile2.close();
 		return -1;
 	}
 	//TODO: 处理offset和skip
@@ -240,7 +290,7 @@ int main(int argc, char** argv)
 	int offset2 = args[OPT_ARGS_LINE_SKIP].get_int() + (args[OPT_ARGS_LINE_OFFSET].get_int() > 0 ? args[OPT_ARGS_LINE_OFFSET].get_int() : 0);
 	int cur_line1 = 1, cur_line2 = 1;
 	while (offset1--) {
-		int status = get_line(infile1, buffer1, inputn1, TRIM_NONE, trim_ch, 2, end, 1);
+		int status = get_line(infile1, buffer1, inputn1, TRIM_NONE, trim_ch, 2, end, 1, dummy);
 		if (status == 1)
 			break;
 		else if (!inputn1 && args[OPT_ARGS_IGNORE_BLANK].existed())
@@ -248,7 +298,7 @@ int main(int argc, char** argv)
 		cur_line1++;
 	}
 	while (offset2--) {
-		int status = get_line(infile2, buffer2, inputn2, TRIM_NONE, trim_ch, 2, end, 1);
+		int status = get_line(infile2, buffer2, inputn2, TRIM_NONE, trim_ch, 2, end, 1, dummy);
 		if (status == 1)
 			break;
 		else if (!inputn2 && args[OPT_ARGS_IGNORE_BLANK].existed())
@@ -281,7 +331,7 @@ int main(int argc, char** argv)
 	int count = 0;
 	while (1) {
 		while (1) {
-			int status = get_line(infile1, buffer1, inputn1, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+			int status = get_line(infile1, buffer1, inputn1, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 			if (status == 1) {
 				eof1 = 1;
 				cur_line1++;
@@ -294,7 +344,7 @@ int main(int argc, char** argv)
 		}
 
 		while (1) {
-			int status = get_line(infile2, buffer2, inputn2, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+			int status = get_line(infile2, buffer2, inputn2, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 			if (status == 1) {
 				eof2 = 1;
 				cur_line2++;
@@ -311,7 +361,7 @@ int main(int argc, char** argv)
 			char tempbuffer[MAXN];
 			if (eof1) {//此时判断file2后面多出来的是否都是空行
 				while (1) {
-					int status = get_line(infile2, tempbuffer, temp, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+					int status = get_line(infile2, tempbuffer, temp, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 					if (temp)
 						break;
 					if (status == 1) {
@@ -322,7 +372,7 @@ int main(int argc, char** argv)
 			}
 			if (eof2) {//此时判断file1后面多出来的是否都是空行
 				while (1) {
-					int status = get_line(infile1, tempbuffer, temp, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+					int status = get_line(infile1, tempbuffer, temp, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 					if (temp)
 						break;
 					if (status == 1) {
