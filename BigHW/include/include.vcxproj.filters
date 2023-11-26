@@ -30,5 +30,8 @@
     <ClInclude Include="common_list.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="common_text.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

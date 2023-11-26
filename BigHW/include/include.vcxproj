@@ -144,6 +144,7 @@
     <ClInclude Include="common_list.h" />
     <ClInclude Include="common_make.h" />
     <ClInclude Include="common_interact.h" />
+    <ClInclude Include="common_text.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

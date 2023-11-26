@@ -30,5 +30,8 @@
     <ClCompile Include="common_make.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="common_text.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

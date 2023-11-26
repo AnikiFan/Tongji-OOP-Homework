@@ -1,4 +1,5 @@
 /* 2254298 ´óÊı¾İ ·¶äì */
+/* 2153538 Áõ²©Ñó 2251320 Í¿ÖĞºÆ 2253733 ÁÎÒ«ÎÄ 2151753 ÅíÀ¤Óî 2253204 ÉÛÁÕ²© 2250748 ÍõÓåûq 2251924 êÌ¾°ºÀ 2253895 ·ë³¿ */
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include<string.h>
@@ -45,20 +46,15 @@ int main(int argc, char** argv)
 	fclose(tempf);
 	fseek(infile, 0, SEEK_END);
 	int end = ftell(infile), count = 10;
-#if(__linux__)
-	int compensate = -1;
-#else 
-	int compensate = 0;
-#endif
 	fseek(infile, 10, SEEK_SET);
-	while (count + 82+compensate < end) {
+	while (count + 81 < end) {
 		for (int i = 0; i < 8; i++) {
 			fread(input, 1, 3, infile);
 			if (input[0] > '9')
 				input[0] = input[0] - 'a' + '0' + 10;
 			if (input[1] > '9')
 				input[1] = input[1] - 'a' + '0' + 10;
-			printf("%c", (char)((input[0] - '0') * 16 + input[1] - '0')) ;
+			printf("%c", (char)((input[0] - '0') * 16 + input[1] - '0'));
 		}
 		fread(input, 1, 2, infile);
 		for (int i = 0; i < 8; i++) {
@@ -67,10 +63,14 @@ int main(int argc, char** argv)
 				input[0] = input[0] - 'a' + 10 + '0';
 			if (input[1] > '9')
 				input[1] = input[1] - 'a' + 10 + '0';
-			printf("%c", (char)((input[0] - '0') * 16 + input[1] - '0')) ;
+			printf("%c", (char)((input[0] - '0') * 16 + input[1] - '0'));
 		}
-		count += (82+compensate);
-		fseek(infile, 32+compensate, SEEK_CUR);
+		count += 81;
+		for (int i = 0; i < 31; i++) 
+			if (fgetc(infile) == '\r') {
+				fgetc(infile);
+				count++;
+			}
 	}
 	int quit = 0;
 	char temp;

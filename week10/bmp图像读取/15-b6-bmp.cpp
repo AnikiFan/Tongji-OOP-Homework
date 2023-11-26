@@ -85,5 +85,6 @@ unsigned int bitmap_image::get_pixel(int row, int col) const
 		default:
 			break;
 	}
+	bmp.close();
 	return -1;
 }
