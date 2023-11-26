@@ -8,7 +8,7 @@
 #include"../include/class_aat.h"
 #include"../include/common_text.h"
 #include"../include/cmd_hdc_tools.h"
-#define MAXN 0xFFFF
+#define MAXN 0x10000
 using namespace std;
 
 enum OPT_ARGS {
@@ -42,7 +42,7 @@ static void usage(const char* const argv0)
 	if (temp.find('\\') != temp.npos)
 		strcpy(procname, temp.substr(temp.find_last_of('\\') + 1).data()); //这句替换成自己的截取函数 
 	else
-		strcpy(procname,argv0);
+		strcpy(procname, argv0);
 	ostringstream msg;
 	const int wkey = 7 + strlen(procname) + 1;
 	const int wopt = 7 + strlen(procname) + 4;
@@ -115,7 +115,7 @@ void prompt()
 	cout << "	1、空行用 xxx 标出" << endl;
 	cout << "	2、文件结束用 xxx 标出" << endl;
 	cout << "	3、两行相同列位置的差异字符用亮色标出" << endl;
-	cout << "	4、每行中的CR / LF / VT / BS / BEL用X标出(方便看清隐含字符)" <<endl;
+	cout << "	4、每行中的CR / LF / VT / BS / BEL用X标出(方便看清隐含字符)" << endl;
 	cout << "	5、每行尾的多余的字符用亮色标出，CR / LF / VT / BS / BEL用亮色X标出(方便看清隐含字符)" << endl;
 	cout << "	6、每行最后用 xxx 标出(方便看清隐含字符)" << endl;
 	cout << "	7、中文因为编码问题，差异位置可能报在后半个汉字上，但整个汉字都亮色标出" << endl;
@@ -142,7 +142,7 @@ int main(int argc, char** argv)
 {
 	/* 指定去除空格的方式 */
 	const string TrimType[] = { "none",	"left",	"right",	"all", "" };
-	const string DisplayType[] = { "none",	"normal",	"detailed", "" }; 
+	const string DisplayType[] = { "none",	"normal",	"detailed", "" };
 
 	args_analyse_tools args[] = {
 		args_analyse_tools("--help",				ST_EXTARGS_TYPE::boolean, 0, false),
@@ -196,6 +196,17 @@ int main(int argc, char** argv)
 	/* 进入实际的功能调用，完成相应的功能 */
 	ifstream infile1(args[OPT_ARGS_FILE1].get_string(), ios::in | ios::binary);
 	ifstream infile2(args[OPT_ARGS_FILE2].get_string(), ios::in | ios::binary);
+	if (!infile1) {
+		cout << "第1个文件[" << args[OPT_ARGS_FILE1].get_string() << "]无法打开." << endl;
+		infile1.close();
+		infile2.close();
+	}
+	else if (!infile2) {
+		cout << "第2个文件[" << args[OPT_ARGS_FILE2].get_string() << "]无法打开." << endl;
+		infile1.close();
+		infile2.close();
+	}
+	
 	int rown1 = 0, rown2 = 0;
 	char buffer1[MAXN + 1], buffer2[MAXN + 1];
 	int status1, status2;
@@ -203,15 +214,23 @@ int main(int argc, char** argv)
 	char end[10] = { '\n' };
 	int inputn1, inputn2;
 	//TODO: 先全部读入一遍，检查是否有某一行超过最大字符数，同时获取总行数。
-	while (!(status1 = get_line(infile1, buffer1, inputn1, TRIM_NONE, trim_ch, 2, end, 1)))
+	int maxlen = 0;
+	int templen = 0;
+	while (!(status1 = get_line(infile1, buffer1, templen, TRIM_NONE, trim_ch, 2, end, 1))) {
 		rown1++;
-	while (!(status2 = get_line(infile2, buffer2, inputn2, TRIM_NONE, trim_ch, 2, end, 1)))
+		if (templen > maxlen)
+			maxlen = templen;
+	}
+	while (!(status2 = get_line(infile2, buffer2, templen, TRIM_NONE, trim_ch, 2, end, 1))) {
 		rown2++;
+		if (templen > maxlen)
+			maxlen = templen;
+	}
 	if (status1 == -1 || status2 == -1) {
 		if (status1 == -1)
-			cout << "文件[" << argv[0] << "]的第(" << rown1 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
+			cout << "文件[" << args[OPT_ARGS_FILE1].get_string() << "]的第(" << rown1 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
 		if (status2 == -1)
-			cout << "文件[" << argv[0] << "]的第(" << rown2 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
+			cout << "文件[" << args[OPT_ARGS_FILE2].get_string() << "]的第(" << rown2 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
 		return -1;
 	}
 	//TODO: 处理offset和skip
@@ -252,18 +271,18 @@ int main(int argc, char** argv)
 	if (args[OPT_ARGS_DISPLAY].get_string() == "normal") {
 		display_mode = NORMAL_MODE;
 		cout << "比较结果输出：" << endl;
-		_make_line(, display_mode);
+		_make_line(maxlen, display_mode);
 	}
 	else if (args[OPT_ARGS_DISPLAY].get_string() == "detailed") {
 		display_mode = DETAIL_MODE;
 		cout << "比较结果输出：" << endl;
-		_make_line(, display_mode);
+		_make_line(maxlen, display_mode);
 	}
-	int count=0;
-	while(1){
+	int count = 0;
+	while (1) {
 		while (1) {
-			int status = get_line(infile1, buffer1, inputn1, trim, trim_ch, 2, end,1,MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
-		    if (status == 1) {
+			int status = get_line(infile1, buffer1, inputn1, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+			if (status == 1) {
 				eof1 = 1;
 				cur_line1++;
 				break;
@@ -275,7 +294,7 @@ int main(int argc, char** argv)
 		}
 
 		while (1) {
-			int status = get_line(infile2, buffer2, inputn2, trim, trim_ch, 2, end, 1,MAXN,args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+			int status = get_line(infile2, buffer2, inputn2, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 			if (status == 1) {
 				eof2 = 1;
 				cur_line2++;
@@ -287,41 +306,39 @@ int main(int argc, char** argv)
 			break;
 		}
 		cur_num++;
-		if ((eof1 ^ eof2)&&args[OPT_ARGS_IGNORE_BLANK].existed()) {
-			int temp=0;
+		if ((eof1 ^ eof2) && args[OPT_ARGS_IGNORE_BLANK].existed()) {
+			int temp = 0;
 			char tempbuffer[MAXN];
 			if (eof1) {//此时判断file2后面多出来的是否都是空行
 				while (1) {
-					int status = get_line(infile2, tempbuffer, temp, trim, trim_ch, 2, end, 1,MAXN,args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+					int status = get_line(infile2, tempbuffer, temp, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 					if (temp)
 						break;
 					if (status == 1) {
 						eof2 = 1;
 						break;
 					}
-					 
 				}
 			}
 			if (eof2) {//此时判断file1后面多出来的是否都是空行
 				while (1) {
-					int status = get_line(infile1, tempbuffer, temp, trim, trim_ch, 2, end, 1,MAXN,args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+					int status = get_line(infile1, tempbuffer, temp, trim, trim_ch, 2, end, 1, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 					if (temp)
 						break;
 					if (status == 1) {
 						eof1 = 1;
 						break;
 					}
-					 
 				}
 			}
 		}
-		count += diff(buffer1,buffer2,inputn1,inputn2,cur_line1-1,cur_line2-1,eof1,eof2,display_mode,trim);
+		count += diff(buffer1, buffer2, inputn1, inputn2, cur_line1 - 1, cur_line2 - 1, eof1, eof2, display_mode, trim);
 		if (eof1 || eof2)
 			break;
 		if (display_mode == NONE_MODE && count)
 			break;
 		if (args[OPT_ARGS_MAX_DIFFNUM].existed() && (count > args[OPT_ARGS_MAX_DIFFNUM].get_int())
-			||args[OPT_ARGS_MAX_LINENUM].existed() && (count > args[OPT_ARGS_MAX_LINENUM].get_int()))
+			|| args[OPT_ARGS_MAX_LINENUM].existed() && (count > args[OPT_ARGS_MAX_LINENUM].get_int()))
 			break;
 	}
 	if (display_mode == NONE_MODE)
@@ -329,16 +346,18 @@ int main(int argc, char** argv)
 	else {
 		if (!count) {
 			cout << "在指定检查条件下完全一致." << endl;
-			_make_line((rown1 >= rown2 ? rown1 : rown2), display_mode);
+			_make_line(maxlen, display_mode);
 		}
 		else {
-			_make_line(, display_mode);
+			_make_line(maxlen, display_mode);
 			cout << "在指定检查条件下共" << count << "行有差异." << endl;
 			prompt();
-			_make_line(, display_mode);
+			_make_line(maxlen, display_mode);
 		}
 	}
 	//循环体中处理display
+	infile1.close();
+	infile2.close();
 	return 0;
 }
 //TODO: demo的逻辑是只有读到'\n'了才认为是换行，并会用<CR>显示
