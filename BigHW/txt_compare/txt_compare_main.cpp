@@ -226,19 +226,19 @@ int main(int argc, char** argv)
 	int rown1 = 0, rown2 = 0;
 	char buffer1[MAXN + 1], buffer2[MAXN + 1];
 	int status1, status2;
-	char trim_ch[10] = { ' ','\t' };
+	char trim_ch[10] = { ' ','\t','\r'};
 	char end[10] = { '\n' };
 	int inputn1, inputn2;
 	//TODO: 先全部读入一遍，检查是否有某一行超过最大字符数，同时获取总行数。
 	int maxlen1 = 0, maxlen2 = 0;
 	int templen = 0;
 	enum system sys1 = LINUX, sys2 = LINUX, dummy = WINDOWS;
-	while (!(status1 = get_line(infile1, buffer1, templen, TRIM_NONE, trim_ch, 2, end, 1, sys1))) {
+	while (!(status1 = get_line(infile1, buffer1, templen, TRIM_NONE, trim_ch, 3, end, 1, sys1))) {
 		rown1++;
 		if (templen > maxlen1)
 			maxlen1 = templen;
 	}
-	while (!(status2 = get_line(infile2, buffer2, templen, TRIM_NONE, trim_ch, 2, end, 1, sys2))) {
+	while (!(status2 = get_line(infile2, buffer2, templen, TRIM_NONE, trim_ch, 3, end, 1, sys2))) {
 		rown2++;
 		if (templen > maxlen2)
 			maxlen2 = templen;
@@ -294,7 +294,7 @@ int main(int argc, char** argv)
 	int offset2 = args[OPT_ARGS_LINE_SKIP].get_int() + (args[OPT_ARGS_LINE_OFFSET].get_int() > 0 ? args[OPT_ARGS_LINE_OFFSET].get_int() : 0);
 	int cur_line1 = 1, cur_line2 = 1;
 	while (offset1--) {
-		int status = get_line(infile1, buffer1, inputn1, TRIM_NONE, trim_ch, 2, end, 1, dummy);
+		int status = get_line(infile1, buffer1, inputn1, TRIM_NONE, trim_ch, 3, end, 1, dummy);
 		if (status == 1)
 			break;
 		else if (!inputn1 && args[OPT_ARGS_IGNORE_BLANK].existed())
@@ -302,7 +302,7 @@ int main(int argc, char** argv)
 		cur_line1++;
 	}
 	while (offset2--) {
-		int status = get_line(infile2, buffer2, inputn2, TRIM_NONE, trim_ch, 2, end, 1, dummy);
+		int status = get_line(infile2, buffer2, inputn2, TRIM_NONE, trim_ch, 3, end, 1, dummy);
 		if (status == 1)
 			break;
 		else if (!inputn2 && args[OPT_ARGS_IGNORE_BLANK].existed())
@@ -337,7 +337,7 @@ int main(int argc, char** argv)
 	int first = 1;
 	while (1) {
 		while (1) {
-			int status = get_line(infile1, buffer1, inputn1, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+			int status = get_line(infile1, buffer1, inputn1, trim, trim_ch, 3, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 			if (status == 1) {
 				eof1 = 1;
 				cur_line1++;
@@ -350,7 +350,7 @@ int main(int argc, char** argv)
 		}
 
 		while (1) {
-			int status = get_line(infile2, buffer2, inputn2, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+			int status = get_line(infile2, buffer2, inputn2, trim, trim_ch, 3, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 			if (status == 1) {
 				eof2 = 1;
 				cur_line2++;
@@ -367,7 +367,7 @@ int main(int argc, char** argv)
 			char tempbuffer[MAXN];
 			if (eof1) {//此时判断file2后面多出来的是否都是空行
 				while (1) {
-					int status = get_line(infile2, tempbuffer, temp, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+					int status = get_line(infile2, tempbuffer, temp, trim, trim_ch, 3, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 					if (temp)
 						break;
 					if (status == 1) {
@@ -378,7 +378,7 @@ int main(int argc, char** argv)
 			}
 			if (eof2) {//此时判断file1后面多出来的是否都是空行
 				while (1) {
-					int status = get_line(infile1, tempbuffer, temp, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
+					int status = get_line(infile1, tempbuffer, temp, trim, trim_ch, 3, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
 					if (temp)
 						break;
 					if (status == 1) {
