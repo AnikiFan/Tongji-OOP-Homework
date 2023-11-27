@@ -284,7 +284,7 @@ void print_hex(char* buffer, int len, int eof)
 //返 回 值:
 //说    明:
 //=====================================================
-void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode)
+void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode,int debug)
 {
 	int i = 0;
 	int llen = int_len(rown1) + 1, rlen = int_len(rown2) + 1;
@@ -304,12 +304,11 @@ void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, i
 				<< rown2 << "]行 - 文件" << (eof1 > eof2 ? "1已结束/文件2仍有内容：" : "1仍有内容/文件2已结束：") << endl;
 			break;
 	}
-	switch (display_mode) {
-		case NORMAL_MODE:
+	if (display_mode == NORMAL_MODE || (debug && display_mode == NONE_MODE)) {
 			print_row(buffer1, buffer2, len1, len2, eof1, eof2);
 			cout << endl;
-			break;
-		case DETAIL_MODE:
+	}
+	else if (display_mode == DETAIL_MODE) {
 			print_rule((len1 > len2) ? len1 : len2);
 			print_row(buffer1, buffer2, len1, len2, eof1, eof2);
 			cout << "文件1(HEX) : " << endl;
@@ -317,7 +316,6 @@ void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, i
 			cout << "文件2(HEX) : " << endl;
 			print_hex(buffer2, len2, eof2);
 			cout << endl;
-			break;
 	}
 	return;
 }
@@ -329,7 +327,7 @@ void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, i
 //返 回 值:
 //说    明:有差异则返回1，无差异返回0
 //=====================================================
-int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode, int trim)
+int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode, int trim,int debug,int first)
 {
 	int i = 0;
 	int error_type = NO_DIFF;
@@ -343,19 +341,37 @@ int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2,
 	if (len1 == len2 && !error_type)
 		if (eof1 ^ eof2)
 			error_type = NOT_END;
-		else
+		else {
+			if (debug) {
+				//TODO:这里处理的是特判的情况，后面还需要进一步确认
+				cout<<dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
+				<< setiosflags(ios::right) << rown2 << "]行 - "<<"一致: " << buffer1;
+				if (eof1) 
+					cout << "<EOF>" << endl;
+				else {
+					if (!len1)
+						cout << "<EMPTY>";
+					cout << "<CR>" << endl;
+					cout << endl;
+				}
+			}
 			return 0;
+		}
 	else if (!error_type)
 		error_type = MORE_CHAR;
-	if (display_mode == NONE_MODE && error_type)
+	if (!debug&&display_mode == NONE_MODE && error_type)
 		return 1;
 	else {
 		if (error_type == NOT_END && (trim == TRIM_RIGHT || trim == TRIM_ALL) && (eof1 ^ eof2) && (!len1 || !len2)) {//特判
-			cout<<dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
-				<< setiosflags(ios::right) << rown2 << "]行 - 文件" << (eof1 > eof2 ? "1已结束/文件2仍有内容." : "1仍有内容/文件2已结束：") << endl;
+			if(!debug)
+				cout<<dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
+				<< setiosflags(ios::right) << rown2 << "]行 - 文件" << (eof1 > eof2 ? "1已结束/文件2仍有内容." : "1仍有内容/文件2已结束.") << endl;
+			else 
+				cout<<dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
+				<< setiosflags(ios::right) << rown2 << "]行 - 文件" << (eof1 > eof2 ? "1已结束/文件2仍有内容." : "1仍有内容/文件2已结束.") << endl;
 		}
 		else
-			display(error_type, buffer1, buffer2, len1, len2, rown1, rown2, eof1, eof2, display_mode);
+			display(error_type, buffer1, buffer2, len1, len2, rown1, rown2, eof1, eof2, display_mode,debug);
 		return 1;
 	}
 }

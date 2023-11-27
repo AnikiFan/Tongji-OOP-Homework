@@ -195,7 +195,6 @@ int main(int argc, char** argv)
 
 	/* 进入实际的功能调用，完成相应的功能 */
 	if (args[OPT_ARGS_DEBUG].existed()) {
-		cout << endl;
 		cout << setw(13) << "File1" << ": " << args[OPT_ARGS_FILE1].get_string() << endl;
 		cout << setw(13) << "File2" << ": " << args[OPT_ARGS_FILE2].get_string() << endl;
 		cout << setw(13) << "Trim" << ": " << args[OPT_ARGS_TRIM].get_string() << endl;
@@ -245,36 +244,41 @@ int main(int argc, char** argv)
 			maxlen2 = templen;
 	}
 	int maxlen = (maxlen1 > maxlen2 ? maxlen1 : maxlen2);
+	int display_mode = NONE_MODE;
+	if (args[OPT_ARGS_DISPLAY].get_string() == "normal")
+		display_mode = NORMAL_MODE;
+	else if (args[OPT_ARGS_DISPLAY].get_string() == "detailed")
+		display_mode = DETAIL_MODE;
 	if (status1 == -1)
 		cout << "文件[" << args[OPT_ARGS_FILE1].get_string() << "]的第(" << rown1 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
 	else if (args[OPT_ARGS_DEBUG].existed()) {
 		cout << "第1个文件的基本信息：" << endl;
-		cout << "============================================================================================================================================" << endl;
+		_make_line(maxlen, display_mode);
 		cout << "文 件 名：" << args[OPT_ARGS_FILE1].get_string() << endl;
 		cout << "大    小：";
 		infile1.seekg(0, ios::end);
 		cout << infile1.tellg() << endl;
 		infile1.seekg(0, ios::beg);
-		cout << "行    数：" << rown1 + 1 << endl;
-		cout << "最大行长：" << maxlen1 << endl;
+		cout << "行    数：" << rown1  << endl;
+		cout << "最大行长：" << maxlen1 +1<< endl;
 		cout << "文件格式：" << (sys1 == LINUX ? "Linux" : "Windows") << endl;
-		cout << "============================================================================================================================================" << endl;
+		_make_line(maxlen, display_mode);
 		cout << endl;
 	}
 	if (status2 == -1)
 		cout << "文件[" << args[OPT_ARGS_FILE2].get_string() << "]的第(" << rown2 + 1 << ")行不符合要求，超过最大长度[" << MAXN << "]." << endl;
 	else if (args[OPT_ARGS_DEBUG].existed()) {
 		cout << "第2个文件的基本信息：" << endl;
-		cout << "============================================================================================================================================" << endl;
+		_make_line(maxlen, display_mode);
 		cout << "文 件 名：" << args[OPT_ARGS_FILE2].get_string() << endl;
 		cout << "大    小：";
 		infile2.seekg(0, ios::end);
 		cout << infile2.tellg() << endl;
 		infile2.seekg(0, ios::beg);
-		cout << "行    数：" << rown2 + 1 << endl;
-		cout << "最大行长：" << maxlen2 << endl;
+		cout << "行    数：" << rown2  << endl;
+		cout << "最大行长：" << maxlen2+1 << endl;
 		cout << "文件格式：" << (sys2 == LINUX ? "Linux" : "Windows") << endl;
-		cout << "============================================================================================================================================" << endl;
+		_make_line(maxlen, display_mode);
 		cout << endl;
 		cout << endl;
 	}
@@ -317,18 +321,20 @@ int main(int argc, char** argv)
 	else
 		trim = TRIM_ALL;
 	int eof1 = 0, eof2 = 0;
-	int display_mode = NONE_MODE;
 	if (args[OPT_ARGS_DISPLAY].get_string() == "normal") {
-		display_mode = NORMAL_MODE;
 		cout << "比较结果输出：" << endl;
 		_make_line(maxlen, display_mode);
 	}
 	else if (args[OPT_ARGS_DISPLAY].get_string() == "detailed") {
-		display_mode = DETAIL_MODE;
+		cout << "比较结果输出：" << endl;
+		_make_line(maxlen, display_mode);
+	}
+	else if (args[OPT_ARGS_DEBUG].existed()) {
 		cout << "比较结果输出：" << endl;
 		_make_line(maxlen, display_mode);
 	}
 	int count = 0;
+	int first = 1;
 	while (1) {
 		while (1) {
 			int status = get_line(infile1, buffer1, inputn1, trim, trim_ch, 2, end, 1, dummy, MAXN, args[OPT_ARGS_CR_CRLF_NOT_EQUAL].existed());
@@ -382,7 +388,15 @@ int main(int argc, char** argv)
 				}
 			}
 		}
-		count += diff(buffer1, buffer2, inputn1, inputn2, cur_line1 - 1, cur_line2 - 1, eof1, eof2, display_mode, trim);
+		if (first) {
+			first = 0;
+			if (args[OPT_ARGS_DEBUG].existed()) {
+				cout << "起始行: " << setiosflags(ios::left) << setw(int_len(cur_line1-2) + 1) << cur_line1-2 << "/" << setw(int_len(cur_line2) + 1)
+					<< setiosflags(ios::right) << cur_line2-2 << endl;
+			}
+		}
+	
+		count += diff(buffer1, buffer2, inputn1, inputn2, cur_line1 - 1, cur_line2 - 1, eof1, eof2, display_mode, trim,args[OPT_ARGS_DEBUG].existed(),first);
 		if (eof1 || eof2)
 			break;
 		if (display_mode == NONE_MODE && count)
@@ -391,8 +405,20 @@ int main(int argc, char** argv)
 			|| args[OPT_ARGS_MAX_LINENUM].existed() && (count > args[OPT_ARGS_MAX_LINENUM].get_int()))
 			break;
 	}
-	if (display_mode == NONE_MODE)
+	if (display_mode == NONE_MODE&&!args[OPT_ARGS_DEBUG].existed())
 		cout << (count ? "文件不同." : "文件相同.") << endl;
+	else if (args[OPT_ARGS_DEBUG].existed()) {
+		if (!count) {
+			cout << "在指定检查条件下完全一致." << endl;
+			_make_line(maxlen, display_mode);
+		}
+		else {
+			_make_line(maxlen, display_mode);
+			cout << "在指定检查条件下共" << count << "行有差异." << endl;
+			prompt();
+			_make_line(maxlen, display_mode);
+		}
+	}
 	else {
 		if (!count) {
 			cout << "在指定检查条件下完全一致." << endl;
