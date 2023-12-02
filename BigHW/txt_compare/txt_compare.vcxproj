@@ -27,6 +27,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\class_aat.h" />
     <ClInclude Include="..\include\cmd_console_tools.h" />
+    <ClInclude Include="..\include\common_text.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

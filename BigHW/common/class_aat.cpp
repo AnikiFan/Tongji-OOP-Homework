@@ -360,7 +360,7 @@ int args_analyse_process(const int argc, const char* const* const argv, args_ana
 				return -1;
 			}
 			args[j].args_existed = 1;
-			args[i].value_length = 4;
+			args[j].value_length = 4;
 		}
 		else if (args[j].extargs_type == ST_EXTARGS_TYPE::int_with_default || args[j].extargs_type == ST_EXTARGS_TYPE::int_with_error
 			|| args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_default || args[j].extargs_type == ST_EXTARGS_TYPE::int_with_set_error) {

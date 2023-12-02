@@ -41,12 +41,12 @@ int ch_in_str(char ch, char* str, int strlen)
 //返 回 值:,当返回1时表示读到文件结尾（人为添加的EOF不算），若读入字符数超过maxn则放回-1，其余情况返回0
 //说    明:读入字符数（不包括结束字符和被trim字符）
 //=====================================================
-int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_ch, char ch_num, char* end, int end_len,  enum system& sys, int maxn, int CR_CRLF_not_equal)
+int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_ch, int ch_num, char* end, int end_len, enum system& sys, int maxn, int CR_CRLF_not_equal)
 {
 	inputn = 0;
 	int cur_pos = (int)infile.tellg();
 	infile.seekg(0, ios::end);
-	int end_pos =(int) infile.tellg();
+	int end_pos = (int)infile.tellg();
 	infile.seekg(cur_pos, ios::beg);
 	if (cur_pos == end_pos)
 		return 1;
@@ -81,14 +81,25 @@ int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_c
 				return -1;
 		}
 	}
-	if (comp_p == end_len)
+	int eof = 0;
+	if (comp_p == end_len) {
 		inputn -= end_len;
-	if (!CR_CRLF_not_equal && !strcmp("\n", end) && (buffer[inputn - 1] == '\r'))
+		if (!CR_CRLF_not_equal && !strcmp("\n", end) && (buffer[inputn - 1] == '\r'))
+			//用于处理demo当最后最后一行为单独一个\r时并不会打印的情况，若解决，则应该放到(comp_p==end_len)的条件分支中
+			inputn--;
+	}
+	else
+		eof = 1;
+	if (CR_CRLF_not_equal && ((trim == TRIM_RIGHT) ||( trim == TRIM_ALL)) && (buffer[inputn - 1] == '\r'))
+		inputn--;
+	if (CR_CRLF_not_equal && trim == TRIM_LEFT && inputn == 1 && buffer[0] == '\r')
 		inputn--;
 	if (trim == TRIM_RIGHT || trim == TRIM_ALL)
 		while (inputn && ch_in_str(buffer[inputn - 1], trim_ch, ch_num))
 			inputn--;
 	buffer[inputn] = '\0';
+	if (eof)
+		return 1;
 	//正常情况应该在while循环体内因为读入end而return
 	return 0;
 }
@@ -204,7 +215,7 @@ void print_rule(int length)
 	cout << setfill(' ') << endl;;
 	cout << setw(8) << " ";
 	for (int i = 0; i < n; i++)
-		cout << setw(10) << resetiosflags(ios::right) << setiosflags(ios::left) << i;
+		cout << setw(10) << resetiosflags(ios::right) << setiosflags(ios::left) << i%10;
 	cout << endl;
 	cout << setw(8) << " ";
 	for (int i = 0; i < n; i++)
@@ -226,7 +237,7 @@ void print_rule(int length)
 //=====================================================
 void print_hex(char* buffer, int len, int eof)
 {
-	if (!len&&eof) {
+	if (!len && eof) {
 		cout << "<EOF>" << endl;
 		return;
 	}
@@ -236,16 +247,20 @@ void print_hex(char* buffer, int len, int eof)
 	}
 	int i = 0;
 	while (i + 16 <= len) {
-		cout << setw(8) << setfill('0') << setiosflags(ios::right)  << hex << i << " :";
+		cout << setw(8) << setfill('0') << setiosflags(ios::right) << hex << i << " :";
 		for (int j = 0; j < 8; j++)
-			cout << " " << setw(2) << setfill('0') << setiosflags(ios::right)  << hex << ((int)(unsigned char)buffer[i + j]);
+			cout << " " << setw(2) << setfill('0') << setiosflags(ios::right) << hex << ((int)(unsigned char)buffer[i + j]);
 		cout << " -";
 		for (int j = 8; j < 16; j++)
-			cout << " " << setw(2) << setfill('0') << setiosflags(ios::right)  << hex << ((int)(unsigned char)buffer[i + j]);
+			cout << " " << setw(2) << setfill('0') << setiosflags(ios::right) << hex << ((int)(unsigned char)buffer[i + j]);
 		cout << "  ";
 		for (int j = 0; j < 16; j++)
-			if (buffer[i + j] < 33 || buffer[i + j]>136)
-				cout << ".";
+			if (buffer[i + j] < 33 || buffer[i + j]>136) {
+				if (buffer[i + j] != ' ')
+					cout << ".";
+				else
+					cout << ' ';
+			}
 			else
 				putchar(buffer[i + j]);
 		cout << endl;
@@ -253,11 +268,11 @@ void print_hex(char* buffer, int len, int eof)
 	}
 	int temp = i;
 	if (len % 16) {
-		cout << setw(8) << setfill('0') << setiosflags(ios::right)  << hex << i << " :";
+		cout << setw(8) << setfill('0') << setiosflags(ios::right) << hex << i << " :";
 		while (i < len) {
 			if (i % 16 == 8)
 				cout << " -";
-			cout << " " << setw(2) << setfill('0') << setiosflags(ios::right)  << hex << ((int)(unsigned char)buffer[i]);
+			cout << " " << setw(2) << setfill('0') << setiosflags(ios::right) << hex << ((int)(unsigned char)buffer[i]);
 			i++;
 		}
 		for (int j = 0; j < (16 - i % 16); j++)
@@ -266,8 +281,12 @@ void print_hex(char* buffer, int len, int eof)
 			cout << "  ";
 		cout << "  ";
 		while (temp < len) {
-			if (buffer[temp] < 33 || buffer[temp]>136)
-				cout << ".";
+			if (buffer[temp] < 33 || buffer[temp]>136) {
+				if (buffer[temp] != ' ')
+					cout << ".";
+				else
+					cout << ' ';
+			}
 			else
 				putchar(buffer[temp]);
 			temp++;
@@ -284,7 +303,7 @@ void print_hex(char* buffer, int len, int eof)
 //返 回 值:
 //说    明:
 //=====================================================
-void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode,int debug)
+void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode, int debug)
 {
 	int i = 0;
 	int llen = int_len(rown1) + 1, rlen = int_len(rown2) + 1;
@@ -292,30 +311,30 @@ void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, i
 		case CHAR_DIFF:
 			while (buffer1[i] == buffer2[i])
 				i++;
-			cout << dec<<setfill(' ') << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(llen) << rown1 << "/" << setw(rlen) << setiosflags(ios::right)
+			cout << dec << setfill(' ') << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(llen) << rown1 << "/" << setw(rlen) << setiosflags(ios::right)
 				<< rown2 << "]行 - 第[" << i << "]个字符开始有差异：" << endl;
 			break;
 		case MORE_CHAR:
-			cout << dec<<setfill(' ') << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(llen) << rown1 << "/" << setw(rlen) << setiosflags(ios::right)
+			cout << dec << setfill(' ') << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(llen) << rown1 << "/" << setw(rlen) << setiosflags(ios::right)
 				<< rown2 << "]行 - 文件" << (len1 > len2 ? 1 : 2) << "的尾部有多余字符：" << endl;
 			break;
 		case NOT_END:
-			cout << dec<<setfill(' ') << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(llen) << rown1 << "/" << setw(rlen) << setiosflags(ios::right)
+			cout << dec << setfill(' ') << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(llen) << rown1 << "/" << setw(rlen) << setiosflags(ios::right)
 				<< rown2 << "]行 - 文件" << (eof1 > eof2 ? "1已结束/文件2仍有内容：" : "1仍有内容/文件2已结束：") << endl;
 			break;
 	}
 	if (display_mode == NORMAL_MODE || (debug && display_mode == NONE_MODE)) {
-			print_row(buffer1, buffer2, len1, len2, eof1, eof2);
-			cout << endl;
+		print_row(buffer1, buffer2, len1, len2, eof1, eof2);
+		cout << endl;
 	}
 	else if (display_mode == DETAIL_MODE) {
-			print_rule((len1 > len2) ? len1 : len2);
-			print_row(buffer1, buffer2, len1, len2, eof1, eof2);
-			cout << "文件1(HEX) : " << endl;
-			print_hex(buffer1, len1, eof1);
-			cout << "文件2(HEX) : " << endl;
-			print_hex(buffer2, len2, eof2);
-			cout << endl;
+		print_rule((len1 > len2) ? len1 : len2);
+		print_row(buffer1, buffer2, len1, len2, eof1, eof2);
+		cout << "文件1(HEX) : " << endl;
+		print_hex(buffer1, len1, eof1);
+		cout << "文件2(HEX) : " << endl;
+		print_hex(buffer2, len2, eof2);
+		cout << endl;
 	}
 	return;
 }
@@ -327,7 +346,7 @@ void display(int error_type, char* buffer1, char* buffer2, int len1, int len2, i
 //返 回 值:
 //说    明:有差异则返回1，无差异返回0
 //=====================================================
-int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode, int trim,int debug,int first)
+int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode, int trim, int debug, int first)
 {
 	int i = 0;
 	int error_type = NO_DIFF;
@@ -344,9 +363,9 @@ int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2,
 		else {
 			if (debug) {
 				//TODO:这里处理的是特判的情况，后面还需要进一步确认
-				cout<<dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
-				<< setiosflags(ios::right) << rown2 << "]行 - "<<"一致: " << buffer1;
-				if (eof1) 
+				cout << dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
+					<< setiosflags(ios::right) << rown2 << "]行 - " << "一致: " << buffer1;
+				if (eof1)
 					cout << "<EOF>" << endl;
 				else {
 					if (!len1)
@@ -359,19 +378,19 @@ int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2,
 		}
 	else if (!error_type)
 		error_type = MORE_CHAR;
-	if (!debug&&display_mode == NONE_MODE && error_type)
+	if (!debug && display_mode == NONE_MODE && error_type)
 		return 1;
 	else {
 		if (error_type == NOT_END && (trim == TRIM_RIGHT || trim == TRIM_ALL) && (eof1 ^ eof2) && (!len1 || !len2)) {//特判
-			if(!debug)
-				cout<<dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
+			if (!debug)
+				cout << dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
 				<< setiosflags(ios::right) << rown2 << "]行 - 文件" << (eof1 > eof2 ? "1已结束/文件2仍有内容." : "1仍有内容/文件2已结束.") << endl;
-			else 
-				cout<<dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
+			else
+				cout << dec << resetiosflags(ios::right) << "第[" << setiosflags(ios::left) << setw(int_len(rown1) + 1) << rown1 << "/" << setw(int_len(rown2) + 1)
 				<< setiosflags(ios::right) << rown2 << "]行 - 文件" << (eof1 > eof2 ? "1已结束/文件2仍有内容." : "1仍有内容/文件2已结束.") << endl;
 		}
 		else
-			display(error_type, buffer1, buffer2, len1, len2, rown1, rown2, eof1, eof2, display_mode,debug);
+			display(error_type, buffer1, buffer2, len1, len2, rown1, rown2, eof1, eof2, display_mode, debug);
 		return 1;
 	}
 }
