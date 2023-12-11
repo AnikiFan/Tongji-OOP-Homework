@@ -60,7 +60,7 @@ Date::Date(int offset)
 	month = srcMonth;
 	year = srcYear;
 	while (1) {
-		if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {//是闰年
+		if (((year % 4 == 0) && (year % 100 != 0 ))|| (year % 400 == 0)) {//是闰年
 			maxDay[1] = febMaxDayInLeapYear;
 			if (offset >= dayPerLeapYear) {
 				year++;
@@ -107,12 +107,12 @@ Date::operator int()const
 {
 	int result = day;
 	int  maxDay[12] = maxday;
-	if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) 
+	if (((year % 4 == 0 )&&( year % 100 != 0)) || (year % 400 == 0)) 
 		maxDay[1] = febMaxDayInLeapYear;
 	for (int i = 0; i < month - 1; i++)
 		result += maxDay[i];
 	for (int i = srcYear; i < year; i++)
-		result += (i % 4 == 0 && i % 100 != 0 || i % 400 == 0 ? 366 : 365);
+		result += (((i % 4 == 0 )&&( i % 100 != 0 ))|| (i % 400 == 0 )? 366 : 365);
 	return result;
 }
 /* 如果有需要的其它全局函数的实现，可以写于此处 */
@@ -154,7 +154,7 @@ int invaliddaytest(int y, int m, int d)
 			max = 30;
 			break;
 		case 2:
-			if (y % 4 == 0 && y % 100 != 0 || y % 400 == 0)
+			if (((y % 4 == 0 )&&( y % 100 != 0)) ||( y % 400 == 0))
 				max = 29;
 			else
 				max = 28;
