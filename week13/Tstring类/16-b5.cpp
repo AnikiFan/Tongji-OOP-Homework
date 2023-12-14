@@ -106,7 +106,8 @@ TString& TString::operator=(const TString& s)
 		cout << "OVERFLOW" << endl;
 		getchar();
 	}
-	strcpy(content, s.content);
+	memcpy(content, s.content,len); 
+	content[len] = 0;
 	return *this;
 }
 TString& TString::operator=(const char* const s)
@@ -124,7 +125,8 @@ TString& TString::operator=(const char* const s)
 		cout << "OVERFLOW" << endl;
 		getchar();
 	}
-	strcpy(content, s);
+	memcpy(content, s,len);
+	content[len] = 0;
 	return *this;
 }
 const TString operator +(const char* const s1, const TString& s2)
@@ -147,12 +149,16 @@ const TString operator +(const char* const s1, const TString& s2)
 			return out;
 		}
 		if (s1) {
-			strcpy(out.content, s1);
-			if (s2.content)
-				strcat(out.content, s2.content);
+			memcpy(out.content, s1,strlen(s1));
+			if (s2.content) {
+				memcpy(out.content+strlen(s1), s2.content,s2.len);
+				out.content[out.len] = 0;
+			}
 		}
-		else
-			strcpy(out.content, s2.content);
+		else {
+			memcpy(out.content, s2.content,s2.len);
+			out.content[out.len ] = 0;
+		}
 	}
 	return out;
 }
@@ -175,12 +181,16 @@ const TString operator +(const TString& s1, const char* const s2)
 			return out;
 		}
 		if (s1.content) {
-			strcpy(out.content, s1.content);
-			if (s2)
-				strcat(out.content, s2);
+			memcpy(out.content, s1.content,s1.len);
+			if (s2) {
+				memcpy(out.content+s1.len, s2,strlen(s2));
+				out.content[out.len ] = 0;
+			}
 		}
-		else
-			strcpy(out.content, s2);
+		else {
+			memcpy(out.content, s2,strlen(s2));
+			out.content[out.len ] = 0;
+		}
 	}
 	return out;
 }
@@ -265,7 +275,7 @@ void TString::append(const TString& s)
 			return;
 		}
 		strcpy(content, temp);
-		strcat(content, s.content);
+		strcpy(content+strlen(temp), s.content);
 		delete[]temp;
 	}
 	else {

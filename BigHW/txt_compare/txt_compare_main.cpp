@@ -23,7 +23,7 @@ enum OPT_ARGS {
 	OPT_ARGS_CR_CRLF_NOT_EQUAL,
 	OPT_ARGS_MAX_DIFFNUM,
 	OPT_ARGS_MAX_LINENUM,
-	OPT_ARGS_DISPLAY
+	OPT_ARGS_DISPLAY 
 };
 
 /***************************************************************************
