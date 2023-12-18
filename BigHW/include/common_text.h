@@ -24,3 +24,7 @@ int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_c
 int diff( char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode,int trim,int debug=0,int first = 0);
 void display( int error_type,char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2, int eof1, int eof2, int display_mode,int debug = 0);
 int int_len(int num);
+void split(char* const buffer, const char* const key);
+void trim(char* const buffer, const char* const key, int option);
+int ch_in_str(char ch, const char* const str, int strlen);
+void to_upper(string& str);

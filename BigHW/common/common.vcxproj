@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="class_crt.cpp" />
     <ClCompile Include="common_calc.cpp" />
     <ClCompile Include="cmd_console_tools.cpp" />
     <ClCompile Include="common_list.cpp" />

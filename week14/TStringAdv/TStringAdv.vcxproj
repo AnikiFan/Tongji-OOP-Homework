@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{618cd706-1b69-4f02-8b1b-7011e17dc9e0}</ProjectGuid>
-    <RootNamespace>include</RootNamespace>
+    <ProjectGuid>{d8621397-fffb-46e3-ab97-f48d4bd82587}</ProjectGuid>
+    <RootNamespace>TStringAdv</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,18 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -139,14 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="class_aat.h" />
-    <ClInclude Include="class_crt.h" />
-    <ClInclude Include="common_calc.h" />
-    <ClInclude Include="cmd_console_tools.h" />
-    <ClInclude Include="common_list.h" />
-    <ClInclude Include="common_make.h" />
-    <ClInclude Include="common_interact.h" />
-    <ClInclude Include="common_text.h" />
+    <ClCompile Include="17-b1-main.cpp" />
+    <ClCompile Include="17-b1-TString.cpp" />
+    <ClCompile Include="17-b1-TStringAdv.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="17-b1-TString.h" />
+    <ClInclude Include="17-b1-TStringAdv.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 /* 2254298 大数据 范潇 */
+#define _CRT_SECURE_NO_WARNINGS
 #include"../include/common_text.h"
 #include"../include/cmd_console_tools.h"
+#include"../include/common_calc.h"
 //====================================================
 //函 数 名:int_len
 //功能描述:返回整数的长度
@@ -27,7 +29,7 @@ int int_len(int num)
 //返 回 值:1为真，0为假
 //说    明:
 //=====================================================
-int ch_in_str(char ch, char* str, int strlen)
+int ch_in_str(char ch,const char*  const str, int strlen)
 {
 	for (int i = 0; i < strlen; i++)
 		if (str[i] == ch)
@@ -41,7 +43,8 @@ int ch_in_str(char ch, char* str, int strlen)
 //返 回 值:,当返回1时表示读到文件结尾（人为添加的EOF不算），若读入字符数超过maxn则放回-1，其余情况返回0
 //说    明:读入字符数（不包括结束字符和被trim字符）
 //=====================================================
-int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_ch, int ch_num, char* end, int end_len, enum system& sys, int maxn, int CR_CRLF_not_equal)
+int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_ch, int ch_num,
+	char* end, int end_len, enum system& sys, int maxn, int CR_CRLF_not_equal)
 {
 	inputn = 0;
 	int cur_pos = (int)infile.tellg();
@@ -393,4 +396,71 @@ int diff(char* buffer1, char* buffer2, int len1, int len2, int rown1, int rown2,
 			display(error_type, buffer1, buffer2, len1, len2, rown1, rown2, eof1, eof2, display_mode, debug);
 		return 1;
 	}
+}
+//====================================================
+//函 数 名:split
+//功能描述:遇到第一个key时截断
+//输入参数:
+//返 回 值:
+//说    明:
+//=====================================================
+void split(char* const buffer, const char* const key)
+{
+	if (!buffer || !key)
+		return;
+	for (int i = 0; i <(int) strlen(buffer); i++) 
+		if (ch_in_str(buffer[i], key, strlen(key))) {
+			buffer[i] = '\0';
+			break;
+		}
+	return;
+}
+//====================================================
+//函 数 名:trim
+//功能描述:
+//输入参数:
+//返 回 值:
+//说    明:option为1，2，3分别对应r，l，all
+//=====================================================
+void trim(char*const buffer, const char* const key,int option)
+{
+	if (option != 1 && option != 2 && option != 3)
+		return;
+	if (!buffer||!strlen(buffer)||!strlen(key))
+		return;
+	int l = 0, r = strlen(buffer) - 1;
+	if (option == 1 || option == 3)
+		while (ch_in_str(buffer[l++], key, strlen(key)))
+			if (l > r) {
+				buffer[0] = '\0';
+				return;
+			}
+	if (option == 2 || option == 3)
+		while (ch_in_str(buffer[r--], key, strlen(key)) && r != l)
+			;
+	if (r == l) {
+		buffer[0] = buffer[r];
+		buffer[1] = '\0';
+		return;
+	}
+	if (r != strlen(buffer) - 1)
+		buffer[r + 1] = '0';
+	strcpy(buffer, buffer + l);
+	return;
+}
+//====================================================
+//函 数 名:to_upper
+//功能描述:
+//输入参数:
+//返 回 值:
+//说    明:转大写
+//=====================================================
+void to_upper(string& str)
+{
+	if (str.empty())
+		return;
+	for (int i = 0; i < str.size(); i++) 
+		if (between(str[i], 'a', 'z'))
+			str[i] = str[i] + 'A' - 'a';
+	return;
 }
