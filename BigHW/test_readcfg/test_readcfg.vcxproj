@@ -127,12 +127,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\class_aat.cpp" />
     <ClCompile Include="..\common\class_crt.cpp" />
+    <ClCompile Include="..\common\cmd_console_tools.cpp" />
+    <ClCompile Include="..\common\cmd_hdc_tools.cpp" />
+    <ClCompile Include="..\common\common_calc.cpp" />
+    <ClCompile Include="..\common\common_interact.cpp" />
+    <ClCompile Include="..\common\common_list.cpp" />
+    <ClCompile Include="..\common\common_make.cpp" />
     <ClCompile Include="..\common\common_text.cpp" />
     <ClCompile Include="test_readcfg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\class_crt.h" />
+    <ClInclude Include="..\include\common_calc.h" />
     <ClInclude Include="..\include\common_text.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

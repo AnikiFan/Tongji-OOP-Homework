@@ -20,7 +20,7 @@ public:
 	TStringAdv& erase(const TStringAdv& ts2);
 	TStringAdv& erase(const char *s);
 	TStringAdv& erase(const char&c);
-	TStringAdv substr(const int pos, const int len =FOO);
+	TStringAdv substr(const int pos, const int len =FOO)const;
 	char& at(const int n);
 	friend int TStringAdvLen(const TStringAdv&);
 };

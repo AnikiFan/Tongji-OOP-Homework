@@ -7,6 +7,7 @@
 #include"class_aat.h"
 #include<fstream>
 #include"common_text.h"
+#include"common_calc.h"
 
 #define MAXN 1000
 

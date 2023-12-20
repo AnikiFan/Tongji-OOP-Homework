@@ -422,29 +422,31 @@ void split(char* const buffer, const char* const key)
 //返 回 值:
 //说    明:option为1，2，3分别对应r，l，all
 //=====================================================
-void trim(char*const buffer, const char* const key,int option)
+void trim(char* const buffer, const char* const key, int option)
 {
 	if (option != 1 && option != 2 && option != 3)
 		return;
-	if (!buffer||!strlen(buffer)||!strlen(key))
+	if (!buffer || !strlen(buffer) || !strlen(key))
 		return;
 	int l = 0, r = strlen(buffer) - 1;
 	if (option == 1 || option == 3)
-		while (ch_in_str(buffer[l++], key, strlen(key)))
+		while (ch_in_str(buffer[l], key, strlen(key))) {
+			l++;
 			if (l > r) {
 				buffer[0] = '\0';
 				return;
 			}
+		}
 	if (option == 2 || option == 3)
-		while (ch_in_str(buffer[r--], key, strlen(key)) && r != l)
-			;
+		while (ch_in_str(buffer[r], key, strlen(key)) && r != l)
+			r--;
 	if (r == l) {
 		buffer[0] = buffer[r];
 		buffer[1] = '\0';
 		return;
 	}
 	if (r != strlen(buffer) - 1)
-		buffer[r + 1] = '0';
+		buffer[r + 1] = '\0';
 	strcpy(buffer, buffer + l);
 	return;
 }
@@ -459,7 +461,7 @@ void to_upper(string& str)
 {
 	if (str.empty())
 		return;
-	for (int i = 0; i < str.size(); i++) 
+	for (int i = 0; i <(int) str.size(); i++) 
 		if (between(str[i], 'a', 'z'))
 			str[i] = str[i] + 'A' - 'a';
 	return;

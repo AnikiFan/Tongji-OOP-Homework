@@ -25,6 +25,8 @@ int TStringAdvLen(const TString& ts)
 TStringAdv& TStringAdv::assign(const TStringAdv& ts2)
 {
 	len = ts2.length();
+	if (content && ts2.content && !strcmp(content, ts2.content))
+		return *this;
 	if (len) {
 		if (content)
 			delete[]content;
@@ -48,6 +50,8 @@ TStringAdv& TStringAdv::assign(const char* s)
 		content = nullptr;
 		len = 0;
 	}
+	else if (content&&!strcmp(content,s) )
+		return *this;
 	else {
 		len = strlen(s);
 		if (content)
@@ -222,13 +226,13 @@ TStringAdv& TStringAdv::erase(const char& c)
 	this->erase(temp);
 	return *this;
 }
-TStringAdv TStringAdv::substr(const int pos, const int len)
+TStringAdv TStringAdv::substr(const int pos, const int len)const
 {
 	TStringAdv t;
+	if ((len <= 0) && (len != FOO))
+		return t;
 	int Len=len;
 	int Pos = pos - 1;
-	if ((len < 0) && (len != FOO))
-		return t;
 	if (Pos<0 || Pos>this->len)
 		return t;
 	if (len == FOO||Pos + len > this->len)

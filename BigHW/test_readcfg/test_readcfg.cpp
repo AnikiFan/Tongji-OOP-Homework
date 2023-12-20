@@ -63,6 +63,8 @@ int readconfig_php_linux(const char *const cfgfile_name)
 			cout << ig << endl;
 			for (auto& it : item)
 				cout << '*' << it << '*' << endl; //前后加*便于看清空格等隐含字符
+			;
+			item.clear();
 			cout << endl;
 		}
 		wait_for_enter();
