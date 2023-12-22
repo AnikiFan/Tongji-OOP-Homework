@@ -22,6 +22,6 @@ public:
 	TStringAdv& erase(const char&c);
 	TStringAdv substr(const int pos, const int len =FOO)const;
 	char& at(const int n);
-	friend int TStringAdvLen(const TStringAdv&);
+//	friend int TStringAdvLen(const TStringAdv&);
 };
 int TStringAdvLen(const TString&);//为什么不会自动调用转换构造函数，从而不用写这个函数？
