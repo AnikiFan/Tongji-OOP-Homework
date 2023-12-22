@@ -11,13 +11,13 @@ TStringAdv::TStringAdv(const char* const s) :TString(s)
 TStringAdv::TStringAdv(const TStringAdv& old) :TString(old)
 {
 }
-TStringAdv::TStringAdv(const TString&old):TString(old)
+TStringAdv::TStringAdv(const TString& old) :TString(old)
 {
 }
-int TStringAdvLen(const TStringAdv& ts)
-{
-	return ts.len;
-}
+//int TStringAdvLen(const TStringAdv& ts)
+//{
+//	return ts.len;
+//}
 int TStringAdvLen(const TString& ts)
 {
 	return ts.length();
@@ -50,10 +50,10 @@ TStringAdv& TStringAdv::assign(const char* s)
 		content = nullptr;
 		len = 0;
 	}
-	else if (content&&!strcmp(content,s) )
+	else if (content && !strcmp(content, s))
 		return *this;
 	else {
-		len = strlen(s);
+		len = (int)strlen(s);
 		if (content)
 			delete[]content;
 		content = new (nothrow)char[len + 1];
@@ -98,7 +98,7 @@ TStringAdv& TStringAdv::append(const char* s)
 
 	memcpy(content, temp, len);
 	memcpy(content + len, s, strlen(s) + 1);
-	len += strlen(s);
+	len += (int)strlen(s);
 	delete[]temp;
 	return *this;
 }
@@ -167,11 +167,27 @@ TStringAdv& TStringAdv::insert(const char& c, int pos)
 {
 	if (pos <= 0 || pos > len + 1)
 		return *this;
-	if (pos== len + 1) {
+	if (pos == len + 1) {
 		append(c);
 		return *this;
 	}
 	pos--;
+	if (!c) {
+		if (!pos) {
+			len = 0;
+			delete[]content;
+			return *this;
+		}
+		else {
+			len = pos;
+			content[pos] = 0;
+			const char* temp = content;
+			content = new char[pos + 1];
+			strcpy(content, temp);
+			delete[]temp;
+			return *this;
+		}
+	}
 	const char* temp = content;
 	content = new char[len + 1 + 1] { 0 };
 	if (!content) {
@@ -188,23 +204,23 @@ TStringAdv& TStringAdv::insert(const char& c, int pos)
 }
 TStringAdv& TStringAdv::erase(const TStringAdv& ts2)
 {
-	if (!ts2.content||!content)
+	if (!ts2.content || !content)
 		return *this;
-	int n = (strstr(content, ts2.content) - content);
+	int n = (int)(strstr(content, ts2.content) - content);
 	if (n < 0)
 		return *this;
 	len -= ts2.len;
 	if (!len)
 		content = nullptr;
 	else {
-		const char* temp= content;
-		content = new char[len + 1] ;
+		const char* temp = content;
+		content = new char[len + 1];
 		if (!content) {
 			cout << "OVERFLOW" << endl;
 			getchar();
 			return *this;
 		}
-		memcpy(content,temp,n);
+		memcpy(content, temp, n);
 		memcpy(content + n, temp + n + ts2.len, len - n + 1);
 		delete[]temp;
 	}
@@ -212,13 +228,13 @@ TStringAdv& TStringAdv::erase(const TStringAdv& ts2)
 }
 TStringAdv& TStringAdv::erase(const char* s)
 {
-	TStringAdv temp =s;
-	this->erase( temp);
+	TStringAdv temp = s;
+	this->erase(temp);
 	return *this;
 }
 TStringAdv& TStringAdv::erase(const char& c)
 {
-	TStringAdv temp ;
+	TStringAdv temp;
 	temp.len = 1;
 	temp.content = new (nothrow)char[2];
 	temp.content[0] = c;
@@ -231,11 +247,11 @@ TStringAdv TStringAdv::substr(const int pos, const int len)const
 	TStringAdv t;
 	if ((len <= 0) && (len != FOO))
 		return t;
-	int Len=len;
+	int Len = len;
 	int Pos = pos - 1;
 	if (Pos<0 || Pos>this->len)
 		return t;
-	if (len == FOO||Pos + len > this->len)
+	if (len == FOO || Pos + len > this->len)
 		Len = this->len - Pos;
 	char* temp = new (nothrow) char[Len + 1];
 	if (!temp) {

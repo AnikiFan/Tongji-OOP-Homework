@@ -25,7 +25,7 @@ TString::TString(const char* const input)
 		content = NULL;
 		return;
 	}
-	len = strlen(input);
+	len = (int)strlen(input);
 	content = new char[len + 1] {0};
 	if (!content) {
 		cout << "OVERFLOW" << endl;
@@ -117,7 +117,7 @@ TString& TString::operator=(const char* const s)
 		content = NULL;
 		return *this;
 	}
-	len = strlen(s);
+	len = (int)strlen(s);
 	if (content)
 		delete[]content;
 	content = new char[len + 1] {0};
@@ -133,7 +133,7 @@ const TString operator +(const char* const s1, const TString& s2)
 {
 	TString out;
 	if (s1)
-		out.len = strlen(s1) + s2.len;
+		out.len = (int)strlen(s1) + s2.len;
 	else
 		out.len = s2.len;
 	if (!out.len)
@@ -166,7 +166,7 @@ const TString operator +(const TString& s1, const char* const s2)
 {
 	TString out;
 	if (s2)
-		out.len = s1.len + strlen(s2);
+		out.len = s1.len + (int)strlen(s2);
 	else
 		out.len = s1.len;
 	if (!out.len)
@@ -295,7 +295,7 @@ TString& TString::operator += (const TString& s)
 //}
 const TString operator - (const TString& s1, const TString& s2)
 {
-	int n = (strstr(s1.content, s2.content) - s1.content);
+	int n = (int)(strstr(s1.content, s2.content) - s1.content);
 	if (n < 0)
 		return s1;
 	TString s = s1;
