@@ -212,7 +212,10 @@ args_analyse_tools::args_analyse_tools(const char* name, const ST_EXTARGS_TYPE t
 	args_name = name;
 	extargs_type = type;
 	extargs_num = ext_num;
-	extargs_string_default = set[def_of_set_pos];
+	if (def_of_set_pos < 0)
+		extargs_string_default = set[0];
+	else 
+		extargs_string_default = set[def_of_set_pos];
 	args_existed = 0;
 	extargs_string_set = (string*)set;
 	args_name_length = strlen(name);
