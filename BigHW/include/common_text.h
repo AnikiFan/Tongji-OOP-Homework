@@ -32,15 +32,12 @@ using namespace std;
 #define NAME_POS 6
 #define CLASS_POS 7
 #define NO_SEC_ANNO 8
-
-enum TYPE{
-	TXT = 0,
-	RAR,
-	PDF
-};
+#define TXT  0
+#define RAR  1
+#define PDF 2
 struct file {
 	string file_name;
-	TYPE type;
+	int type;
 };
 struct student {
 	string stu_name;
@@ -59,3 +56,6 @@ int ch_in_str(char ch, const char* const str, int strlen);
 void to_upper(string& str);
 int check(const file wh, const student stu, const string src_folder, const string cno);
 int check_second(student stu, file wh,const string src_folder,const string cno,int correct);
+vector<student> get_name_list(const file wh, const student stu, const string src_folder, const string cno);
+int check_out(const file wh, const student stu, const student bro, const string src_folder, const string cno);
+int utf8_check(ifstream& file);

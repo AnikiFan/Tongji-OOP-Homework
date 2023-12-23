@@ -1,5 +1,6 @@
 /* 2254298 大数据 范潇 */
 #define _CRT_SECURE_NO_WARNINGS
+#include<vector>
 #include"../include/common_text.h"
 #include"../include/cmd_console_tools.h"
 #include"../include/common_calc.h"
@@ -478,59 +479,68 @@ int check(const file wh, const student stu, const string src_folder, const strin
 	string addr;
 	addr = src_folder + cno + "-" + stu.code + "\\" + wh.file_name;
 	ifstream file(addr, ios::in | ios::binary);
-	if (!file) {
-		cout << "打开文件" << addr << "失败！" << endl;
+	//没法打开视为找不到文件
+	if (!file)
 		return NO;
-	}
 	const int BUFFER_SIZE = 200;
 	char buffer[BUFFER_SIZE];
-	//没法打开视为找不到文件
 	if (wh.type == RAR)
 		return CORRECT;
 	else if (wh.type == PDF) {
 		file.read(buffer, 8);
+		buffer[8] = '\0';
 		file.close();
-		if (!strcmp(buffer, "%PDF-1.x"))
+		if (!between(buffer[7], '0', '9'))
+			return INVALID_PDF;
+		buffer[7] = 0;
+		if (!strcmp(buffer, "%PDF-1."))
 			return CORRECT;
 		else
 			return INVALID_PDF;
 	}
-	file.read(buffer, 3);
-	if (!strcmp(buffer, "\xef\xbb\xbf")) {
+	int utf8 = 0;
+	utf8 = utf8_check(file);
+	if (utf8) {
 		file.close();
 		return INVALID_ENCODING;
 	}
+	file.clear();
 	file.seekg(0, ios::beg);
-	file.getline(buffer, BUFFER_SIZE);
+	while (!file.eof()) {
+		file.getline(buffer, BUFFER_SIZE);
+		trim(buffer, " \t\r", 3);
+		if (strlen(buffer))
+			break;
+	}
 	file.close();
-	trim(buffer, " \t", 3);
+	trim(buffer, " \t\r", 3);
 	if (strlen(buffer) == 1 || strlen(buffer) == 0)
 		return NO_ANNO;
-	if ((strlen(buffer) == 2 || strlen(buffer) == 3) && buffer[0] == '\\' && buffer[1] == '\\')
+	if ((strlen(buffer) == 2 || strlen(buffer) == 3) && buffer[0] == '/' && buffer[1] == '/')
 		return NO_THREE;
-	if (buffer[0] == '\\' && buffer[1] == '\\')
+	if (buffer[0] == '/' && buffer[1] == '/')
 		strcpy(buffer, buffer + 2);
 	else
-		if (buffer[0] == '\\' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '\\' && buffer[strlen(buffer) - 2] == '*')
-			trim(buffer, "\\*", 3);
+		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
+			trim(buffer, "/*", 3);
 		else
 			return  NO_ANNO;
 	stringstream temp;
 	string info[3];
 	string check;
-	int name = 0, code = 0, major = 0;
+	int name = 1, code = 1, major = 1;
 	temp << buffer;
 	temp >> info[0] >> info[1] >> info[2] >> check;
 	if (info[0].length() && info[1].length() && info[2].length() && !check.length()) {
 		for (int i = 0; i < 3; i++)
 			if (info[i] == stu.code)
-				code = 1;
+				code = 0;
 		for (int i = 0; i < 3; i++)
 			if (info[i] == stu.major)
-				major = 1;
+				major = 0;
 		for (int i = 0; i < 3; i++)
 			if (info[i] == stu.stu_name)
-				name = 1;
+				name = 0;
 	}
 	else
 		return NO_THREE;
@@ -546,7 +556,7 @@ int check(const file wh, const student stu, const string src_folder, const strin
 //返 回 值:返回1说明没问题
 //说    明:负责secondline
 //=====================================================
-int check_second(student stu, file wh, const string src_folder, const string cno,int correct)
+int check_second(student stu, file wh, const string src_folder, const string cno, int correct)
 {
 	string addr;
 	addr = src_folder + cno + "-" + stu.code + "\\" + wh.file_name;
@@ -560,48 +570,203 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 	//没法打开视为找不到文件
 	if (wh.type != TXT)
 		return -1;
-	file.getline(buffer, BUFFER_SIZE);
-	file.getline(buffer, BUFFER_SIZE);
+	while (!file.eof()) {
+		file.getline(buffer, BUFFER_SIZE);
+		trim(buffer, " \t\r", 3);
+		if (strlen(buffer))
+			break;
+	}
+	while (!file.eof()) {
+		file.getline(buffer, BUFFER_SIZE);
+		trim(buffer, " \t\r", 3);
+		if (strlen(buffer))
+			break;
+	}
 	file.close();
-	trim(buffer, " \t", 3);
+	trim(buffer, " \t\r", 3);
 	if (strlen(buffer) == 1 || strlen(buffer) == 0)
 		return 0;
-	if (buffer[0] == '\\' && buffer[1] == '\\')
+	if (buffer[0] == '/' && buffer[1] == '/')
 		strcpy(buffer, buffer + 2);
 	else
-		if (buffer[0] == '\\' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '\\' && buffer[strlen(buffer) - 2] == '*')
-			trim(buffer, "\\*", 3);
+		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
+			trim(buffer, "/*", 3);
 		else
 			return 0;
 	int i = 0;
 	stringstream temp;
 	string info;
+	trim(buffer, " \t\r", 3);
 	temp << buffer;
-	temp >> info;
+	vector<string> info_list;
 	while (!temp.eof()) {
+		temp >> info;
+		info_list.push_back(info);
+	}
+	for (int i = 0; i < (int)info_list.size(); i++) {
+		if (i == (int)info_list.size() - 1 && !(i % 2)) {
+			if (correct)
+				cout << "第[" << i / 2 << "]个学生后面的信息不全(只读到一项)，后续内容忽略" << endl;
+			return 1;
+		}
 		if (!(i % 2)) {
-			if (info.length() != 7) {
-				if(correct)
-				cout << "第" << i / 2 + 1 << "位同学的学号" << "[" << info << "]不是7位，后续内容忽略" << endl;
+			if ((int)info_list[i].length() != 7) {
+				if (correct) {
+					info_list[i] += "]";
+					if (info_list[i].length() >= 64) {
+						info_list[i].resize(64);
+						info_list[i][63] = ']';
+					}
+					cout << "第" << i / 2 + 1 << "位同学的学号" << "[" << info_list[i] << "不是7位，后续内容忽略" << endl;
+				}
+				return 1;
 				break;
 			}
-			for (int j = 0; j <(int) info.length(); j++)
-				if (!between(info[j], '0', '9')) {
-					if(correct)
-					cout << "第" << i / 2 + 1 << "位同学的学号" << "[" << info << "]中有非数字存在，后续内容忽略" << endl;
+			for (int j = 0; j < (int)info_list[i].length(); j++)
+				if (!between(info_list[i][j], '0', '9')) {
+					if (correct) {
+						info_list[i] += "]";
+						if (info_list[i].length() >= 64) {
+							info_list[i].resize(64);
+							info_list[i][63] = ']';
+						}
+						cout << "第" << i / 2 + 1 << "位同学的学号" << "[" << info_list[i] << "中有非数字存在，后续内容忽略" << endl;
+					}
+					return 1;
 					break;
 				}
 		}
+	}
+	if (correct)
+		cout << "正确" << endl;
+	return 1;
+}
+//====================================================
+//函 数 名:get_name_list
+//功能描述:
+//输入参数:
+//返 回 值:
+//说    明:提取互验名单
+//=====================================================
+vector<student> get_name_list(const file wh, const student stu, const string src_folder, const string cno)
+{
+	string addr;
+	vector<student> name_list;
+	addr = src_folder + cno + "-" + stu.code + "\\" + wh.file_name;
+	ifstream file(addr, ios::in | ios::binary);
+	if (!file) 
+		return name_list;
+	const int BUFFER_SIZE = 200;
+	char buffer[BUFFER_SIZE];
+	//没法打开视为找不到文件
+	if (wh.type != TXT)
+		return name_list;
+	file.getline(buffer, BUFFER_SIZE);
+	file.getline(buffer, BUFFER_SIZE);
+	file.close();
+	trim(buffer, " \t\r", 3);
+	if (strlen(buffer) == 1 || strlen(buffer) == 0)
+		return name_list;
+	if (buffer[0] == '/' && buffer[1] == '/')
+		strcpy(buffer, buffer + 2);
+	else
+		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
+			trim(buffer, "/*", 3);
+		else
+			return name_list;
+	int i = 0;
+	stringstream temp;
+	string info;
+	student bro;
+	trim(buffer, " \t\r", 3);
+	temp << buffer;
+	while (!temp.eof()) {
 		temp >> info;
+		if (!(i % 2)) {
+			if (info.length() != 7)
+				break;
+			for (int j = 0; j < (int)info.length(); j++)
+				if (!between(info[j], '0', '9'))
+					break;
+			bro.code = info;
+		}
+		else {
+			bro.stu_name = info;
+			name_list.push_back(bro);
+		}
 		i++;
 	}
-	if (i % 2) {
-		if(correct)
-		cout << "第[" << i / 2 << "]个学生后面的信息不全(只读到一项)，后续内容忽略" << endl;
+	return name_list;
+
+}
+//====================================================
+//函 数 名:check_out
+//功能描述:
+//输入参数:
+//返 回 值:1为没有被抛弃，0为被抛弃
+//说    明:判断是否被抛弃
+//=====================================================
+int check_out(const file wh, const student stu, const student bro, const string src_folder, const string cno)
+{
+	vector<student> bro_list;
+	bro_list = get_name_list(wh, bro, src_folder, cno);
+	for (int i = 0; i < (int)bro_list.size(); i++)
+		if (bro_list[i].code == stu.code)
+			return 1;
+	return 0;
+}
+//====================================================
+//函 数 名:utf8_check
+//功能描述:
+//输入参数:
+//返 回 值:1为utf_8格式
+//说    明:
+//=====================================================
+int utf8_check(ifstream& file)
+{
+	char buffer[10];
+	file.seekg(0, ios::beg);
+	file.read(buffer, 3);
+	buffer[3] = 0;
+	if (!strcmp(buffer, "\xef\xbb\xbf"))
+		return 1;
+	file.seekg(0, ios::beg);
+	unsigned char one = 0b10000000;
+	unsigned char two = 0b11000000;
+	unsigned char three = 0b11100000;
+	unsigned char four = 0b11110000;
+	unsigned char five = 0b11111000;
+	unsigned char six = 0b11111100;
+	unsigned char seven = 0b11111110;
+	unsigned char now;
+	now = file.get();
+	int n = 0;
+	int flag = 0;
+	while (!file.eof()) {
+		if (now < one)
+			n = 0;
+		else if (now >= two && now < three)
+			n = 1;
+		else if (now >= three && now < four)
+			n = 2;
+		else if (now >= four && now < five)
+			n = 3;
+		else if (now >= five && now < six)
+			n = 4;
+		else if (now >= six && now < seven)
+			n = 5;
+		while (n--) {
+			flag = 1;
+			now = file.get();
+			if (now >= one && now < two)
+				continue;
+			else
+				return 0;
+		}
+		now = file.get();
 	}
-	else {
-		if(correct)
-		cout << "正确" << endl;
-	}
-	return 1;
+	if (flag)
+		return 1;
+	else
+		return 0;
 }
