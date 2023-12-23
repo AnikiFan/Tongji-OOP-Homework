@@ -40,4 +40,18 @@
   <ItemGroup>
     <Library Include="..\lib_mariadb_x86\libmariadb.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\class_aat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\class_crt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\cmd_console_tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\common_text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

@@ -32,9 +32,9 @@
 using namespace std;
 
 const char* dbserver = "10.80.42.244";
-const char* dbuser = "demo_23241";
-const char* dbpasswd = "demo_23241*oop";
-const char* dbname = "demo";
+const char* dbuser = "hwcheck";
+const char* dbpasswd = "hw_CheCk-For23241*oOP";
+const char* dbname = "homework";
 
 /***************************************************************************
   函数名称：
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
         不成功的常见可能性：
             1、查询字符串存在语法错误
             2、查询不存在的数据表 */
-    if (mysql_query(mysql, "select * from student")) {
+    if (mysql_query(mysql, "select hw_ftype from view_hwcheck_hwlist where hw_filename = \"hdc_cartoon.cpp\"")) {
         cout << "mysql_query failed(" << mysql_error(mysql) << ")" << endl;
         return -1;
     }
@@ -122,14 +122,13 @@ int main(int argc, char* argv[])
             row[5] <=> NULL
         4、不论数据库中是什么类型，C中都当作是字符串来进行处理，如果有必要，需要自己进行转换
         5、根据自己的需要组织输出格式，比如加边框线等 */
+    MYSQL_FIELD* fields = mysql_fetch_fields(result);
+    /*for (int i = 0; i < 7; i++) {
+        cout << "column " << i + 1 << ":" << fields[i].name << endl;
+    }
+    */
     while ((row = mysql_fetch_row(result)) != NULL) {
-        cout << setiosflags(ios::left);           //输出左对齐
-        cout << "学号：" << setw(12) << row[0];    //宽度12位，左对齐
-        cout << "姓名：" << setw(8) << row[1];     //    8
-        cout << "性别：" << setw(4) << row[2];     //    4
-        cout << "年龄：" << setw(4) << row[3];     //    4，目前是字符串形式，也可以用atoi(row[3])输出int型的年龄
-        cout << "系部：" << setw(4) << row[4];     //    4
-        cout << endl;
+            cout << row[0] << endl;
     }
     cout << endl;
 
@@ -196,7 +195,7 @@ int main(int argc, char* argv[])
           不成功的常见可能性：
               1、查询字符串存在语法错误
               2、查询不存在的数据表 */
-    if (mysql_query(mysql, "select ssex, sage, sname, sdept from student where ssex = \"女\" and sdept = \"CS\"")) {
+    if (mysql_query(mysql, "select ssex, sage, sname, sdept from student where ssex = \"女\" and sdept = \"df\"")) {
         cout << "mysql_query failed(" << mysql_error(mysql) << ")" << endl;
         return -1;
     }

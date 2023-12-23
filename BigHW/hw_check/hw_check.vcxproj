@@ -138,6 +138,12 @@
   <ItemGroup>
     <Library Include="..\lib_mariadb_x86\libmariadb.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\class_aat.h" />
+    <ClInclude Include="..\include\class_crt.h" />
+    <ClInclude Include="..\include\cmd_console_tools.h" />
+    <ClInclude Include="..\include\common_text.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

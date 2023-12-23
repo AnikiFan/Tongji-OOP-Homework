@@ -74,8 +74,11 @@ int cfgfile_read_tools::get_all_group(vector <string>& ret)
 		split(buffer, stop_key);
 		trim(buffer, trim_key, 3);
 		if ((strlen(buffer) > 2) && (buffer[0] == '[') && (buffer[strlen(buffer) - 1] == ']')) {
-			buffer[strlen(buffer)] = '\0';
+			buffer[strlen(buffer)-1] = '\0';
 			trim(buffer + 1, " \b", 3);
+			int temp = (int)strlen(buffer);
+			buffer[temp] = ']';
+			buffer[temp+1] = '\0';
 			ret.push_back(string(buffer));
 		}
 	}

@@ -466,3 +466,72 @@ void to_upper(string& str)
 			str[i] = str[i] + 'A' - 'a';
 	return;
 }
+//====================================================
+//函 数 名:check
+//功能描述:
+//输入参数:
+//返 回 值:
+//说    明:负责base,以及firstline
+//=====================================================
+int check(const file wh,const student stu)
+{
+	ifstream file(wh.file_name, ios::in | ios::binary);
+	const int BUFFER_SIZE = 100;
+	char buffer[BUFFER_SIZE];
+	//没法打开视为找不到文件
+	if (!file)
+		return NO;
+	if (wh.type == RAR)
+		return CORRECT;
+	else if (wh.type == PDF) {
+		file.read(buffer, 8);
+		file.close();
+		if (!strcmp(buffer, "%PDF-1.x"))
+			return CORRECT;
+		else
+			return INVALID_PDF;
+	}
+	file.read(buffer, 3);
+	if (!strcmp(buffer, "\xef\xbb\xbf")) {
+		file.close();
+		return INVALID_ENCODING;
+	}
+	file.seekg(0, ios::beg);
+	file.getline(buffer, BUFFER_SIZE);
+	file.close();
+	trim(buffer, " \t", 3);
+	if (strlen(buffer) == 1||strlen(buffer)==0)
+		return NO_ANNO;
+	if ((strlen(buffer) == 2||strlen(buffer)==3) && buffer[0] == '\\' && buffer[1] == '\\')
+		return NO_THREE;
+	if (buffer[0] == '\\' && buffer[1] == '\\')
+		strcpy(buffer, buffer + 2);
+	else 
+		if (buffer[0] == '\\' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '\\' && buffer[strlen(buffer) - 2] == '*')
+			trim(buffer, "\\*", 3);
+		else
+			return  NO_ANNO;
+	stringstream temp;
+	string info[3];
+	string check;
+	int name=0, code=0, major=0;
+	temp << buffer;
+	temp >> info[0] >> info[1] >> info[2] >> check;
+	if (info[0].length() && info[1].length() && info[2].length() && !check.length()) {
+		for (int i = 0; i < 3; i++)
+			if (info[i] == stu.code)
+				code = 1;
+		for (int i = 0; i < 3; i++)
+			if (info[i] == stu.major)
+				major = 1;
+		for (int i = 0; i < 3; i++)
+			if (info[i] == stu.stu_name)
+				name = 1;
+	}
+	else
+		return NO_THREE;
+	int result = 0;
+	result += code * WRONG_NO + major * WRONG_CLASS + name * WRONG_NAME;
+	return result;
+	file.close();
+}
