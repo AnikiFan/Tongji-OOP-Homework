@@ -21,7 +21,7 @@ using namespace std;
 #define RULE_OFFSET 8
 
 #define CORRECT 0
-#define	NO -1
+#define	NO 9
 #define INVALID_ENCODING 1
 #define INVALID_PDF 2
 #define NO_ANNO 3
@@ -29,6 +29,9 @@ using namespace std;
 #define WRONG_NAME 40
 #define WRONG_CLASS 400
 #define NO_THREE 5
+#define NAME_POS 6
+#define CLASS_POS 7
+#define NO_SEC_ANNO 8
 
 enum TYPE{
 	TXT = 0,
@@ -54,4 +57,5 @@ void split(char* const buffer, const char* const key);
 void trim(char* const buffer, const char* const key, int option);
 int ch_in_str(char ch, const char* const str, int strlen);
 void to_upper(string& str);
-int check(const file wh,const student stu);
+int check(const file wh, const student stu, const string src_folder, const string cno);
+int check_second(student stu, file wh,const string src_folder,const string cno,int correct);

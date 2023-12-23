@@ -6,7 +6,7 @@
 //====================================================
 //函 数 名:int_len
 //功能描述:返回整数的长度
-//输入参数:
+//输入参数: 
 //返 回 值:
 //说    明:包括符号
 //=====================================================	
@@ -29,7 +29,7 @@ int int_len(int num)
 //返 回 值:1为真，0为假
 //说    明:
 //=====================================================
-int ch_in_str(char ch,const char*  const str, int strlen)
+int ch_in_str(char ch, const char* const str, int strlen)
 {
 	for (int i = 0; i < strlen; i++)
 		if (str[i] == ch)
@@ -93,7 +93,7 @@ int get_line(ifstream& infile, char* buffer, int& inputn, int trim, char* trim_c
 	}
 	else
 		eof = 1;
-	if (CR_CRLF_not_equal && ((trim == TRIM_RIGHT) ||( trim == TRIM_ALL)) && (buffer[inputn - 1] == '\r'))
+	if (CR_CRLF_not_equal && ((trim == TRIM_RIGHT) || (trim == TRIM_ALL)) && (buffer[inputn - 1] == '\r'))
 		inputn--;
 	if (CR_CRLF_not_equal && trim == TRIM_LEFT && inputn == 1 && buffer[0] == '\r')
 		inputn--;
@@ -218,7 +218,7 @@ void print_rule(int length)
 	cout << setfill(' ') << endl;;
 	cout << setw(8) << " ";
 	for (int i = 0; i < n; i++)
-		cout << setw(10) << resetiosflags(ios::right) << setiosflags(ios::left) << i%10;
+		cout << setw(10) << resetiosflags(ios::right) << setiosflags(ios::left) << i % 10;
 	cout << endl;
 	cout << setw(8) << " ";
 	for (int i = 0; i < n; i++)
@@ -408,7 +408,7 @@ void split(char* const buffer, const char* const key)
 {
 	if (!buffer || !key)
 		return;
-	for (int i = 0; i <(int) strlen(buffer); i++) 
+	for (int i = 0; i < (int)strlen(buffer); i++)
 		if (ch_in_str(buffer[i], key, strlen(key))) {
 			buffer[i] = '\0';
 			break;
@@ -461,7 +461,7 @@ void to_upper(string& str)
 {
 	if (str.empty())
 		return;
-	for (int i = 0; i <(int) str.size(); i++) 
+	for (int i = 0; i < (int)str.size(); i++)
 		if (between(str[i], 'a', 'z'))
 			str[i] = str[i] + 'A' - 'a';
 	return;
@@ -473,14 +473,18 @@ void to_upper(string& str)
 //返 回 值:
 //说    明:负责base,以及firstline
 //=====================================================
-int check(const file wh,const student stu)
+int check(const file wh, const student stu, const string src_folder, const string cno)
 {
-	ifstream file(wh.file_name, ios::in | ios::binary);
-	const int BUFFER_SIZE = 100;
+	string addr;
+	addr = src_folder + cno + "-" + stu.code + "\\" + wh.file_name;
+	ifstream file(addr, ios::in | ios::binary);
+	if (!file) {
+		cout << "打开文件" << addr << "失败！" << endl;
+		return NO;
+	}
+	const int BUFFER_SIZE = 200;
 	char buffer[BUFFER_SIZE];
 	//没法打开视为找不到文件
-	if (!file)
-		return NO;
 	if (wh.type == RAR)
 		return CORRECT;
 	else if (wh.type == PDF) {
@@ -500,13 +504,13 @@ int check(const file wh,const student stu)
 	file.getline(buffer, BUFFER_SIZE);
 	file.close();
 	trim(buffer, " \t", 3);
-	if (strlen(buffer) == 1||strlen(buffer)==0)
+	if (strlen(buffer) == 1 || strlen(buffer) == 0)
 		return NO_ANNO;
-	if ((strlen(buffer) == 2||strlen(buffer)==3) && buffer[0] == '\\' && buffer[1] == '\\')
+	if ((strlen(buffer) == 2 || strlen(buffer) == 3) && buffer[0] == '\\' && buffer[1] == '\\')
 		return NO_THREE;
 	if (buffer[0] == '\\' && buffer[1] == '\\')
 		strcpy(buffer, buffer + 2);
-	else 
+	else
 		if (buffer[0] == '\\' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '\\' && buffer[strlen(buffer) - 2] == '*')
 			trim(buffer, "\\*", 3);
 		else
@@ -514,7 +518,7 @@ int check(const file wh,const student stu)
 	stringstream temp;
 	string info[3];
 	string check;
-	int name=0, code=0, major=0;
+	int name = 0, code = 0, major = 0;
 	temp << buffer;
 	temp >> info[0] >> info[1] >> info[2] >> check;
 	if (info[0].length() && info[1].length() && info[2].length() && !check.length()) {
@@ -534,4 +538,70 @@ int check(const file wh,const student stu)
 	result += code * WRONG_NO + major * WRONG_CLASS + name * WRONG_NAME;
 	return result;
 	file.close();
+}
+//====================================================
+//函 数 名:check_second
+//功能描述:打印“正确”或错误信息
+//输入参数:
+//返 回 值:返回1说明没问题
+//说    明:负责secondline
+//=====================================================
+int check_second(student stu, file wh, const string src_folder, const string cno,int correct)
+{
+	string addr;
+	addr = src_folder + cno + "-" + stu.code + "\\" + wh.file_name;
+	ifstream file(addr, ios::in | ios::binary);
+	if (!file) {
+		cout << "打开文件" << addr << "失败！" << endl;
+		return -1;
+	}
+	const int BUFFER_SIZE = 200;
+	char buffer[BUFFER_SIZE];
+	//没法打开视为找不到文件
+	if (wh.type != TXT)
+		return -1;
+	file.getline(buffer, BUFFER_SIZE);
+	file.getline(buffer, BUFFER_SIZE);
+	file.close();
+	trim(buffer, " \t", 3);
+	if (strlen(buffer) == 1 || strlen(buffer) == 0)
+		return 0;
+	if (buffer[0] == '\\' && buffer[1] == '\\')
+		strcpy(buffer, buffer + 2);
+	else
+		if (buffer[0] == '\\' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '\\' && buffer[strlen(buffer) - 2] == '*')
+			trim(buffer, "\\*", 3);
+		else
+			return 0;
+	int i = 0;
+	stringstream temp;
+	string info;
+	temp << buffer;
+	temp >> info;
+	while (!temp.eof()) {
+		if (!(i % 2)) {
+			if (info.length() != 7) {
+				if(correct)
+				cout << "第" << i / 2 + 1 << "位同学的学号" << "[" << info << "]不是7位，后续内容忽略" << endl;
+				break;
+			}
+			for (int j = 0; j <(int) info.length(); j++)
+				if (!between(info[j], '0', '9')) {
+					if(correct)
+					cout << "第" << i / 2 + 1 << "位同学的学号" << "[" << info << "]中有非数字存在，后续内容忽略" << endl;
+					break;
+				}
+		}
+		temp >> info;
+		i++;
+	}
+	if (i % 2) {
+		if(correct)
+		cout << "第[" << i / 2 << "]个学生后面的信息不全(只读到一项)，后续内容忽略" << endl;
+	}
+	else {
+		if(correct)
+		cout << "正确" << endl;
+	}
+	return 1;
 }
