@@ -137,7 +137,7 @@ void print_row(char* row1, char* row2, int len1, int len2, int eof1, int eof2)
 			if (ch_in_str(row1[i], highlight_char, 4))
 				output = 'X';
 			else if (row1[i] == EOF)
-				output = 'ÿ';
+				output = ' ';
 			cout << output;
 			cct_setcolor();
 			i++;
@@ -148,7 +148,7 @@ void print_row(char* row1, char* row2, int len1, int len2, int eof1, int eof2)
 			if (ch_in_str(row1[i], highlight_char, 4))
 				output = 'X';
 			else if (row1[i] == EOF)
-				output = 'ÿ';
+				output = ' ';
 			cout << output;
 			cct_setcolor();
 			i++;
@@ -178,7 +178,7 @@ void print_row(char* row1, char* row2, int len1, int len2, int eof1, int eof2)
 			if (ch_in_str(row2[i], highlight_char, 4))
 				output = 'X';
 			else if (row2[i] == EOF)
-				output = 'ÿ';
+				output = ' ';
 			cout << output;
 			cct_setcolor();
 			i++;
@@ -189,7 +189,7 @@ void print_row(char* row1, char* row2, int len1, int len2, int eof1, int eof2)
 			if (ch_in_str(row2[i], highlight_char, 4))
 				output = 'X';
 			else if (row2[i] == EOF)
-				output = 'ÿ';
+				output = ' ';
 			cout << output;
 			cct_setcolor();
 			i++;

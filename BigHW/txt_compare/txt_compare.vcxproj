@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\common\class_aat.cpp" />
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
+    <ClCompile Include="..\common\common_calc.cpp" />
     <ClCompile Include="..\common\common_text.cpp" />
     <ClCompile Include="txt_compare_main.cpp" />
   </ItemGroup>

@@ -3,6 +3,7 @@
 #include<iostream>
 #include<sstream>
 #include<iomanip>
+#include<vector>
 using namespace std;
 #define TRIM_RIGHT 1
 #define TRIM_LEFT 2

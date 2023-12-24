@@ -531,7 +531,7 @@ int main(int argc, char **argv)
 	}
 
 	/* 给出几个参考示例 */
-	if (1) {
+	if (0) {
 		cout << "==========================" << endl;
 		cout << "php-linux.ini 读取测试" << endl;
 		cout << "==========================" << endl;
