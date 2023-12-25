@@ -287,10 +287,10 @@ stu all，file错误，则
 		OPT_ARGS_DISPLAY,
 		OPT_ARGS_CFGFILE
 	};
-	const int base_check_list[10] = { CORRECT,NO,INVALID_PDF,INVALID_ENCODING,-1 };
-	const int first_check_list[10] = { CORRECT,NO,INVALID_ENCODING,NO_ANNO,NO_THREE,WRONG_NO,WRONG_NAME,WRONG_CLASS,-1 };
-	const int second_check_list[10] = { CORRECT,NO,INVALID_ENCODING,NO_SEC_ANNO,-1 };
-	const char* prompt_list[10] = {
+	const int base_check_list[ERROR_TYPE_MAX_NUM] = { CORRECT,NO,INVALID_PDF,INVALID_ENCODING,-1 };
+	const int first_check_list[ERROR_TYPE_MAX_NUM] = { CORRECT,NO,INVALID_ENCODING,NO_ANNO,NO_THREE,WRONG_NO,WRONG_NAME,WRONG_CLASS,-1 };
+	const int second_check_list[ERROR_TYPE_MAX_NUM] = { CORRECT,NO,INVALID_ENCODING,NO_SEC_ANNO,-1 };
+	const char* prompt_list[ERROR_TYPE_MAX_NUM] = {
 		"正确",
 		"源文件格式不正确(非GB编码)",
 		"PDF文件格式不正确",
@@ -300,7 +300,8 @@ stu all，file错误，则
 		"",
 		"",
 		"次行不是注释",
-		"未提交"
+		"未提交",
+		"首行多行注释格式不正确"
 	};
 
 	const string Action_Name[ACT_Max + 1] = { "base","firstline","secondline","" }; //也可以根据需要，放入头文件中以便共享 
@@ -357,44 +358,15 @@ stu all，file错误，则
 		cout << "参数[--file]必须指定." << endl;
 		return -1;
 	}
-	/* 判断参数组合是否合法*/
-	if (args[OPT_ARGS_ACTION].get_string() == "secondline")
-		if (args[OPT_ARGS_FILE].get_string() == "all") {
-			usage(argv[0]);
-			cout << "HW_Check_SecondLine 只能针对单文件" << endl;
-			return -1;
-		}
-		else if (args[OPT_ARGS_STU].get_string() != "all") {
-			usage(argv[0]);
-			cout << "HW_Check_SecondLine 只能针对全体学生" << endl;
-			return -1;
-		}
 	if (args[OPT_ARGS_FILE].get_string() != "all" && (args[OPT_ARGS_CHAPTER].existed() || args[OPT_ARGS_WEEK].existed())) {
 		usage(argv[0]);
 		cout << "参数[--chapter/--week]不能出现在[--file 单个文件名]时." << endl;
 		return -1;
 	}
-	int correct = 1, no = 1, wrong = 1;
-	if (args[OPT_ARGS_DISPLAY].existed()) {
-		if (args[OPT_ARGS_DISPLAY].get_string().length() != 5) {
-			usage(argv[0]);
-			cout << "参数[--display]的长度不正确，只能是[5]位的0/1." << endl;
-			return -1;
-		}
-		for (int i = 0; i < 5; i++)
-			if (args[OPT_ARGS_DISPLAY].get_string()[i] != '0' && args[OPT_ARGS_DISPLAY].get_string()[i] != '1') {
-				usage(argv[0]);
-				cout << "参数[--display]的长度不正确，只能是[5]位的0/1." << endl;
-				return -1;
-			}
-		correct = args[OPT_ARGS_DISPLAY].get_string()[0] - '0';
-		no = args[OPT_ARGS_DISPLAY].get_string()[1] - '0';
-		wrong = args[OPT_ARGS_DISPLAY].get_string()[2] - '0';
-	}
 	/*--------------------------------------------配置读取------------------------------------------------*/
 	cfgfile_read_tools cfg(args[OPT_ARGS_CFGFILE].get_string());
 	if (cfg.is_open() == 0) {
-		cout << "无法打开配置文件 [" << args[OPT_ARGS_CFGFILE].get_string() << "]，结束运行." << endl;
+		cout << "无法打开配置文件[" << args[OPT_ARGS_CFGFILE].get_string() << "]，结束运行." << endl;
 		return -1;
 	}
 	const char* const group = "[数据库]";
@@ -453,7 +425,7 @@ stu all，file错误，则
 	vector<file>file_list;
 	if (args[OPT_ARGS_STU].get_string() != "all") {
 		string key;
-		key = "select stu_name, stu_class_sname from view_hwcheck_stulist where stu_no = \"" + args[OPT_ARGS_STU].get_string()
+		key = "select stu_name, stu_class_sname, stu_class_fname from view_hwcheck_stulist where stu_no = \"" + args[OPT_ARGS_STU].get_string()
 			+ "\" and stu_cno = \"" + args[OPT_ARGS_CNO].get_string() + "\"";
 		if (mysql_query(mysql, key.c_str())) {
 			cout << "mysql_query failed(" << mysql_error(mysql) << ")" << endl;
@@ -477,12 +449,13 @@ stu all，file错误，则
 		stu.code = args[OPT_ARGS_STU].get_string();
 		stu.stu_name = row[0];
 		stu.major = row[1];
+		stu.f_major = row[2];
 		stu_list.push_back(stu);
 		mysql_free_result(result);
 	}
 	else {
 		string key;
-		key = "select stu_no, stu_name, stu_class_sname from view_hwcheck_stulist where stu_cno = \"" + args[OPT_ARGS_CNO].get_string() + "\"";
+		key = "select stu_no, stu_name, stu_class_sname ,stu_class_fname from view_hwcheck_stulist where stu_cno = \"" + args[OPT_ARGS_CNO].get_string() + "\"";
 		if (mysql_query(mysql, key.c_str())) {
 			cout << "mysql_query failed(" << mysql_error(mysql) << ")" << endl;
 			mysql_close(mysql);
@@ -499,6 +472,7 @@ stu all，file错误，则
 			stu.code = row[0];
 			stu.stu_name = row[1];
 			stu.major = row[2];
+			stu.f_major = row[3];
 			stu_list.push_back(stu);
 		}
 		mysql_free_result(result);
@@ -575,11 +549,44 @@ stu all，file错误，则
 			cout << "次行检查的文件[" << file_list[0].file_name << "]必须是源程序文件." << endl;
 			return -1;
 		}
+	/* 判断参数组合是否合法*/
+	if (args[OPT_ARGS_ACTION].get_string() == "secondline")
+		if (args[OPT_ARGS_FILE].get_string() == "all") {
+			cout << "HW_Check_SecondLine 只能针对单文件" << endl;
+			return -1;
+		}
+		else if (args[OPT_ARGS_STU].get_string() != "all") {
+			cout << "HW_Check_SecondLine 只能针对全体学生" << endl;
+			return -1;
+		}
+	int correct = 1, no = 1, wrong = 1, detailed = 1;
+	if (args[OPT_ARGS_DISPLAY].existed()) {
+		if (args[OPT_ARGS_DISPLAY].get_string().length() != 5) {
+			usage(argv[0]);
+			cout << "参数[--display]的长度不正确，只能是[5]位的0/1." << endl;
+			return -1;
+		}
+		for (int i = 0; i < 5; i++)
+			if (args[OPT_ARGS_DISPLAY].get_string()[i] != '0' && args[OPT_ARGS_DISPLAY].get_string()[i] != '1') {
+				usage(argv[0]);
+				cout << "参数[--display]的长度不正确，只能是[5]位的0/1." << endl;
+				return -1;
+			}
+		correct = args[OPT_ARGS_DISPLAY].get_string()[0] - '0';
+		no = args[OPT_ARGS_DISPLAY].get_string()[1] - '0';
+		wrong = args[OPT_ARGS_DISPLAY].get_string()[2] - '0';
+		detailed = args[OPT_ARGS_DISPLAY].get_string()[3] - '0';
+	}
+
 	int max_filename_len = 0;
 	int type_sum[5] = { 0 };
 	for (int i = 0; i < (int)file_list.size(); i++) {
-		if ((int)file_list[i].file_name.length() > max_filename_len)
-			max_filename_len = file_list[i].file_name.length();
+		if ((int)file_list[i].file_name.length() > max_filename_len) {
+			if (args[OPT_ARGS_ACTION].get_string() != "base" && (file_list[i].type == RAR || file_list[i].type == PDF))
+				;
+			else
+				max_filename_len = file_list[i].file_name.length();
+		}
 		type_sum[file_list[i].type]++;
 	}
 	int file_num = type_sum[TXT];
@@ -605,8 +612,8 @@ stu all，file错误，则
 	if (args[OPT_ARGS_FILE].get_string() != "all")
 		cout << "课号 : " << args[OPT_ARGS_CNO].get_string() << " 学生数量 : " << stu_list.size() << " 源文件名 : " << args[OPT_ARGS_FILE].get_string() << endl;
 	/*--------------------------------------------打印详细信息------------------------------------------------*/
-	int sum[10] = { 0 };
-	int personal_sum[10] = { 0 };
+	int sum[ERROR_TYPE_MAX_NUM] = { 0 };
+	int personal_sum[ERROR_TYPE_MAX_NUM] = { 0 };
 	int status;
 	char buffer[BUFFER_SIZE];
 	int id = 1;
@@ -614,8 +621,8 @@ stu all，file错误，则
 		for (int i = 0; i < (int)stu_list.size(); i++) {
 			cout << setiosflags(ios::left) << setw(3) << i + 1 << ": " << "学号-" << stu_list[i].code << " 姓名-"
 				<< stu_list[i].stu_name << " 课号-" << args[OPT_ARGS_CNO].get_string() << " 文件数量-" << file_num << endl;
-			if (args[OPT_ARGS_STU].get_string() == "all")
-				for (int j = 0; j < 10; j++)
+			if (detailed)
+				for (int j = 0; j < ERROR_TYPE_MAX_NUM; j++)
 					personal_sum[j] = 0;
 			for (int j = 0; j < (int)file_list.size(); j++) {
 				//print check result
@@ -623,12 +630,12 @@ stu all，file错误，则
 					continue;
 				status = check(file_list[j], stu_list[i], src_folder, args[OPT_ARGS_CNO].get_string());
 				if (args[OPT_ARGS_ACTION].get_string() == "base")
-					if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO)
+					if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO || status == INVALID_MULTI_ANNO)
 						status = CORRECT;
 				if (args[OPT_ARGS_ACTION].get_string() == "secondline")
-					if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO)
+					if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO || status == INVALID_MULTI_ANNO)
 						status = CORRECT;
-				if (status < 10)
+				if (status < ERROR_TYPE_MAX_NUM)
 					sum[status]++;
 				else {
 					int flag = 0;
@@ -641,10 +648,10 @@ stu all，file错误，则
 					if (flag)
 						sum[WRONG_NO]++;
 					if (flag && (args[OPT_ARGS_ACTION].get_string() == "secondline" || args[OPT_ARGS_ACTION].get_string() == "base"))
-						sum[CORRECT]++;
+						sum[status = CORRECT]++;
 				}
-				if (args[OPT_ARGS_STU].get_string() == "all") {
-					if (status < 10)
+				if (detailed) {
+					if (status < ERROR_TYPE_MAX_NUM)
 						personal_sum[status]++;
 					else {
 						int flag = 0;
@@ -657,7 +664,7 @@ stu all，file错误，则
 						if (flag)
 							personal_sum[WRONG_NO]++;
 						if (flag && (args[OPT_ARGS_ACTION].get_string() == "secondline" || args[OPT_ARGS_ACTION].get_string() == "base"))
-							personal_sum[CORRECT]++;
+							personal_sum[status = CORRECT]++;
 					}
 				}
 				if (args[OPT_ARGS_ACTION].get_string() == "base")
@@ -687,7 +694,8 @@ stu all，file错误，则
 						continue;
 					ifstream temp((string)src_folder + args[OPT_ARGS_CNO].get_string() + "-" + stu_list[i].code + "\\" + file_list[j].file_name, ios::in);
 					if (!temp) {
-						cout << "  " << setiosflags(ios::left) << setw(max_filename_len) << file_list[j].file_name << " : 未提交" << endl;
+						if (no)
+							cout << "  " << setiosflags(ios::left) << setw(max_filename_len) << file_list[j].file_name << " : 未提交" << endl;
 						continue;
 					}
 					while (!temp.eof()) {
@@ -697,7 +705,7 @@ stu all，file错误，则
 							break;
 					}
 					temp.close();
-					if (status > 10) {
+					if (status > ERROR_TYPE_MAX_NUM && wrong) {
 						cout << "  " << setiosflags(ios::left) << setw(max_filename_len) << file_list[j].file_name << " : " << "首行";
 						if (status % 10 == 4)
 							cout << "学号不匹配 ";
@@ -722,6 +730,10 @@ stu all，file错误，则
 							if (wrong)
 								cout << "  " << setiosflags(ios::left) << setw(max_filename_len) << file_list[j].file_name << " : " << "源文件格式不正确(非GB编码)" << endl;
 							break;
+						case INVALID_MULTI_ANNO:
+							if (wrong)
+								cout << "  " << setiosflags(ios::left) << setw(max_filename_len) << file_list[j].file_name << " : " << "首行不是符合要求的/* */格式 [" << buffer << "]" << endl;
+							break;
 						case NO_ANNO:
 							if (wrong)
 								cout << "  " << setiosflags(ios::left) << setw(max_filename_len) << file_list[j].file_name << " : " << "首行不是注释行 [" << buffer << "]" << endl;
@@ -739,7 +751,7 @@ stu all，file错误，则
 					}
 				}
 			}
-			if (args[OPT_ARGS_STU].get_string() == "all") {
+			if (detailed) {
 				int max_personal_info_len = 0;
 				cout << (personal_sum[CORRECT] == file_num ? "全部通过" : "检查通过") << personal_sum[CORRECT] << "/" << file_num << "个文件，本次通过" << personal_sum[CORRECT] << "个" << endl;
 				if (args[OPT_ARGS_ACTION].get_string() == "base") {
@@ -753,13 +765,17 @@ stu all，file错误，则
 				if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
 					int i = 0;
 					while (first_check_list[i] != -1) {
-						if (first_check_list[i] > 10) {
-							if (base_check_list[i] == WRONG_NAME && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
+					/*	if (first_check_list[i] > ERROR_TYPE_MAX_NUM&&personal_sum[first_check_list[i]]) {
+							if (first_check_list[i] == WRONG_NAME&&personal_sum[WRONG_NO] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
 								max_personal_info_len = ((string)prompt_list[WRONG_NO]).length();
-							if (base_check_list[i] == WRONG_CLASS && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
+							if (first_check_list[i] == WRONG_CLASS&& personal_sum[WRONG_NO] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
 								max_personal_info_len = ((string)prompt_list[WRONG_NO]).length();
+						}*/
+						if (first_check_list[i] > ERROR_TYPE_MAX_NUM) {
+							i++;
+							continue;
 						}
-						else if (personal_sum[first_check_list[i]] && ((int)(((string)prompt_list[i]).length()) > max_personal_info_len))
+						if (personal_sum[first_check_list[i]] && ((int)(((string)prompt_list[first_check_list[i]]).length()) > max_personal_info_len))
 							max_personal_info_len = ((string)prompt_list[first_check_list[i]]).length();
 						i++;
 					}
@@ -779,7 +795,7 @@ stu all，file错误，则
 				if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
 					int i = 0;
 					while (first_check_list[i] != -1) {
-						if (first_check_list[i] > 10) {
+						if (first_check_list[i] > ERROR_TYPE_MAX_NUM) {
 							i++;
 							continue;
 						}
@@ -800,12 +816,12 @@ stu all，file错误，则
 			//print check result
 			status = check(file_list[0], stu_list[i], src_folder, args[OPT_ARGS_CNO].get_string());
 			if (args[OPT_ARGS_ACTION].get_string() == "base")
-				if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO)
+				if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO || status == INVALID_MULTI_ANNO)
 					status = CORRECT;
 			if (args[OPT_ARGS_ACTION].get_string() == "secondline")
-				if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO)
+				if (status == NO_ANNO || status == WRONG_NO || status == WRONG_NAME || status == WRONG_CLASS || status == NO_THREE || status == NO_SEC_ANNO || status == INVALID_MULTI_ANNO)
 					status = CORRECT;
-			if (status < 10)
+			if (status < ERROR_TYPE_MAX_NUM)
 				sum[status]++;
 			else {
 				int flag = 0;
@@ -818,7 +834,7 @@ stu all，file错误，则
 				if (flag)
 					sum[WRONG_NO]++;
 				if (flag && (args[OPT_ARGS_ACTION].get_string() == "secondline" || args[OPT_ARGS_ACTION].get_string() == "base"))
-					sum[CORRECT]++;
+					sum[status = CORRECT]++;
 			}
 			if (args[OPT_ARGS_ACTION].get_string() == "base")
 				switch (status)
@@ -847,8 +863,9 @@ stu all，file错误，则
 					continue;
 				ifstream temp((string)src_folder + args[OPT_ARGS_CNO].get_string() + "-" + stu_list[i].code + "\\" + file_list[0].file_name, ios::in);
 				if (!temp) {
-					cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << "/" << setw(MAX_INFO_LEN) << stu_list[i].stu_name << ": 未提交" << endl;
-					return -1;
+					if (no)
+						cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << "/" << setw(MAX_INFO_LEN) << stu_list[i].stu_name << ": 未提交" << endl;
+					continue;
 				}
 				while (!temp.eof()) {
 					temp.getline(buffer, BUFFER_SIZE);
@@ -857,7 +874,7 @@ stu all，file错误，则
 						break;
 				}
 				temp.close();
-				if (status > 10) {
+				if (status > ERROR_TYPE_MAX_NUM && wrong) {
 					cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << "/" << setw(MAX_INFO_LEN) << stu_list[i].stu_name << ": 首行";
 					if (status % 10 == 4)
 						cout << "学号不匹配 ";
@@ -881,6 +898,10 @@ stu all，file错误，则
 					case INVALID_ENCODING:
 						if (wrong)
 							cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << "/" << setw(MAX_INFO_LEN) << stu_list[i].stu_name << ": 源文件格式不正确(非GB编码)" << endl;
+						break;
+					case INVALID_MULTI_ANNO:
+						if (wrong)
+							cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << "/" << setw(MAX_INFO_LEN) << stu_list[i].stu_name << ": 首行不是符合要求的/* */格式 [" << buffer << "]" << endl;
 						break;
 					case NO_ANNO:
 						if (wrong)
@@ -931,16 +952,17 @@ stu all，file错误，则
 
 
 	/*--------------------------------------------打印汇总信息------------------------------------------------*/
-	if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all")
-		;
-	else
-		cout << endl;
+	cout << endl;
 	int max_info_len = 0;
+	//if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all" && !detailed)
+	//	;
 	if (args[OPT_ARGS_FILE].get_string() != "all")
 		cout << (sum[CORRECT] == stu_list.size() ? "全部通过" : "检查通过") << sum[CORRECT] << "/" << stu_list.size() << "个学生，本次通过" << sum[CORRECT] << "个" << endl;
+	else if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all")
+		cout << "共完成" << stu_list.size() << "个学生的检查，文件总数:" << stu_list.size() * file_num << "，通过总数:" << sum[CORRECT] << "，本次通过" << sum[CORRECT] << "个" << endl;
 	else if (args[OPT_ARGS_STU].get_string() != "all")
-		cout << (sum[CORRECT] == stu_list.size() ? "全部通过" : "检查通过") << sum[CORRECT] << "/" << file_num << "个文件，本次通过" << sum[CORRECT] << "个" << endl;
-	else
+		cout << (sum[CORRECT] == file_num ? "全部通过" : "检查通过") << sum[CORRECT] << "/" << file_num << "个文件，本次通过" << sum[CORRECT] << "个" << endl;
+	else if (args[OPT_ARGS_STU].get_string() == "all" && args[OPT_ARGS_FILE].get_string() == "all")
 		cout << "共完成" << stu_list.size() << "个学生的检查，文件总数:" << stu_list.size() * file_num << "，通过总数:" << sum[CORRECT] << "，本次通过" << sum[CORRECT] << "个" << endl;
 	if (args[OPT_ARGS_ACTION].get_string() == "base") {
 		int i = 0;
@@ -953,13 +975,17 @@ stu all，file错误，则
 	if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
 		int i = 0;
 		while (first_check_list[i] != -1) {
-			if (first_check_list[i] > 10) {
-				if (base_check_list[i] == WRONG_NAME && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
+		/*	if (first_check_list[i] > ERROR_TYPE_MAX_NUM&&sum[first_check_list[i]]) {
+				if (first_check_list[i] == WRONG_NAME &&sum[WRONG_NAME] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
 					max_info_len = ((string)prompt_list[WRONG_NO]).length();
-				if (base_check_list[i] == WRONG_CLASS && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
+				if (first_check_list[i] == WRONG_CLASS &&sum[WRONG_CLASS] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
 					max_info_len = ((string)prompt_list[WRONG_NO]).length();
+			}*/
+			if (first_check_list[i] > ERROR_TYPE_MAX_NUM) {
+				i++;
+				continue;
 			}
-			else if (sum[first_check_list[i]] && ((int)(((string)prompt_list[i]).length()) > max_info_len))
+			if (sum[first_check_list[i]] && ((int)(((string)prompt_list[first_check_list[i]]).length()) > max_info_len))
 				max_info_len = ((string)prompt_list[first_check_list[i]]).length();
 			i++;
 		}
@@ -977,22 +1003,24 @@ stu all，file错误，则
 		cout << "详细信息" << endl;
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
 	}
-	if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all") {
-		cout << setfill('-') << setw(INCRE + max_info_len) << "-" << endl;
-		cout << "学生详细信息" << endl;
-		cout << setfill('-') << setw(INCRE + max_info_len) << "-" << endl;
-	}
+	//if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all" && detailed) {
+	//	cout << setfill('-') << setw(INCRE + max_info_len) << "-" << endl;
+	//	cout << "学生详细信息" << endl;
+	//	cout << setfill('-') << setw(INCRE + max_info_len) << "-" << endl;
+	//}
 	if (args[OPT_ARGS_STU].get_string() == "all" && args[OPT_ARGS_FILE].get_string() != "all") {
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
 		cout << "详细信息" << endl;
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
 	}
-	if (args[OPT_ARGS_STU].get_string() == "all" && args[OPT_ARGS_FILE].get_string() == "all") {
+	if (args[OPT_ARGS_FILE].get_string() == "all") {
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
 		cout << "整体详细信息" << endl;
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
 	}
 	cout << setfill(' ');
+	//if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all" && !detailed)
+	//	;
 	if (args[OPT_ARGS_ACTION].get_string() == "base") {
 		int	i = 0;
 		while (base_check_list[i] != -1) {
@@ -1004,7 +1032,7 @@ stu all，file错误，则
 	if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
 		int i = 0;
 		while (first_check_list[i] != -1) {
-			if (first_check_list[i] > 10) {
+			if (first_check_list[i] > ERROR_TYPE_MAX_NUM) {
 				i++;
 				continue;
 			}
@@ -1025,57 +1053,78 @@ stu all，file错误，则
 	}
 	if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() != "all")
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
-	if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all")
-		cout << setfill('-') << setw(INCRE + max_info_len) << "-" << endl;
+	//if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all" && detailed)
+	//	cout << setfill('-') << setw(INCRE + max_info_len) << "-" << endl;
 	if (args[OPT_ARGS_STU].get_string() == "all" && args[OPT_ARGS_FILE].get_string() != "all")
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
-	if (args[OPT_ARGS_STU].get_string() == "all" && args[OPT_ARGS_FILE].get_string() == "all")
+	if (args[OPT_ARGS_FILE].get_string() == "all")
 		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
 	cout << setfill(' ');
 
-	if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all") {
-		cout << endl << endl << "共完成" << stu_list.size() << "个学生的检查，文件总数:" << stu_list.size() * file_num << "，通过总数:" << sum[CORRECT] << "，本次通过" << sum[CORRECT] << "个" << endl;
-		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
-		cout << "整体详细信息" << endl;
-		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
-		cout << setfill(' ');
-		if (args[OPT_ARGS_ACTION].get_string() == "base") {
-			int	i = 0;
-			while (base_check_list[i] != -1) {
-				if (sum[base_check_list[i]])
-					cout << setw(max_info_len + 2) << setiosflags(ios::right) << prompt_list[base_check_list[i]] << " : " << sum[base_check_list[i]] << resetiosflags(ios::right) << endl;
-				i++;
-			}
-		}
-		if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
-			int i = 0;
-			while (first_check_list[i] != -1) {
-				if (first_check_list[i] > 10) {
-					i++;
-					continue;
-				}
-				if (first_check_list[i] == WRONG_CLASS && (sum[WRONG_NO] + sum[NAME_POS] + sum[CLASS_POS]))
-					cout << setw(max_info_len + 2) << setiosflags(ios::right) << prompt_list[first_check_list[i]] << " : " << sum[WRONG_NO] + sum[NAME_POS] + sum[CLASS_POS] << resetiosflags(ios::right) << endl;
-				else if (sum[first_check_list[i]] > 0)
-					cout << setw(max_info_len + 2) << setiosflags(ios::right) << prompt_list[first_check_list[i]] << " : " << sum[first_check_list[i]] << resetiosflags(ios::right) << endl;
-				i++;
-			}
-		}
-		cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
-	}
+	//if (args[OPT_ARGS_STU].get_string() != "all" && args[OPT_ARGS_FILE].get_string() == "all") {
+	//	cout << endl << endl << "共完成" << stu_list.size() << "个学生的检查，文件总数:" << stu_list.size() * file_num << "，通过总数:" << sum[CORRECT] << "，本次通过" << sum[CORRECT] << "个" << endl;
+	//	cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
+	//	cout << "整体详细信息" << endl;
+	//	cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
+	//	cout << setfill(' ');
+	//	if (args[OPT_ARGS_ACTION].get_string() == "base") {
+	//		int	i = 0;
+	//		while (base_check_list[i] != -1) {
+	//			if (sum[base_check_list[i]])
+	//				cout << setw(max_info_len + 2) << setiosflags(ios::right) << prompt_list[base_check_list[i]] << " : " << sum[base_check_list[i]] << resetiosflags(ios::right) << endl;
+	//			i++;
+	//		}
+	//	}
+	//	if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
+	//		int i = 0;
+	//		while (first_check_list[i] != -1) {
+	//			if (first_check_list[i] > 10) {
+	//				i++;
+	//				continue;
+	//			}
+	//			if (first_check_list[i] == WRONG_CLASS && (sum[WRONG_NO] + sum[NAME_POS] + sum[CLASS_POS]))
+	//				cout << setw(max_info_len + 2) << setiosflags(ios::right) << prompt_list[first_check_list[i]] << " : " << sum[WRONG_NO] + sum[NAME_POS] + sum[CLASS_POS] << resetiosflags(ios::right) << endl;
+	//			else if (sum[first_check_list[i]] > 0)
+	//				cout << setw(max_info_len + 2) << setiosflags(ios::right) << prompt_list[first_check_list[i]] << " : " << sum[first_check_list[i]] << resetiosflags(ios::right) << endl;
+	//			i++;
+	//		}
+	//	}
+	//	cout << setfill('=') << setw(INCRE + max_info_len) << "=" << endl;
+	//}
 	/*--------------------------------------------进行交叉检验------------------------------------------------*/
 	if (args[OPT_ARGS_ACTION].get_string() == "secondline") {
 		vector<student>name_list;
-		cout << "交叉检验结果:" << endl;
+		cout << endl << "交叉检查结果：" << endl;
 		id = 1;
+		int status;
+		int flag = 0;
 		for (int i = 0; i < (int)stu_list.size(); i++) {
-			if (check(file_list[0], stu_list[i], src_folder, args[OPT_ARGS_CNO].get_string()) == NO)
+			status = check(file_list[0], stu_list[i], src_folder, args[OPT_ARGS_CNO].get_string());
+			if (status == NO)
 				cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << " " << stu_list[i].stu_name << endl;
-			else if (check(file_list[0], stu_list[i], src_folder, args[OPT_ARGS_CNO].get_string()) != INVALID_ENCODING
-				&& check_second(stu_list[i], file_list[0], src_folder, args[OPT_ARGS_CNO].get_string(), 0) == 1) {
+			else {
+				status = check_second(stu_list[i], file_list[0], src_folder, args[OPT_ARGS_CNO].get_string(), 0);
 				cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << " " << stu_list[i].stu_name << endl;
 				name_list = get_name_list(file_list[0], stu_list[i], src_folder, args[OPT_ARGS_CNO].get_string());
 				for (int j = 0; j < (int)name_list.size(); j++) {
+					if (name_list[j].code.length() != 7)
+						break;
+					flag = 0;
+					for (int i = 0; i < 7; i++)
+						if (!between(name_list[j].code[i], '0', '9'))
+							flag = 1;
+					if (flag)
+						break;
+					if (name_list[j].code == stu_list[i].code || name_list[j].stu_name == stu_list[i].stu_name)
+						break;
+					flag = -1;
+					for (int k = 0; k < (int)stu_list.size(); k++)
+						if (stu_list[k].code == name_list[j].code)
+							flag = k;
+					if (flag == -1)
+						break;
+					if (stu_list[flag].stu_name != name_list[j].stu_name)
+						break;
 					cout << "        " << name_list[j].code << " " << setw(8) << setiosflags(ios::left) << name_list[j].stu_name;
 					if (check_out(file_list[0], stu_list[i], name_list[j], src_folder, args[OPT_ARGS_CNO].get_string()))
 						cout << endl;

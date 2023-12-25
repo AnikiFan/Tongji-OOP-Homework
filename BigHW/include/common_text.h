@@ -21,6 +21,7 @@ using namespace std;
 #define HIGHLIGHT HIGHLIGHT_BG,HIGHLIGHT_FG
 #define RULE_OFFSET 8
 
+#define ERROR_TYPE_MAX_NUM 20
 #define CORRECT 0
 #define	NO 9
 #define INVALID_ENCODING 1
@@ -33,6 +34,8 @@ using namespace std;
 #define NAME_POS 6
 #define CLASS_POS 7
 #define NO_SEC_ANNO 8
+#define INVALID_MULTI_ANNO 10
+
 #define TXT  0
 #define RAR  1
 #define PDF 2
@@ -44,6 +47,7 @@ struct student {
 	string stu_name;
 	string code;
 	string major;
+	string f_major;
 };
 
 enum system { WINDOWS = 0,LINUX };

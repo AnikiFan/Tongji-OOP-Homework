@@ -520,11 +520,15 @@ int check(const file wh, const student stu, const string src_folder, const strin
 		return NO_THREE;
 	if (buffer[0] == '/' && buffer[1] == '/')
 		strcpy(buffer, buffer + 2);
-	else
+	else {
 		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
 			trim(buffer, "/*", 3);
+	/*	else if (buffer[0] == '/' && buffer[1] == '*')
+			return INVALID_MULTI_ANNO;*/
 		else
 			return  NO_ANNO;
+
+	}
 	stringstream temp;
 	string info[3];
 	string check;
@@ -536,7 +540,7 @@ int check(const file wh, const student stu, const string src_folder, const strin
 			if (info[i] == stu.code)
 				code = 0;
 		for (int i = 0; i < 3; i++)
-			if (info[i] == stu.major)
+			if (info[i] == stu.major || info[i] == stu.f_major)
 				major = 0;
 		for (int i = 0; i < 3; i++)
 			if (info[i] == stu.stu_name)
@@ -597,6 +601,11 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 	stringstream temp;
 	string info;
 	trim(buffer, " \t\r", 3);
+	if (!strlen(buffer)) {
+		if (correct)
+			cout << "正确" << endl;
+		return 1;
+	}
 	temp << buffer;
 	vector<string> info_list;
 	while (!temp.eof()) {
@@ -604,6 +613,12 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 		info_list.push_back(info);
 	}
 	for (int i = 0; i < (int)info_list.size(); i++) {
+		if (info_list[i] == stu.code || info_list[i] == stu.stu_name) {
+			if (correct)
+				cout << "第[" << i + 1 << "]项写了自己" << endl << endl;
+			return 1;
+			break;
+		}
 		if (i == (int)info_list.size() - 1 && !(i % 2)) {
 			if (correct)
 				cout << "第[" << i / 2 << "]个学生后面的信息不全(只读到一项)，后续内容忽略" << endl;
@@ -635,6 +650,8 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 					return 1;
 					break;
 				}
+
+
 		}
 	}
 	if (correct)
@@ -654,7 +671,7 @@ vector<student> get_name_list(const file wh, const student stu, const string src
 	vector<student> name_list;
 	addr = src_folder + cno + "-" + stu.code + "\\" + wh.file_name;
 	ifstream file(addr, ios::in | ios::binary);
-	if (!file) 
+	if (!file)
 		return name_list;
 	const int BUFFER_SIZE = 200;
 	char buffer[BUFFER_SIZE];
