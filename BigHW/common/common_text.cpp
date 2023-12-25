@@ -523,8 +523,8 @@ int check(const file wh, const student stu, const string src_folder, const strin
 	else {
 		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
 			trim(buffer, "/*", 3);
-	/*	else if (buffer[0] == '/' && buffer[1] == '*')
-			return INVALID_MULTI_ANNO;*/
+		/*	else if (buffer[0] == '/' && buffer[1] == '*')
+				return INVALID_MULTI_ANNO;*/
 		else
 			return  NO_ANNO;
 
@@ -537,13 +537,13 @@ int check(const file wh, const student stu, const string src_folder, const strin
 	temp >> info[0] >> info[1] >> info[2] >> check;
 	if (info[0].length() && info[1].length() && info[2].length() && !check.length()) {
 		for (int i = 0; i < 3; i++)
-			if (info[i] == stu.code)
+			if (!strncmp((const char*)info[i].c_str(), (const char*)stu.code.c_str(), 7))
 				code = 0;
 		for (int i = 0; i < 3; i++)
 			if (info[i] == stu.major || info[i] == stu.f_major)
 				major = 0;
 		for (int i = 0; i < 3; i++)
-			if (info[i] == stu.stu_name)
+			if (!strncmp((const char*)info[i].c_str(), (const char*)stu.stu_name.c_str(), stu.stu_name.length()))
 				name = 0;
 	}
 	else
@@ -595,7 +595,7 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 	else
 		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
 			trim(buffer, "/*", 3);
-		else
+		else 
 			return 0;
 	int i = 0;
 	stringstream temp;
@@ -613,7 +613,7 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 		info_list.push_back(info);
 	}
 	for (int i = 0; i < (int)info_list.size(); i++) {
-		if (info_list[i] == stu.code || info_list[i] == stu.stu_name) {
+		if (info_list[i] == stu.code) {
 			if (correct)
 				cout << "第[" << i + 1 << "]项写了自己" << endl << endl;
 			return 1;
@@ -628,10 +628,6 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 			if ((int)info_list[i].length() != 7) {
 				if (correct) {
 					info_list[i] += "]";
-					if (info_list[i].length() >= 64) {
-						info_list[i].resize(64);
-						info_list[i][63] = ']';
-					}
 					cout << "第" << i / 2 + 1 << "位同学的学号" << "[" << info_list[i] << "不是7位，后续内容忽略" << endl;
 				}
 				return 1;
@@ -673,6 +669,12 @@ vector<student> get_name_list(const file wh, const student stu, const string src
 	ifstream file(addr, ios::in | ios::binary);
 	if (!file)
 		return name_list;
+	if (utf8_check(file)) {
+		file.close();
+		return name_list;
+	}
+	file.clear();
+	file.seekg(ios::beg);
 	const int BUFFER_SIZE = 200;
 	char buffer[BUFFER_SIZE];
 	//没法打开视为找不到文件
@@ -720,16 +722,31 @@ vector<student> get_name_list(const file wh, const student stu, const string src
 //函 数 名:check_out
 //功能描述:
 //输入参数:
-//返 回 值:1为没有被抛弃，0为被抛弃
+//返 回 值:1为没有被抛弃，0为被抛弃,-1即对方没写对名字
 //说    明:判断是否被抛弃
 //=====================================================
 int check_out(const file wh, const student stu, const student bro, const string src_folder, const string cno)
 {
 	vector<student> bro_list;
 	bro_list = get_name_list(wh, bro, src_folder, cno);
-	for (int i = 0; i < (int)bro_list.size(); i++)
-		if (bro_list[i].code == stu.code)
-			return 1;
+	for (int i = 0; i < (int)bro_list.size(); i++) {
+		if (bro_list[i].code == bro.code)
+			return 0;
+		if (bro_list[i].code.length() != 7)
+			return 0;
+		int flag = 0;
+		for (int j = 0; j < 7; j++)
+			if (!between(bro_list[i].code[j], '0', '9'))
+				flag = 1;
+		if (flag)
+			return 0;
+		if (bro_list[i].code == stu.code) {
+			if (bro_list[i].stu_name == stu.stu_name)
+				return 1;
+			else
+				return -1;
+		}
+	}
 	return 0;
 }
 //====================================================

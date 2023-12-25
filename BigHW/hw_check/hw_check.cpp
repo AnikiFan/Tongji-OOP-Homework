@@ -765,12 +765,12 @@ stu all，file错误，则
 				if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
 					int i = 0;
 					while (first_check_list[i] != -1) {
-					/*	if (first_check_list[i] > ERROR_TYPE_MAX_NUM&&personal_sum[first_check_list[i]]) {
-							if (first_check_list[i] == WRONG_NAME&&personal_sum[WRONG_NO] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
-								max_personal_info_len = ((string)prompt_list[WRONG_NO]).length();
-							if (first_check_list[i] == WRONG_CLASS&& personal_sum[WRONG_NO] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
-								max_personal_info_len = ((string)prompt_list[WRONG_NO]).length();
-						}*/
+						/*	if (first_check_list[i] > ERROR_TYPE_MAX_NUM&&personal_sum[first_check_list[i]]) {
+								if (first_check_list[i] == WRONG_NAME&&personal_sum[WRONG_NO] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
+									max_personal_info_len = ((string)prompt_list[WRONG_NO]).length();
+								if (first_check_list[i] == WRONG_CLASS&& personal_sum[WRONG_NO] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_personal_info_len))
+									max_personal_info_len = ((string)prompt_list[WRONG_NO]).length();
+							}*/
 						if (first_check_list[i] > ERROR_TYPE_MAX_NUM) {
 							i++;
 							continue;
@@ -975,12 +975,12 @@ stu all，file错误，则
 	if (args[OPT_ARGS_ACTION].get_string() == "firstline") {
 		int i = 0;
 		while (first_check_list[i] != -1) {
-		/*	if (first_check_list[i] > ERROR_TYPE_MAX_NUM&&sum[first_check_list[i]]) {
-				if (first_check_list[i] == WRONG_NAME &&sum[WRONG_NAME] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
-					max_info_len = ((string)prompt_list[WRONG_NO]).length();
-				if (first_check_list[i] == WRONG_CLASS &&sum[WRONG_CLASS] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
-					max_info_len = ((string)prompt_list[WRONG_NO]).length();
-			}*/
+			/*	if (first_check_list[i] > ERROR_TYPE_MAX_NUM&&sum[first_check_list[i]]) {
+					if (first_check_list[i] == WRONG_NAME &&sum[WRONG_NAME] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
+						max_info_len = ((string)prompt_list[WRONG_NO]).length();
+					if (first_check_list[i] == WRONG_CLASS &&sum[WRONG_CLASS] && (((int)((string)prompt_list[WRONG_NO]).length()) > max_info_len))
+						max_info_len = ((string)prompt_list[WRONG_NO]).length();
+				}*/
 			if (first_check_list[i] > ERROR_TYPE_MAX_NUM) {
 				i++;
 				continue;
@@ -1115,31 +1115,43 @@ stu all，file错误，则
 							flag = 1;
 					if (flag)
 						break;
-					if (name_list[j].code == stu_list[i].code || name_list[j].stu_name == stu_list[i].stu_name)
+					if (name_list[j].code == stu_list[i].code)
 						break;
 					flag = -1;
 					for (int k = 0; k < (int)stu_list.size(); k++)
 						if (stu_list[k].code == name_list[j].code)
 							flag = k;
-					if (flag == -1)
-						break;
-					if (stu_list[flag].stu_name != name_list[j].stu_name)
-						break;
-					cout << "        " << name_list[j].code << " " << setw(8) << setiosflags(ios::left) << name_list[j].stu_name;
-					if (check_out(file_list[0], stu_list[i], name_list[j], src_folder, args[OPT_ARGS_CNO].get_string()))
+					if (flag == -1) {
+						cout << "        " << name_list[j].code << " " << setw(8) << setiosflags(ios::left) << name_list[j].stu_name;
+						if (name_list[j].stu_name.length() >= 8)
+							cout << "  ";
+						cout << "对方学号不存在" << endl;
+						continue;
+					}
+					if (stu_list[flag].stu_name != name_list[j].stu_name) {
+						cout << "        " << name_list[j].code << " " << setw(8) << setiosflags(ios::left) << name_list[j].stu_name;
+						if (name_list[j].stu_name.length() >= 8)
+							cout << "  ";
+						cout << "对方姓名不正确" << endl;
+						continue;
+					}
+					int temp;
+					cout << "        " << name_list[j].code << " "  << setiosflags(ios::left) << name_list[j].stu_name;
+					if ((temp = check_out(file_list[0], stu_list[i], name_list[j], src_folder, args[OPT_ARGS_CNO].get_string())) == 1)
 						cout << endl;
 					else {
-						int flag = 0;
-						for (int i = 0; i < (int)stu_list.size(); i++)
-							if (stu_list[i].code == name_list[j].code)
-								flag = 1;
-						if (flag) {
+						if (8 - name_list[j].stu_name.length() > 0)
+							cout << setw(8 - name_list[j].stu_name.length()) << setiosflags(ios::left) << " " ;
+						if (!temp) {
 							if (name_list[j].stu_name.length() >= 8)
-								cout << "        ";
+								cout << "\t";
 							cout << "抛弃了你" << endl;
 						}
-						else
-							cout << endl;
+						else {
+							if (name_list[j].stu_name.length() >= 8)
+								cout << "  ";
+							cout << "没写对你名字" << endl;
+						}
 					}
 				}
 			}
