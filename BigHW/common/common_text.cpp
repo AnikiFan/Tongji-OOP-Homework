@@ -521,12 +521,31 @@ int check(const file wh, const student stu, const string src_folder, const strin
 	if (buffer[0] == '/' && buffer[1] == '/')
 		strcpy(buffer, buffer + 2);
 	else {
-		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
-			trim(buffer, "/*", 3);
+		//HACK:对非法多行注释进行处理
+		if (buffer[0] != '/' || buffer[1] != '*')
+			return NO_ANNO;
+		else {
+			strcpy(buffer, buffer + 2);
+			if (strlen(buffer) <= 3)
+				return NO_ANNO;
+			int flag = 0;
+			for(int i = 1;i<(int)strlen(buffer);i++)
+				if (buffer[i - 1] == '*' && buffer[i] == '/') {
+					flag = 1;
+					if (i != strlen(buffer) - 1)
+						buffer[i + 1] = '\0';
+					break;
+				}
+			if (!flag)
+				return INVALID_MULTI_ANNO;
+			buffer[strlen(buffer) - 2] = '\0';
+		}
+		//if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
+		//	trim(buffer, "/*", 3);
 		/*	else if (buffer[0] == '/' && buffer[1] == '*')
-				return INVALID_MULTI_ANNO;*/
-		else
-			return  NO_ANNO;
+		//		return INVALID_MULTI_ANNO;*/
+		//else
+		//	return  NO_ANNO;
 
 	}
 	stringstream temp;
@@ -543,7 +562,9 @@ int check(const file wh, const student stu, const string src_folder, const strin
 			if (info[i] == stu.major || info[i] == stu.f_major)
 				major = 0;
 		for (int i = 0; i < 3; i++)
-			if (!strncmp((const char*)info[i].c_str(), (const char*)stu.stu_name.c_str(), stu.stu_name.length()))
+			//HACK: 新增修改，用于检查姓名
+			//if (!strncmp((const char*)info[i].c_str(), (const char*)stu.stu_name.c_str(), stu.stu_name.length()))
+			if(info[i]==stu.stu_name)
 				name = 0;
 	}
 	else
