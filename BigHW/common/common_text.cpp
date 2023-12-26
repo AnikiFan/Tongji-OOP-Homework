@@ -560,7 +560,7 @@ int check(const file wh, const student stu, const string src_folder, const strin
 //返 回 值:返回1说明没问题
 //说    明:负责secondline
 //=====================================================
-int check_second(student stu, file wh, const string src_folder, const string cno, int correct)
+int check_second(student stu, file wh, const string src_folder, const string cno, int correct,int wrong)
 {
 	string addr;
 	addr = src_folder + cno + "-" + stu.code + "\\" + wh.file_name;
@@ -595,8 +595,9 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 	else
 		if (buffer[0] == '/' && buffer[1] == '*' && buffer[strlen(buffer) - 1] == '/' && buffer[strlen(buffer) - 2] == '*')
 			trim(buffer, "/*", 3);
-		else 
+		else {
 			return 0;
+		}
 	int i = 0;
 	stringstream temp;
 	string info;

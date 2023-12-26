@@ -60,7 +60,7 @@ void trim(char* const buffer, const char* const key, int option);
 int ch_in_str(char ch, const char* const str, int strlen);
 void to_upper(string& str);
 int check(const file wh, const student stu, const string src_folder, const string cno);
-int check_second(student stu, file wh,const string src_folder,const string cno,int correct);
+int check_second(student stu, file wh,const string src_folder,const string cno,int correct,int wrong);
 vector<student> get_name_list(const file wh, const student stu, const string src_folder, const string cno);
 int check_out(const file wh, const student stu, const student bro, const string src_folder, const string cno);
 int utf8_check(ifstream& file);

@@ -937,9 +937,12 @@ stu all，file错误，则
 					default:
 						break;
 				}
-				if (correct)
+				//新增
+				if (!wrong && !check_second(stu_list[i], file_list[0], src_folder, args[OPT_ARGS_CNO].get_string(), 0, 0))
+					;
+				else if (correct)
 					cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << "/" << setw(MAX_INFO_LEN) << stu_list[i].stu_name << ": ";
-				if (!check_second(stu_list[i], file_list[0], src_folder, args[OPT_ARGS_CNO].get_string(), correct)) {
+				if (!check_second(stu_list[i], file_list[0], src_folder, args[OPT_ARGS_CNO].get_string(), correct,wrong)) {
 					if (wrong && !correct)
 						cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << "/" << setw(MAX_INFO_LEN) << stu_list[i].stu_name << ": 次行不是注释" << endl;
 					else if (wrong && correct)
@@ -1103,7 +1106,7 @@ stu all，file错误，则
 			if (status == NO)
 				cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << " " << stu_list[i].stu_name << endl;
 			else {
-				status = check_second(stu_list[i], file_list[0], src_folder, args[OPT_ARGS_CNO].get_string(), 0);
+				status = check_second(stu_list[i], file_list[0], src_folder, args[OPT_ARGS_CNO].get_string(), 0,0);
 				cout << setiosflags(ios::left) << setw(3) << id++ << ": " << stu_list[i].code << " " << stu_list[i].stu_name << endl;
 				name_list = get_name_list(file_list[0], stu_list[i], src_folder, args[OPT_ARGS_CNO].get_string());
 				for (int j = 0; j < (int)name_list.size(); j++) {
@@ -1122,26 +1125,24 @@ stu all，file错误，则
 						if (stu_list[k].code == name_list[j].code)
 							flag = k;
 					if (flag == -1) {
-						cout << "        " << name_list[j].code << " " << setw(8) << setiosflags(ios::left) << name_list[j].stu_name;
+						cout << "\t" << name_list[j].code << " "  << name_list[j].stu_name<<"\t";
 						if (name_list[j].stu_name.length() >= 8)
-							cout << "  ";
+							cout << "\t";
 						cout << "对方学号不存在" << endl;
 						continue;
 					}
 					if (stu_list[flag].stu_name != name_list[j].stu_name) {
-						cout << "        " << name_list[j].code << " " << setw(8) << setiosflags(ios::left) << name_list[j].stu_name;
-						if (name_list[j].stu_name.length() >= 8)
-							cout << "  ";
+						cout << "\t" << name_list[j].code << " " <<  name_list[j].stu_name<<"\t";
 						cout << "对方姓名不正确" << endl;
 						continue;
 					}
 					int temp;
-					cout << "        " << name_list[j].code << " "  << setiosflags(ios::left) << name_list[j].stu_name;
+					cout << "\t" << name_list[j].code << " "   << name_list[j].stu_name;
 					if ((temp = check_out(file_list[0], stu_list[i], name_list[j], src_folder, args[OPT_ARGS_CNO].get_string())) == 1)
 						cout << endl;
 					else {
 						if (8 - name_list[j].stu_name.length() > 0)
-							cout << setw(8 - name_list[j].stu_name.length()) << setiosflags(ios::left) << " " ;
+							cout << "\t";
 						if (!temp) {
 							if (name_list[j].stu_name.length() >= 8)
 								cout << "\t";
@@ -1149,7 +1150,7 @@ stu all，file错误，则
 						}
 						else {
 							if (name_list[j].stu_name.length() >= 8)
-								cout << "  ";
+								cout << "\t";
 							cout << "没写对你名字" << endl;
 						}
 					}
