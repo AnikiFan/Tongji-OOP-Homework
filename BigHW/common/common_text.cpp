@@ -637,7 +637,7 @@ int check_second(student stu, file wh, const string src_folder, const string cno
 	for (int i = 0; i < (int)info_list.size(); i++) {
 		if (info_list[i] == stu.code) {
 			if (correct)
-				cout << "第[" << i + 1 << "]项写了自己" << endl << endl;
+				cout << "第[" << i + 1 << "]项写了自己，后续内容忽略"  << endl;
 			return 1;
 			break;
 		}
